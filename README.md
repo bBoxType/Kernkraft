@@ -1,4 +1,4 @@
-![Kernkraft](https://raw.githubusercontent.com/carrois/Kernkraft/master/Kernkraft%2001.png)
+![Kernkraft](https://raw.githubusercontent.com/carrois/Kernkraft/master/Kernkraft%2001.png "Kernkraft")
 
 ## Kernkraft:
 This is a set of scripts (»Kernkraft« & »Kernschmelze«) for the Font Editor Glyphs. It might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is).
@@ -101,10 +101,8 @@ Based on the way of kerning by Carrois’ (carrois.com). Code written by Mark Fr
 - check .fina, .init, .swsh, etc (!)
 - case: zero.lf.sc --> nn0nn, supposed case: --> 000000 (+ w/ same suffix(es))
 - one.sc (one.sc, ...) --> put between zero.sc flanks
-
 - not too sure about simply copying UC kerning to SC:
 	/V/A/ vs /v.sc/a.sc or /V/asterisk/v.sc/asterisk often need different kerning
-
 - What about these: ??
 SPECIAL GUESTS***:
 > `Ąj Ą_ Ą) Ęj Ę_ Ę) Įj Į_ Į) fï Tï Fï *ï* ‘ï‘ Ł⁰ Ł‘ ß‘ ß⁰
@@ -113,18 +111,12 @@ SPECIAL GUESTS***:
 > --> /trademark is passed through [a/trademark  c/trademark  e/trademark  f/trademark  g/trademark  i/trademark  k/trademark  l/trademark  o/trademark  r/trademark  s/trademark  t/trademark  v/trademark  w/trademark  x/trademark  y/trademark  z/trademark]
 > (along with /ampersand and /at) in `excludedSubCategories`
 > --> BUT Do we need an extra invitation for these guys?
-
-
 - keep an eye on `excludedSubCategories` list and its Exceptions.
 	- exclude `Private Use` as well?
-
 - Filter input=Letter better, e.g.:
 	- Currencies between Letters? `HHOHa/yen.osf annoi` etc
 	- Math Symbols between Letters? `HHOHa¬annoi`, `HHOHa%annoi` etc
 	- .osf comes along in letters: `HHOHa/percent.osf annoi` etc [FIRA]
-
-
-
 - General Question: How to deal with Multiple Masters?
 	+ Remind user in using only the heavies master (eg. little indicator in Master-PopupButton or GlyphView)
 (- What if kerning is not consistent among masters?!?!
@@ -135,26 +127,16 @@ SPECIAL GUESTS***:
 		- b2) skip only when any master has any kerning?
 	- Script to keep them in sync (num of pairs), or even make possible in Glyphsapp by default to apply kerning to all masters?
 	)
-
 - remove version b) from the SC Output (see features > switches)
 	Message: `use script: Copy Caps Kerning to Small Caps Kerning instead.`
-
 - handle `SC` when iteratedGlyph is `SC` (currently it gets between `UC`)
 - add to `SC` handling in StringMaker()`:
 	currently:	`/h.sc/h.sc/o.sc/h.sc/a.sc ﬁ/a.sc/h.sc/o.sc/o.sc/i.sc`
 	needed:  	No Liga (?)
-
 - Number-Skipping/changing also with `[number]superior` & `[number]inferior` ?
-
-
 - Skip fractions with inputGlyph=letter (maybe even in general except with `number`) --> currently: `HHOHa⁄annoi` `HHOHa⅟annoi` `HHOHa⅔annoi` etc
-
-
-
 - What if inputGlyph is e.g. `/backslash` and currently also Hebrew letters are used as iteratedGlyph? In this case we get no RTL!
-
 - Set focus on first/last line in Tab (UIOption)
-
 - Check (and/or change) the definition of the skipped components (!)
 	needs to be bullet proof, especially with Cyrillic or Greek
 
