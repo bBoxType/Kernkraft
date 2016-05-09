@@ -9,7 +9,7 @@ Based on the way of kerning by Carrois’ (carrois.com). Code written by Mark Fr
 - Latin
 - Cyrillic
 - Greek
-- Hebrew *UC*
+- Hebrew *Under Construction*
 
 ### Filters:
 - Skip categories (UI-Option)
