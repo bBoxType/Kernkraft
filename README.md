@@ -1,4 +1,4 @@
-![Kernkraft](https://raw.githubusercontent.com/carrois/Kernkraft/master/Kernkraft%2001.png "Kernkraft")
+![Kernkraft](https://raw.githubusercontent.com/carrois/Kernkraft/master/Kernkraft%2001.png "Kernkraft" | width=100)
 
 ## Kernkraft:
 This is a set of scripts (»Kernkraft« & »Kernschmelze«) for the Font Editor Glyphs. It might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is).
