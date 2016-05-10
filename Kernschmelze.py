@@ -121,7 +121,7 @@ class KernschmelzeWindow(object):
 
 		self.UI_SelectedTargetMasters = []
 
-		self.w = Window((0, 0), "Kernschmelze")
+		self.w = Window((0, 0), "Kernschmelze (beta)")
 		self.w.SourceMastersLabel = TextBox((10, y, -10, 20), "Source Masters:", alignment="center" )
 		y += 25
 		self.w.SourceMasterALabel = TextBox((10, y, -10, 20), u"🅐 =" )
