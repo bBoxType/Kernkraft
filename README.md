@@ -109,6 +109,7 @@ Based on the way of kerning by Carrois’ (carrois.com). Code written by Mark Fr
 - not too sure about simply copying UC kerning to SC:
 	`/V/A/` versus `/v.sc/a.sc` or `/V/asterisk` versus `/v.sc/asterisk` often need different kerning!
 - What about these SPECIAL GUESTS***: ??
+
 > `Ąj Ą_ Ą) Ęj Ę_ Ę) Įj Į_ Į) fï Tï Fï *ï* ‘ï‘ Ł⁰ Ł‘ ß‘ ß⁰
 > + ¿j ¿y ¿g c//o`
 > 
