@@ -140,6 +140,7 @@ Based on the way of kerning by Carrois’ (carrois.com). Code written by Mark Fr
 	needed:  	No Liga (?)
 - Number-Skipping/changing also with `[number]superior` & `[number]inferior` ?
 - Skip fractions with inputGlyph=letter (maybe even in general except with `number`) --> currently: `HHOHa⁄annoi` `HHOHa⅟annoi` `HHOHa⅔annoi` etc
+- Make Kerning Groups in UI editable.
 - What if inputGlyph is e.g. `/backslash` and currently also Hebrew letters are used as iteratedGlyph? In this case we get no RTL!
 - Set focus on first/last line in Tab (UIOption)
 - Check (and/or change) the definition of the skipped components (!)
