@@ -19,7 +19,7 @@ Based on the way of kerning by Carrois’ (carrois.com). Code written by Mark Fr
 - Skip SubCategories (customizable list with Exceptions).
 - Exclude `SC` when the inputGlyph is `LC`
 (e.g. `nnona/a.sc annoi` does not make sense, does it?)
-- Exclude `.tf` & `.tosf`. They are not to be kerned.
+- Exclude `.tf` & `.tosf`. They are not likely to be kerned.
 - When Input = `SC`: Output -->
 	a) `HHOHA/a.sc/h.sc/o.sc/o.sc/i.sc`
 		for iteratedGlyph = `UC`
