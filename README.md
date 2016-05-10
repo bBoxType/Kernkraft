@@ -111,7 +111,7 @@ Based on the way of kerning by Carrois’ (carrois.com). Code written by Mark Fr
 - What about these SPECIAL GUESTS***: ??
 > `Ąj Ą_ Ą) Ęj Ę_ Ę) Įj Į_ Į) fï Tï Fï *ï* ‘ï‘ Ł⁰ Ł‘ ß‘ ß⁰
 > ¿j ¿y ¿g c//o`
-> --> /trademark is passed through [a/trademark  c/trademark  e/trademark  f/trademark  g/trademark  i/trademark  k/trademark  l/trademark  o/trademark  r/trademark  s/trademark  t/trademark  v/trademark  w/trademark  x/trademark  y/trademark  z/trademark]
+> --> /trademark is passed through [a/™  c/™  e/™  f/™  g/™  i/™  k/™  l/™  o/™  r/™  s/™  t/™  v/™  w/™  x/™  y/™  z/™]
 > (along with /ampersand and /at) in `excludedSubCategories`
 > --> BUT Do we need an extra invitation for these guys?
 
