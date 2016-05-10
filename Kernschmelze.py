@@ -36,7 +36,7 @@ from vanilla import *
 import traceback
 
 Glyphs.clearLog()
-Glyphs.showMacroWindow()
+# Glyphs.showMacroWindow()
 
 font = Glyphs.font
 thisMasterID = font.selectedFontMaster.id
