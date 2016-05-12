@@ -179,7 +179,7 @@ class KernschmelzeWindow(object):
 		masterID = int(sender.getID())
 		status = sender.get()
 		self.masterOptions[masterID] = status
-		print self.masterOptions
+		# print self.masterOptions
 
 	def getSourceMasterA(self, sender):
 		self.UI_sourceMasterA = [self.font.masters[sender.get()], sender.get()]
@@ -291,7 +291,7 @@ class KernschmelzeWindow(object):
 			copiedKernValue = self.KernValue_A
 		if choice == 2:
 			copiedKernValue = self.KernValue_B
-		print choice
+		# print choice
 		try:
 			self.font.setKerningForPair(self.master.id, '%s'  % self.leftSide_K, '%s'  % self.rightSide_K, copiedKernValue)
 		except:
@@ -345,7 +345,7 @@ class KernschmelzeWindow(object):
 
 				## exclude Source Masters:
 				if i != UI_SelectedMasterA_IDX and i != UI_SelectedMasterB_IDX:  # by index
-					print "Master: %s - Option: %s" % (i, self.masterOptions[i])
+					# print "Master: %s - Option: %s" % (i, self.masterOptions[i])
 					
 					if master in self.UI_SelectedTargetMasters:
 
@@ -355,7 +355,7 @@ class KernschmelzeWindow(object):
 						kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB[0])
 						for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).iteritems():
 							pair = key.split(self.separator)
-							print pair
+							# print pair
 							self.leftSide_K, self.rightSide_K = pair
 							self.KernValue_A, self.KernValue_B = values
 
