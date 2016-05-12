@@ -16,6 +16,8 @@ import KernkraftLib.kernKit as KK
 import Customizables
 
 from Foundation import NSColor, NSUserDefaults, NSMakeRange
+from AppKit import NSScreen
+
 
 # # # # # # # # # 
 debugMode = False
@@ -27,6 +29,8 @@ try:
 except: pass
 excludedSubCategories = Customizables.excludedSubCategories
 
+
+screenHeight = NSScreen.mainScreen().frame().size.height
 
 
 ##########################################################################
@@ -737,7 +741,13 @@ class PreferenceWindow(object):
 		self.scrollViewMargin = 10
 		m = 10
 		bW = 25
-		self.previewSize = self.thisFont.upm / (self.thisFont.upm / 300.0) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
+		if screenHeight > 800:
+			prevBox = 300.0
+			layerScale = 1
+		else:
+			prevBox = 200.0
+			layerScale = .666
+		self.previewSize = self.thisFont.upm / (self.thisFont.upm / prevBox) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
 		windowWidth = self.previewSize # 230
 
 		y = 0
@@ -865,7 +875,7 @@ class PreferenceWindow(object):
 
 		# self.view._upm = self.UPM ## // **RELATED
 		self.view._upm = self.thisFont.upm # fontUPM
-		self.view._scaleFactor = 1 / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
+		self.view._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
 		self.view._margin = self.previewSize / 4
 		# self.view._scaleFactor
 		self.view.setFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
