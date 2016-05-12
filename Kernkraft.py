@@ -1,4 +1,4 @@
-#MenuTitle: Kernkraft (beta)
+#MenuTitle: Kernkraft beta 1.8 Launcher
 # -*- coding: utf-8 -*-
 __doc__ = """
 Kerning the Carrois Way
@@ -12,17 +12,13 @@ Kerning the Carrois Way
 #
 # --> Based on the kerning procedure in Glyphsapp by
 #	>> Ralph Du Carrois <<
-#	>> www.carrois.com <<
+#	>> type.carrois.com <<
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
 import KernkraftLib.KernKraftModule as KKM
 reload(KKM)
-
-version = "1.8"
 
 thisFont = Glyphs.font
 mID = thisFont.selectedFontMaster.id
