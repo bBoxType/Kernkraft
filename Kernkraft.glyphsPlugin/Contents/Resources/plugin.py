@@ -11,7 +11,7 @@
 #
 ###########################################################################################################
 
-import KernkraftLib.KernKraftModule as KKM
+import KernKraftModule as KKM
 reload(KKM)
 
 from Kernschmelze import KernschmelzeWindow

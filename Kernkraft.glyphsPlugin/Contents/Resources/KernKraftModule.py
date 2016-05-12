@@ -11,8 +11,8 @@
 import os
 from vanilla import *
 import traceback
-import KernkraftLib.preview as preview
-import KernkraftLib.kernKit as KK
+import preview as preview
+import kernKit as KK
 import Customizables
 from GlyphsApp import Glyphs
 from Foundation import NSColor, NSUserDefaults, NSMakeRange
