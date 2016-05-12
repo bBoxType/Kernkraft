@@ -387,10 +387,10 @@ class KernKraft(object):
 		UI_inputGlyph_IsLGK = False
 		UI_inputGlyph_IsRGK = False
 		if UI_inputGlyph_Name == UI_inputGlyph_LKG:
-			self.debugPrint( UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT" )
+			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT") )
 			UI_inputGlyph_IsLGK = True
 		if UI_inputGlyph_Name == UI_inputGlyph_RKG:
-			self.debugPrint( UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT" )
+			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT") )
 			UI_inputGlyph_IsRGK = True
 
 		## make group key: either first item of group OR the letter itself, if in group
