@@ -49,4 +49,5 @@ class KernkraftPlugin(GeneralPlugin):
 		kkk = KKM.KernKraft(Glyphs, thisFont, mID)
 	
 	def kernschmelze(self):
-		KernschmelzeWindow()
+		thisFont = Glyphs.font
+		KernschmelzeWindow(thisFont)
