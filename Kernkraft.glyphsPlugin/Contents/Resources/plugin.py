@@ -11,7 +11,7 @@
 #
 ###########################################################################################################
 
-import KernkraftLib.KernKraftModule as KKM
+import KernKraftModule as KKM
 reload(KKM)
 
 from Kernschmelze import KernschmelzeWindow
@@ -49,4 +49,5 @@ class KernkraftPlugin(GeneralPlugin):
 		kkk = KKM.KernKraft(Glyphs, thisFont, mID)
 	
 	def kernschmelze(self):
-		KernschmelzeWindow()
+		thisFont = Glyphs.font
+		KernschmelzeWindow(thisFont)

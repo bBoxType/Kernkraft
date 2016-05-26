@@ -11,11 +11,13 @@
 import os
 from vanilla import *
 import traceback
-import KernkraftLib.preview as preview
-import KernkraftLib.kernKit as KK
+import preview as preview
+import kernKit as KK
 import Customizables
-
+from GlyphsApp import Glyphs
 from Foundation import NSColor, NSUserDefaults, NSMakeRange
+from AppKit import NSScreen
+
 
 # # # # # # # # # 
 debugMode = False
@@ -27,6 +29,8 @@ try:
 except: pass
 excludedSubCategories = Customizables.excludedSubCategories
 
+
+screenHeight = NSScreen.mainScreen().frame().size.height
 
 
 ##########################################################################
@@ -82,6 +86,10 @@ class KernKraft(object):
 				self.Glyphs.deactivateReporter(reporter)
 		except:
 			print traceback.format_exc()
+
+	def debugPrint(self, s):
+		if debugMode:
+			print s
 
 	
 	def escName(self, glyphName):	
@@ -145,8 +153,7 @@ class KernKraft(object):
 					if subCategory == thisSubCat:
 						if ".sc" in inputGlyphName and ".sc" in glyphName: # * 1.8
 							return False # CASE: Input is SC, hence do not skip here
-						if debugMode:
-							print '{:10}{:45}{} {} {}'.format("skipped:", glyphName, u"-> excluded Cat & SubCat:", thisCat, thisSubCat)
+						self.debugPrint( '{:10}{:45}{} {} {}'.format("skipped:", glyphName, u"-> excluded Cat & SubCat:", thisCat, thisSubCat) )
 						return True  # Skip
 			else:
 				return False  # Don’t Skip
@@ -380,12 +387,10 @@ class KernKraft(object):
 		UI_inputGlyph_IsLGK = False
 		UI_inputGlyph_IsRGK = False
 		if UI_inputGlyph_Name == UI_inputGlyph_LKG:
-			if debugMode:
-				print UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT"
+			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT") )
 			UI_inputGlyph_IsLGK = True
 		if UI_inputGlyph_Name == UI_inputGlyph_RKG:
-			if debugMode:
-				print UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT"
+			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT") )
 			UI_inputGlyph_IsRGK = True
 
 		## make group key: either first item of group OR the letter itself, if in group
@@ -441,24 +446,21 @@ class KernKraft(object):
 					## UNDER CONSTRUCTION
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning"):
 						# print "__excluded %s for already kerned right" % itrG_Name
-						if debugMode:
-							print "special Case [RK] %s" % itrG_Name
+						self.debugPrint( "special Case [RK] %s" % itrG_Name )
 						skipSide = "chopRight"
 						# continue ## DONT CONTINUE, BUT REWRITE STRING
 				if UI_SkipAlreadyKernedLeftCheck:
 					## UNDER CONSTRUCTION
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
 						# print "__excluded %s for already kerned left" % itrG_Name
-						if debugMode:
-							print "special Case [LK] %s" % itrG_Name
+						self.debugPrint( "special Case [LK] %s" % itrG_Name )
 						skipSide = "chopLeft"
 						# continue ## DONT CONTINUE, BUT REWRITE STRING
 
 				## Skip if BOTH sides do have kerning
 				if UI_SkipAlreadyKernedRightCheck and UI_SkipAlreadyKernedLeftCheck:
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning") and self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
-						if debugMode:
-							print "special Case [LK & RK] %s" % itrG_Name
+						self.debugPrint( "special Case [LK & RK] %s" % itrG_Name )
 						continue
 
 
@@ -486,8 +488,7 @@ class KernKraft(object):
 				SKIP SMALLCAPS BETWEEN LOWERCASE
 				'''
 				if UI_inputGlyph_SubCategory == "Smallcaps" and itrG_SubCat == "Lowercase":
-					if debugMode:
-						print '{:10}{:45}{}'.format("skipped:", itrG_Name, "-> SC between LC")
+					self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, "-> SC between LC") )
 					continue
 
 
@@ -503,8 +504,7 @@ class KernKraft(object):
 					if len(itrG_Layer.components) > 0 and len(itrG_Layer.paths) == 0:
 						if itrG_Cat == "Letter": # or "Number" (Not using Number or it might exclude denominators or alike)
 						# if itrG_Cat == "Number": # excluding Numbers, excludes denominators or alike **UC**
-							if debugMode:
-								print '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> only components & category: 'Letter'")
+							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> only components & category: 'Letter'") )
 							continue
 
 
@@ -538,8 +538,7 @@ class KernKraft(object):
 							isRKGMember = True
 
 						if isLKGMember and isRKGMember:
-							if debugMode:
-								print '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> member of Input Glyph's LKG & RKG")
+							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> member of Input Glyph's LKG & RKG") )
 							continue
 					#####--------------------------------
 
@@ -562,8 +561,7 @@ class KernKraft(object):
 				'''
 				if inputGlyphScript != None and itrG_Script != None:
 					if itrG_Script != inputGlyphScript:
-						if debugMode:
-							print "__excluded %s for not being input script (%s != %s)" % (itrG_Name, itrG_Script, inputGlyphScript)
+						self.debugPrint( "__excluded %s for not being input script (%s != %s)" % (itrG_Name, itrG_Script, inputGlyphScript) )
 						continue
 
 
@@ -571,16 +569,14 @@ class KernKraft(object):
 				SKIP UI Categories
 				'''
 				if itrG_Cat in self.skippedCategories:
-					if debugMode:
-						print "__excluded %s for being Category excluded via UI" % itrG_Name
+					self.debugPrint( "__excluded %s for being Category excluded via UI" % itrG_Name )
 					continue
 
 				'''++++++++++++++++++++++++++++++++++++++++
 				SKIP DISALLOWED CATEGORIES
 				'''
 				if itrG_Cat not in self.allowedCategories:
-					if debugMode:
-						print "__excluded %s for not being in allowedCategories (= %s)" % (itrG_Name, itrG_Cat)
+					self.debugPrint( "__excluded %s for not being in allowedCategories (= %s)" % (itrG_Name, itrG_Cat) )
 					continue
 
 				'''++++++++++++++++++++++++++++++++++++++++
@@ -600,8 +596,7 @@ class KernKraft(object):
 				if UI_SkipKGMembers:
 					### SKIP IF THIS ITERATED GLYPH'S LKG & RKG where already displayed once
 					if (itrG_LKG, itrG_RKG) in itrGKerningGroups:
-						if debugMode:
-							print '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> sharing LKG & RKG of an already displayed Glyph [%s %s]" % (itrG_LKG, itrG_RKG) )
+						self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> sharing LKG & RKG of an already displayed Glyph [%s %s]" % (itrG_LKG, itrG_RKG) ) )
 						continue
 				## IPORTANT: add these only AFTER this ^ condition (but outside the UI_SkipKGMembers condition):
 				if (itrG_LKG, itrG_RKG) not in itrGKerningGroups:
@@ -737,7 +732,13 @@ class PreferenceWindow(object):
 		self.scrollViewMargin = 10
 		m = 10
 		bW = 25
-		self.previewSize = self.thisFont.upm / (self.thisFont.upm / 300.0) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
+		if screenHeight > 800:
+			prevBox = 300.0
+			layerScale = 1
+		else:
+			prevBox = 200.0
+			layerScale = .666
+		self.previewSize = self.thisFont.upm / (self.thisFont.upm / prevBox) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
 		windowWidth = self.previewSize # 230
 
 		y = 0
@@ -865,7 +866,7 @@ class PreferenceWindow(object):
 
 		# self.view._upm = self.UPM ## // **RELATED
 		self.view._upm = self.thisFont.upm # fontUPM
-		self.view._scaleFactor = 1 / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
+		self.view._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
 		self.view._margin = self.previewSize / 4
 		# self.view._scaleFactor
 		self.view.setFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
