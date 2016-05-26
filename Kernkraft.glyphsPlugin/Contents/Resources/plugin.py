@@ -26,16 +26,12 @@ class KernkraftPlugin(GeneralPlugin):
 	
 	def start(self):
 		try:
-			NSLog("__Start1")
 			mainMenu = NSApplication.sharedApplication().mainMenu()
 			glyphMenu = mainMenu.itemWithTag_(7).submenu()
-			NSLog("__Start %s" % str(glyphMenu))
 			s = objc.selector(self.kernkraft, signature='v@:')
 			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Kernkraft", s, "")
 			newMenuItem.setTarget_(self)
-			NSLog("__Start newMenuItem %s" % str(newMenuItem))
 			glyphMenu.addItem_(newMenuItem)
-		
 			s = objc.selector(self.kernschmelze, signature='v@:')
 			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Kernschmelze", s, "")
 			newMenuItem.setTarget_(self)
