@@ -115,6 +115,7 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 > --> /™ is passed through [a/™  c/™  e/™  f/™  g/™  i/™  k/™  l/™  o/™  r/™  s/™  t/™  v/™  w/™  x/™  y/™  z/™]
 > (along with /ampersand and /at) in `excludedSubCategories`
 > --> BUT Do we need an extra invitation for these guys?
+
 - keep an eye on `excludedSubCategories` list and its Exceptions.
 	- exclude `Private Use` as well?
 - Better filtering for input=Letter, e.g.:
