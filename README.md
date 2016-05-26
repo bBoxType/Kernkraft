@@ -108,6 +108,7 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 - not too sure about simply copying `UC` kerning to `SC`:
 	e.g. `/V/A/` vs. `/v.sc/a.sc` or `/V/asterisk/v.sc/asterisk` often need different kerning
 - What about these SPECIAL GUESTS *?:
+
 > `Ąj Ą_ Ą) Ęj Ę_ Ę) Įj Į_ Į) fï Tï Fï *ï* ‘ï‘ Ł⁰ Ł‘ ß‘ ß⁰
 > + ¿j ¿y ¿g c//o`
 > 
