@@ -8,7 +8,7 @@
 #### »Kernschmelze«
 »Kernschmelze« is a tool that will help you interpolate the kerning (given a glyphs file with at least 2 masters). It uses the weight value to calculate, no further axes (e.g. width) are currently supported.
 
-This set of plugins for the font editor »Glyphs« is based on the way of kerning by Carrois’ (carrois.com). The code is written by Mark Frömberg (@Mark2Mark | markfromberg.com). Please contact me for any issues or ideas.
+This set of plugins for the font editor »Glyphs« is based on the way of kerning by Carrois’ [Carrois.com](https://www.carrois.com). The code is written by Mark Frömberg (@Mark2Mark | [Mark Frömberg](http://www.markfromberg.com)). Please contact me for any issues or ideas.
 
 ##
 ### Features:
