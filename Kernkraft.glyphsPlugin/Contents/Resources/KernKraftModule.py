@@ -130,6 +130,22 @@ class KernKraft(object):
 				if itrG.rightKerningGroup == self.thisFont.glyphs[glyphName].rightKerningGroup:
 					yield itrG.name
 
+	# def getKerningGroupMembers(seolf, glyphName, side): # Draft for improving getKerningGroupMembers()
+	# 	_thisGlyph = thisFont.glyphs[glyphName]
+	# 	_LKG = _thisGlyph.leftKerningGroup
+	# 	_RKG = _thisGlyph.rightKerningGroup
+
+	# 	for itrG in self.thisFont.glyphs:
+	# 		_itrLKG = itrG.leftKerningGroup
+	# 		_itrRKG = itrG.rightKerningGroup
+			
+	# 		if side == "L":
+	# 			if _itrLKG == _LKG:
+	# 				yield itrG.name
+	# 		if side == "R":
+	# 			if _itrRKG == _RKG:
+	# 				yield itrG.name
+
 
 	def checkIfKGIsAGlyph(self, KerningGroupName):
 		if KerningGroupName in [g.name for g in self.thisFont.glyphs]:
