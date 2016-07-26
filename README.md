@@ -129,7 +129,7 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 	  ~~if this attempt, better:~~
 		- ~~b1) skip only when all masters have any kerning? Or: (prefered, I think)~~
 		- ~~b2) skip only when any master has any kerning?~~
-- check handling `SC` when iteratedGlyph is `SC` (currently it gets between `UC`)
+- ~~check handling `SC` when iteratedGlyph is `SC` (currently it gets between `UC`)~~
 - add to `SC` handling in `StringMaker()`:
 	currently:	`/h.sc/h.sc/o.sc/h.sc/a.sc ﬁ/a.sc/h.sc/o.sc/o.sc/i.sc`
 	needed:  	No Liga (?)
