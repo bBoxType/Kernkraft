@@ -8,6 +8,11 @@
 # 	+ sort functions by UI and Tool functionality
 #	+ 
 
+# Changelog:
+# 	1.9
+#		+ Use Glyph with Group-Name if given (instead of first Group Member) [only if BOTH sides KG are the same]
+
+
 import os
 from vanilla import *
 import traceback
@@ -42,7 +47,7 @@ screenHeight = NSScreen.mainScreen().frame().size.height
 
 class KernKraft(object):
 
-	version = "1.8"
+	version = "1.9"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -124,6 +129,13 @@ class KernKraft(object):
 			if side == "R":
 				if itrG.rightKerningGroup == self.thisFont.glyphs[glyphName].rightKerningGroup:
 					yield itrG.name
+
+
+	def checkIfKGIsAGlyph(self, KerningGroupName):
+		if KerningGroupName in [g.name for g in self.thisFont.glyphs]:
+			return True
+		else:
+			return False
 
 
 	# def skipForExcludedSubCategories(self, glyphName, category, subCategory):
@@ -271,7 +283,7 @@ class KernKraft(object):
 
 
 	def checkKerningForPair(self, relation, G1, G2, anyKerning):
-		''' append kerning to anyKerning if any of these pair-relations match'''
+		''' append kerning to any Kerning if any of these pair-relations match'''
 		
 		if relation == "noGroupToNoGroup":
 			thisKerning = self.kfp(self.mID, '%s' % G1, '%s' % G2)
@@ -403,6 +415,8 @@ class KernKraft(object):
 		else:
 			firstRKGItem = UI_inputGlyph_RKGroupMembers[0]
 		###
+
+
 
 
 
@@ -587,6 +601,14 @@ class KernKraft(object):
 					continue
 
 
+				'''++++++++++++++++++++++++++++++++++++++++
+				EXCHANGE itrG_Name BY KERNING-GROUP IF KG = GLYPH OF THE FONT *new in 1.9*
+				# Behaviour and position in algorithm chain = experimental (!)
+				'''
+				if itrG_LKG == itrG_RKG:
+					if self.checkIfKGIsAGlyph(itrG_LKG): # use only left, because right is the same
+						itrG_Name = itrG_LKG
+
 
 				'''++++++++++++++++++++++++++++++++++++++++
 				SKIP KERNING GROUP MEMBERS *new in 1.7*
@@ -662,6 +684,7 @@ class KernKraft(object):
 
 		try: self.Glyphs.font.tool = 'TextTool'
 		except: pass # pre Glyphs 2.3 +
+
 
 	def makeTab(self, tabOutput):
 		''' OUTPUT TO EDIT-TAB '''
