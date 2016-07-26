@@ -26,10 +26,8 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 (e.g. `nnona/a.sc annoi` does not make sense, does it?)
 - Exclude `.tf` & `.tosf`
 - when Input = `SC`: Output -->
-	a) `HHOHA/a.sc/h.sc/o.sc/o.sc/i.sc`
-		for iteratedGlyph = `UC`
-	b) `/h.sc/h.sc/o.sc/h.sc/a.sc/a.sc/a.sc/h.sc/o.sc/o.sc/i.sc`
-		for iteratedGlyph = `SC`
+	- a) `HHOHA/a.sc/h.sc/o.sc/o.sc/i.sc` for iteratedGlyph = `UC`
+	- b) `/h.sc/h.sc/o.sc/h.sc/a.sc/a.sc/a.sc/h.sc/o.sc/o.sc/i.sc` for iteratedGlyph = `SC`
 - Skip Kerning Group Members (UI-Option) (2-way)
 
 #### Functions in new Tab(s):
