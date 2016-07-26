@@ -60,6 +60,9 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 ##
 ### Changelog:
 
+### 1.9
+- Use Glyph with Group-Name if given (instead of first Group Member) [only if BOTH sides KG are the same]; eg: `HHOHAƔAHOOI` will display `HHOHAYAHOOI` now if `/Ɣ` got "Y" as KG left & right. Very useful especially with very large character sets.
+
 #### 1.8
 - rebuild modules to make compilable package
 - tried to use Georgs GlyphView, works, but cannot customize, back to my own GlyphPreview
