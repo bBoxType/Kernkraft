@@ -148,7 +148,7 @@ class KernKraft(object):
 
 
 	def checkIfKGIsAGlyph(self, KerningGroupName):
-		if KerningGroupName in [g.name for g in self.thisFont.glyphs]:
+		if KerningGroupName in self.allGlyphsInFont:
 			return True
 		else:
 			return False
