@@ -6,7 +6,7 @@
 # TODO:
 # 	+ rewrite variables, better names
 # 	+ sort functions by UI and Tool functionality
-#	+ 
+#	+ Kerning strings for CamelCase (e.g: »drawAtPoint« etc )
 
 # Changelog:
 # 	1.9
