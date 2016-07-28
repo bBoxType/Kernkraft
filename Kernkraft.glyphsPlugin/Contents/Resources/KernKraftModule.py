@@ -56,18 +56,21 @@ class KernKraft(object):
 		self.Glyphs = Glyphs
 		self.thisFont = thisFont
 		self.mID = mID
-		
 
 		self.allGlyphsInFont = [g.name for g in self.thisFont.glyphs] ## genuinely all glyphs
 		self.firstGlyphInFont = self.allGlyphsInFont[0]
 
-		# UI
+		# User Interface
+		#---------------
 		self.prefwindow = PreferenceWindow(self)
 
 		# Kerning Strings
+		#----------------
 		self.kenringStrings = KK.KerningStrings().customKenringStrings
 
-		# Defaults; reset on submitButtonCallback via UI Selections or certain function calls
+		# Defaults
+		#---------
+		# Reset on submitButtonCallback via UI Selections or certain function calls
 		self.skippedCategories = None
 		self.writingDirection = 0 # LTR
 		# self.firstGlyphInFont = self.allGlyphsInFont[0]  # using global var
@@ -86,19 +89,17 @@ class KernKraft(object):
 		self.kerningRelations = ["noGroupToNoGroup", "groupToGroup", "groupToNoGroup", "noGroupToGroup"  ]
 
 
-	def deactivateReporters(self):
-		try:
-			for reporter in self.Glyphs.activeReporters:
-				self.Glyphs.deactivateReporter(reporter)
-		except:
-			print traceback.format_exc()
+
+	#==============
+	# H E L P E R S
+	#==============
 
 	def debugPrint(self, s):
 		if debugMode:
 			print s
 
-	
-	def escName(self, glyphName):	
+
+	def escName(self, glyphName):
 		''' MAKE GLYPH NAME ESCAPED (e.g. `/alpha`) '''
 		return "/" + glyphName
 
@@ -109,6 +110,16 @@ class KernKraft(object):
 			cases.append(i.islower())
 		return cases
 
+
+	def raiseMessage(self, messageTrigger):
+		if messageTrigger == "Glyph not in Font":
+			Message("Hell no!", "That glyph is not part of the Font. Please try again.", OKButton="OK")
+
+
+
+	#==============
+	# F I L T E R S
+	#==============
 
 	def addSuffixToTails(self, thisGlyphName, leftTail, rightTail):
 		''' rewrite kerning string tails to match number suffix. E.g. `/zero/*/zero` -> `/zero.lf/*.lf/zero.lf` '''
@@ -253,7 +264,8 @@ class KernKraft(object):
 
 
 
-			''' HANDLING OF LC-UC-RELATIONS '''
+			# HANDLING OF LC-UC-RELATIONS
+			#----------------------------
 			# change HHOH#*#NNOI to HHOH#*nnoi [* = UC] (if not chop right)
 			# Case: keyGlyph is LC, itrGlyph is LC
 			if itrGlyphCase == "Lowercase" and subCategory == "Uppercase":
@@ -388,295 +400,16 @@ class KernKraft(object):
 
 
 
-
-
-
-	def generateTabOutput(self):
-		''' MAIN FUNCTION GENERATING THE KERNING STRINGS '''
-
-		glyphsList = [g for g in self.thisFont.glyphs if g.category not in self.prohibitedCategories]
-
-		UI_inputGlyph_Name = self.prefwindow.w.glyphInput.get()
-		UI_SkipComponents = self.prefwindow.w.skipComponentCheck.get()
-		UI_SkipKGMembers = self.prefwindow.w.skipKGMembersCheck.get()
-		UI_SkipAlreadyKernedLeftCheck = self.prefwindow.w.skipAlreadyKernedLeftCheck.get()
-		UI_SkipAlreadyKernedRightCheck = self.prefwindow.w.skipAlreadyKernedRightCheck.get()
-
-		UI_inputGlyph_Category = self.thisFont.glyphs[UI_inputGlyph_Name].category
-		UI_inputGlyph_SubCategory = self.thisFont.glyphs[UI_inputGlyph_Name].subCategory
-
-		UI_inputGlyph_LKG = self.thisFont.glyphs[UI_inputGlyph_Name].leftKerningGroup
-		UI_inputGlyph_RKG = self.thisFont.glyphs[UI_inputGlyph_Name].rightKerningGroup
-		UI_inputGlyph_LKGroupMembers = list(self.getKerningGroupMembers(UI_inputGlyph_Name, "L"))
-		UI_inputGlyph_RKGroupMembers = list(self.getKerningGroupMembers(UI_inputGlyph_Name, "R"))
-
-
-		### MAKE FUNCTION
-		### **UC**, yield Bool if Glyph is KG-Representative
-		UI_inputGlyph_IsLGK = False
-		UI_inputGlyph_IsRGK = False
-		if UI_inputGlyph_Name == UI_inputGlyph_LKG:
-			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT") )
-			UI_inputGlyph_IsLGK = True
-		if UI_inputGlyph_Name == UI_inputGlyph_RKG:
-			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT") )
-			UI_inputGlyph_IsRGK = True
-
-		## make group key: either first item of group OR the letter itself, if in group
-		if UI_inputGlyph_IsLGK:
-			firstLKGItem = UI_inputGlyph_Name
-		else:
-			firstLKGItem = UI_inputGlyph_LKGroupMembers[0]
-		if UI_inputGlyph_IsRGK:
-			firstRKGItem = UI_inputGlyph_Name
-		else:
-			firstRKGItem = UI_inputGlyph_RKGroupMembers[0]
-		###
-
-
-
-
-
-
-		''' VALIDATE UI INPUT '''
-		if UI_inputGlyph_Name in self.allGlyphsInFont:
-			tabOutput = []
-			inputGlyphScript = self.thisFont.glyphs[UI_inputGlyph_Name].script
-			
-			''' ITERATE OVER ALL GLYPHS IN THE FONT THAT FULFILL CERTAIN REQUIREMENTS '''
-			thisCategory = None
-
-
-			itrGKerningGroups = []
-			for idx, itrG in enumerate(glyphsList): ## excluding prohibited categories
-
-				itrG_Name = itrG.name					# iteratedGlyphName
-				itrG_LKG = itrG.leftKerningGroup		# iteratedGlyphLeftKenringGroup
-				itrG_RKG = itrG.rightKerningGroup		# iteratedGlyphRightKenringGroup
-				itrG_Script = itrG.script				# iteratedGlyphScript
-				itrG_Cat = itrG.category				# iteratedGlyphCategory
-				itrG_SubCat = itrG.subCategory			# iteratedGlyphSubCategory
-			
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP .tf
-				'''
-				### CHECK IF `.tf` or `.tosf` is *IN* gName (not only at the end of gName)
-				### Cover cases like `zero.tf.sc`
-				# if itrG_Name[-3:] == ".tf" or itrG_Name[-5:] == ".tosf": # DEPRECATED
-				if ".tf" in itrG_Name or ".tosf" in itrG_Name: # *new in 1.8*
-					# print "__excluded %s for being .tf or .tosf" % itrG_Name
-					continue
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP ALREADY KERNED PAIRS IF SELECTED IN UI
-				'''
-				skipSide = None
-				if UI_SkipAlreadyKernedRightCheck:
-					## UNDER CONSTRUCTION
-					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning"):
-						# print "__excluded %s for already kerned right" % itrG_Name
-						self.debugPrint( "special Case [RK] %s" % itrG_Name )
-						skipSide = "chopRight"
-						# continue ## DONT CONTINUE, BUT REWRITE STRING
-				if UI_SkipAlreadyKernedLeftCheck:
-					## UNDER CONSTRUCTION
-					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
-						# print "__excluded %s for already kerned left" % itrG_Name
-						self.debugPrint( "special Case [LK] %s" % itrG_Name )
-						skipSide = "chopLeft"
-						# continue ## DONT CONTINUE, BUT REWRITE STRING
-
-				## Skip if BOTH sides do have kerning
-				if UI_SkipAlreadyKernedRightCheck and UI_SkipAlreadyKernedLeftCheck:
-					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning") and self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
-						self.debugPrint( "special Case [LK & RK] %s" % itrG_Name )
-						continue
-
-
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP NUMBERS WITH DIFFERENT SYNTAX
-				'''
-				if UI_inputGlyph_Category == "Number":
-					# Case: e.g. input is `five.lf` then skip `five` (no .suffix) lines
-					if itrG_Cat == "Number":
-						if len(UI_inputGlyph_Name.split(".")) > 1:
-							if UI_inputGlyph_Name.split(".")[-1] != itrG_Name.split(".")[-1]:
-								continue
-						# Case: e.g. input is `five` then skip `five.lf` (.suffix) lines
-						elif "." not in UI_inputGlyph_Name: 	# no suffix meets
-							if "." in itrG_Name:				# suffix
-								if itrG_Name != "fraction":	# more than `fraction` to keep?
-									continue
-
-
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP SMALLCAPS BETWEEN LOWERCASE
-				'''
-				if UI_inputGlyph_SubCategory == "Smallcaps" and itrG_SubCat == "Lowercase":
-					self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, "-> SC between LC") )
-					continue
-
-
-
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP COMPONENTS
-				'''
-				# Under Construction
-				if UI_SkipComponents:
-					itrG_Layer = itrG.layers[self.mID]  # create this here, only if needed!
-					if len(itrG_Layer.components) > 0 and len(itrG_Layer.paths) == 0:
-						if itrG_Cat == "Letter": # or "Number" (Not using Number or it might exclude denominators or alike)
-						# if itrG_Cat == "Number": # excluding Numbers, excludes denominators or alike **UC**
-							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> only components & category: 'Letter'") )
-							continue
-
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP KERNING GROUP MEMBERS *new in 1.7*
-				[PART A]
-				'''
-				if UI_SkipKGMembers:
-					# print "__KG-inp: %s --%s-- %s" % (UI_inputGlyph_LKG, UI_inputGlyph_Name, UI_inputGlyph_RKG)
-					# print "__KG-itr: %s --%s-- %s" % (itrG_LKG, itrG_Name, itrG_RKG)
-					# print
-
-					# if UI_inputGlyph_LKG == itrG_LKG:
-					# 	print "match Left", itrG_LKG
-					# if UI_inputGlyph_RKG == itrG_RKG:
-					# 	print "match Right", itrG_RKG
-					# ^^^ *** DITCH THAT ***
-
-					## --------------------------------
-					## SKIP KERNING GROUP MEMBERS A) (see end of chain for part B! )
-					## SKIP MEMBERS OF INPUT GLYPH'S LKG & RKG
-					if itrG_Name != firstLKGItem and itrG_Name != firstRKGItem:					
-						isLKGMember = False
-						isRKGMember = False
-						if itrG_Name in UI_inputGlyph_LKGroupMembers:
-							# print "IN LKG:", itrG_Name
-							isLKGMember = True
-						if itrG_Name in UI_inputGlyph_RKGroupMembers:
-							# print "IN RKG:", itrG_Name
-							isRKGMember = True
-
-						if isLKGMember and isRKGMember:
-							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> member of Input Glyph's LKG & RKG") )
-							continue
-					#####--------------------------------
-
-
-
-
-				# '''
-				# EXCLUDE CASES LIKE HEBREW PUNCTUATION IN LATIN OR CYRILLIC STRING
-				### *UC* because it still excludes ALL Punctiation!!!
-				# '''
-				# if itrG_Cat == "Punctuation":
-				# 	if inputGlyphScript != itrG_Script:
-				# 		continue
-
-
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				FILTER SAME SCRIPT; CURRENTLY THIS EXCLUDES ALL NON LETTERS!
-				'''
-				if inputGlyphScript != None and itrG_Script != None:
-					if itrG_Script != inputGlyphScript:
-						self.debugPrint( "__excluded %s for not being input script (%s != %s)" % (itrG_Name, itrG_Script, inputGlyphScript) )
-						continue
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP UI Categories
-				'''
-				if itrG_Cat in self.skippedCategories:
-					self.debugPrint( "__excluded %s for being Category excluded via UI" % itrG_Name )
-					continue
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP DISALLOWED CATEGORIES
-				'''
-				if itrG_Cat not in self.allowedCategories:
-					self.debugPrint( "__excluded %s for not being in allowedCategories (= %s)" % (itrG_Name, itrG_Cat) )
-					continue
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP SUBCATEGORIES * 1.7
-				'''
-				# if self.skipForExcludedSubCategories(itrG_Name, itrG_Cat, itrG_SubCat):
-				if self.skipForExcludedSubCategories(UI_inputGlyph_Name, itrG_Name, itrG_Cat, itrG_SubCat): # * 1.8
-					continue
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				EXCHANGE itrG_Name BY KERNING-GROUP IF KG = GLYPH OF THE FONT *new in 1.9*
-				# Behaviour and position in algorithm chain = experimental (!)
-				'''
-				if itrG_LKG == itrG_RKG:
-					if self.checkIfKGIsAGlyph(itrG_LKG): # use only left, because right is the same
-						itrG_Name = itrG_LKG
-
-
-				'''++++++++++++++++++++++++++++++++++++++++
-				SKIP KERNING GROUP MEMBERS *new in 1.7*
-				[PART B]
-				'''
-				### !! KEEP AT END OF THIS CHAIN (otherwise it could perform the skip based on a glyph’s condition that might be skipped itself)
-				if UI_SkipKGMembers:
-					### SKIP IF THIS ITERATED GLYPH'S LKG & RKG where already displayed once
-					if (itrG_LKG, itrG_RKG) in itrGKerningGroups:
-						self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> sharing LKG & RKG of an already displayed Glyph [%s %s]" % (itrG_LKG, itrG_RKG) ) )
-						continue
-				## IPORTANT: add these only AFTER this ^ condition (but outside the UI_SkipKGMembers condition):
-				if (itrG_LKG, itrG_RKG) not in itrGKerningGroups:
-					if itrG_LKG != None and itrG_RKG != None:
-						itrGKerningGroups.append( (itrG_LKG, itrG_RKG) )					
-
-
-
-				'''****************************************
-				TAG THE CURRENT CATEGORY INTO THE OUTPUT (MAKE AN OPTION IN UI?)
-				'''
-				try:
-					nexGlyph = glyphsList[idx + 1]
-					nexGlyphCat = glyphsList[idx + 1].category
-					categoryTag = "\n__%s:" % itrG_Cat
-					if nexGlyph:
-						# if nexGlyphCat == itrG_Cat:
-						if thisCategory != itrG_Cat:
-						# if nexGlyphCat != itrG_Cat:
-							tabOutput.append( categoryTag )
-							thisCategory = itrG_Cat
-				except: pass
-
-
-				
-
-				'''****************************************
-				FEED THE ACTUAL OUTPUT
-				'''
-				thisOutput = self.stringMaker(UI_inputGlyph_Name, inputGlyphScript, itrG_Name, itrG_SubCat, removeUIGlyphAtSide=skipSide)
-				if thisOutput:
-					tabOutput.append( thisOutput )
-
-			self.makeTab(tabOutput)
-
-		else:
-			self.raiseMessage("Glyph not in Font")
-			## reset default using first glyph in font
-			self.prefwindow.w.glyphInput.set(self.firstGlyphInFont)
-			self.Glyphs.defaults["%s.glyphInput" % self.prefwindow.vID] = self.firstGlyphInFont
-			self.prefwindow.updateGlyphPreview(self.firstGlyphInFont)
+	#================
+	# C O N T R O L S
+	#================
+
+	def deactivateReporters(self):
+		try:
+			for reporter in self.Glyphs.activeReporters:
+				self.Glyphs.deactivateReporter(reporter)
+		except:
+			print traceback.format_exc()
 
 
 	def setupTab(self):
@@ -729,11 +462,293 @@ class KernKraft(object):
 		if debugMode:
 			self.Glyphs.showMacroWindow()
 
-		
-	def raiseMessage(self, messageTrigger):
-		if messageTrigger == "Glyph not in Font":
-			Message("Hell no!", "That glyph is not part of the Font. Please try again.", OKButton="OK")
 
+
+	#========
+	# M A I N
+	#========
+
+	def generateTabOutput(self):
+		''' MAIN FUNCTION GENERATING THE KERNING STRINGS '''
+
+		glyphsList = [g for g in self.thisFont.glyphs if g.category not in self.prohibitedCategories]
+
+		UI_inputGlyph_Name = self.prefwindow.w.glyphInput.get()
+		UI_SkipComponents = self.prefwindow.w.skipComponentCheck.get()
+		UI_SkipKGMembers = self.prefwindow.w.skipKGMembersCheck.get()
+		UI_SkipAlreadyKernedLeftCheck = self.prefwindow.w.skipAlreadyKernedLeftCheck.get()
+		UI_SkipAlreadyKernedRightCheck = self.prefwindow.w.skipAlreadyKernedRightCheck.get()
+
+		UI_inputGlyph_Category = self.thisFont.glyphs[UI_inputGlyph_Name].category
+		UI_inputGlyph_SubCategory = self.thisFont.glyphs[UI_inputGlyph_Name].subCategory
+
+		UI_inputGlyph_LKG = self.thisFont.glyphs[UI_inputGlyph_Name].leftKerningGroup
+		UI_inputGlyph_RKG = self.thisFont.glyphs[UI_inputGlyph_Name].rightKerningGroup
+		UI_inputGlyph_LKGroupMembers = list(self.getKerningGroupMembers(UI_inputGlyph_Name, "L"))
+		UI_inputGlyph_RKGroupMembers = list(self.getKerningGroupMembers(UI_inputGlyph_Name, "R"))
+
+
+		### MAKE FUNCTION
+		### **UC**, yield Bool if Glyph is KG-Representative
+		UI_inputGlyph_IsLGK = False
+		UI_inputGlyph_IsRGK = False
+		if UI_inputGlyph_Name == UI_inputGlyph_LKG:
+			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT") )
+			UI_inputGlyph_IsLGK = True
+		if UI_inputGlyph_Name == UI_inputGlyph_RKG:
+			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT") )
+			UI_inputGlyph_IsRGK = True
+
+		## make group key: either first item of group OR the letter itself, if in group
+		if UI_inputGlyph_IsLGK:
+			firstLKGItem = UI_inputGlyph_Name
+		else:
+			firstLKGItem = UI_inputGlyph_LKGroupMembers[0]
+		if UI_inputGlyph_IsRGK:
+			firstRKGItem = UI_inputGlyph_Name
+		else:
+			firstRKGItem = UI_inputGlyph_RKGroupMembers[0]
+		###
+
+
+
+
+
+
+		# VALIDATE UI INPUT
+		#------------------
+		if UI_inputGlyph_Name in self.allGlyphsInFont:
+			tabOutput = []
+			inputGlyphScript = self.thisFont.glyphs[UI_inputGlyph_Name].script
+			
+			''' ITERATE OVER ALL GLYPHS IN THE FONT THAT FULFILL CERTAIN REQUIREMENTS '''
+			thisCategory = None
+
+
+			itrGKerningGroups = []
+			for idx, itrG in enumerate(glyphsList): ## excluding prohibited categories
+
+				itrG_Name = itrG.name					# iteratedGlyphName
+				itrG_LKG = itrG.leftKerningGroup		# iteratedGlyphLeftKenringGroup
+				itrG_RKG = itrG.rightKerningGroup		# iteratedGlyphRightKenringGroup
+				itrG_Script = itrG.script				# iteratedGlyphScript
+				itrG_Cat = itrG.category				# iteratedGlyphCategory
+				itrG_SubCat = itrG.subCategory			# iteratedGlyphSubCategory
+			
+
+				#================
+				# S K I P   . T F
+				#================
+				### CHECK IF `.tf` or `.tosf` is *IN* gName (not only at the end of gName)
+				### Cover cases like `zero.tf.sc`
+				# if itrG_Name[-3:] == ".tf" or itrG_Name[-5:] == ".tosf": # DEPRECATED
+				if ".tf" in itrG_Name or ".tosf" in itrG_Name: # *new in 1.8*
+					# print "__excluded %s for being .tf or .tosf" % itrG_Name
+					continue
+
+
+				#======================================================================================
+				# S K I P   A L R E A D Y   K E R N E D   P A I R S   I F   S E L E C T E D   I N   U I
+				#======================================================================================
+				skipSide = None
+				if UI_SkipAlreadyKernedRightCheck:
+					## UNDER CONSTRUCTION
+					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning"):
+						# print "__excluded %s for already kerned right" % itrG_Name
+						self.debugPrint( "special Case [RK] %s" % itrG_Name )
+						skipSide = "chopRight"
+						# continue ## DONT CONTINUE, BUT REWRITE STRING
+				if UI_SkipAlreadyKernedLeftCheck:
+					## UNDER CONSTRUCTION
+					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
+						# print "__excluded %s for already kerned left" % itrG_Name
+						self.debugPrint( "special Case [LK] %s" % itrG_Name )
+						skipSide = "chopLeft"
+						# continue ## DONT CONTINUE, BUT REWRITE STRING
+
+				## Skip if BOTH sides do have kerning
+				if UI_SkipAlreadyKernedRightCheck and UI_SkipAlreadyKernedLeftCheck:
+					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning") and self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
+						self.debugPrint( "special Case [LK & RK] %s" % itrG_Name )
+						continue
+
+
+				#====================================================================
+				# S K I P   N U M B E R S   W I T H   D I F F E R E N T   S Y N T A X
+				#====================================================================
+				if UI_inputGlyph_Category == "Number":
+					# Case: e.g. input is `five.lf` then skip `five` (no .suffix) lines
+					if itrG_Cat == "Number":
+						if len(UI_inputGlyph_Name.split(".")) > 1:
+							if UI_inputGlyph_Name.split(".")[-1] != itrG_Name.split(".")[-1]:
+								continue
+						# Case: e.g. input is `five` then skip `five.lf` (.suffix) lines
+						elif "." not in UI_inputGlyph_Name: 	# no suffix meets
+							if "." in itrG_Name:				# suffix
+								if itrG_Name != "fraction":	# more than `fraction` to keep?
+									continue
+
+
+				#================================================================
+				# S K I P   S M A L L C A P S   B E T W E E N   L O W E R C A S E
+				#================================================================
+				if UI_inputGlyph_SubCategory == "Smallcaps" and itrG_SubCat == "Lowercase":
+					self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, "-> SC between LC") )
+					continue
+
+
+				#==============================
+				# S K I P   C O M P O N E N T S
+				#==============================
+				# Under Construction
+				if UI_SkipComponents:
+					itrG_Layer = itrG.layers[self.mID]  # create this here, only if needed!
+					if len(itrG_Layer.components) > 0 and len(itrG_Layer.paths) == 0:
+						if itrG_Cat == "Letter": # or "Number" (Not using Number or it might exclude denominators or alike)
+						# if itrG_Cat == "Number": # excluding Numbers, excludes denominators or alike **UC**
+							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> only components & category: 'Letter'") )
+							continue
+
+
+				#====================================================
+				# S K I P   K E R N I N G   G R O U P   M E M B E R S
+				#====================================================
+				# *New in 1.7*
+				# [PART A]
+
+				if UI_SkipKGMembers:
+					# print "__KG-inp: %s --%s-- %s" % (UI_inputGlyph_LKG, UI_inputGlyph_Name, UI_inputGlyph_RKG)
+					# print "__KG-itr: %s --%s-- %s" % (itrG_LKG, itrG_Name, itrG_RKG)
+					# print
+
+					# if UI_inputGlyph_LKG == itrG_LKG:
+					# 	print "match Left", itrG_LKG
+					# if UI_inputGlyph_RKG == itrG_RKG:
+					# 	print "match Right", itrG_RKG
+					# ^^^ *** DITCH THAT ***
+
+					## --------------------------------
+					## SKIP KERNING GROUP MEMBERS A) (see end of chain for part B! )
+					## SKIP MEMBERS OF INPUT GLYPH'S LKG & RKG
+					if itrG_Name != firstLKGItem and itrG_Name != firstRKGItem:					
+						isLKGMember = False
+						isRKGMember = False
+						if itrG_Name in UI_inputGlyph_LKGroupMembers:
+							# print "IN LKG:", itrG_Name
+							isLKGMember = True
+						if itrG_Name in UI_inputGlyph_RKGroupMembers:
+							# print "IN RKG:", itrG_Name
+							isRKGMember = True
+
+						if isLKGMember and isRKGMember:
+							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> member of Input Glyph's LKG & RKG") )
+							continue
+					#####--------------------------------
+
+
+
+
+				# '''
+				# EXCLUDE CASES LIKE HEBREW PUNCTUATION IN LATIN OR CYRILLIC STRING
+				### *UC* because it still excludes ALL Punctiation!!!
+				# '''
+				# if itrG_Cat == "Punctuation":
+				# 	if inputGlyphScript != itrG_Script:
+				# 		continue
+
+
+				#========================================================================================================================
+				# F I L T E R   S A M E   S C R I P T ;   C U R R E N T L Y   T H I S   E X C L U D E S   A L L   N O N   L E T T E R S !
+				#========================================================================================================================
+				if inputGlyphScript != None and itrG_Script != None:
+					if itrG_Script != inputGlyphScript:
+						self.debugPrint( "__excluded %s for not being input script (%s != %s)" % (itrG_Name, itrG_Script, inputGlyphScript) )
+						continue
+
+
+				#====================================
+				# S K I P   U I   C A T E G O R I E S
+				#====================================
+				if itrG_Cat in self.skippedCategories:
+					self.debugPrint( "__excluded %s for being Category excluded via UI" % itrG_Name )
+					continue
+
+
+				#====================================================
+				# S K I P   D I S A L L O W E D   C A T E G O R I E S
+				#====================================================
+				if itrG_Cat not in self.allowedCategories:
+					self.debugPrint( "__excluded %s for not being in allowedCategories (= %s)" % (itrG_Name, itrG_Cat) )
+					continue
+
+
+				#================================================
+				# S K I P   S U B C A T E G O R I E S   *   1 . 7
+				#================================================
+				# if self.skipForExcludedSubCategories(itrG_Name, itrG_Cat, itrG_SubCat):
+				if self.skipForExcludedSubCategories(UI_inputGlyph_Name, itrG_Name, itrG_Cat, itrG_SubCat): # * 1.8
+					continue
+
+
+				#==========================================================================================================================
+				# E X C H A N G E   I T R G _ N A M E   B Y   K E R N I N G - G R O U P   I F   K G   =   G L Y P H   O F   T H E   F O N T
+				#==========================================================================================================================
+				# *New in 1.9*
+				# Behaviour and position in algorithm chain = experimental (!)
+				if itrG_LKG == itrG_RKG:
+					if self.checkIfKGIsAGlyph(itrG_LKG): # use only left, because right is the same
+						itrG_Name = itrG_LKG
+
+
+				#====================================================
+				# S K I P   K E R N I N G   G R O U P   M E M B E R S
+				#====================================================
+				# [PART B]
+				# *New in 1.7*
+				### !! KEEP AT END OF THIS CHAIN (otherwise it could perform the skip based on a glyph’s condition that might be skipped itself)
+				if UI_SkipKGMembers:
+					### SKIP IF THIS ITERATED GLYPH'S LKG & RKG where already displayed once
+					if (itrG_LKG, itrG_RKG) in itrGKerningGroups:
+						self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> sharing LKG & RKG of an already displayed Glyph [%s %s]" % (itrG_LKG, itrG_RKG) ) )
+						continue
+				## IPORTANT: add these only AFTER this ^ condition (but outside the UI_SkipKGMembers condition):
+				if (itrG_LKG, itrG_RKG) not in itrGKerningGroups:
+					if itrG_LKG != None and itrG_RKG != None:
+						itrGKerningGroups.append( (itrG_LKG, itrG_RKG) )					
+
+
+				#================================================================================
+				# T A G   T H E   C U R R E N T   C A T E G O R Y   I N T O   T H E   O U T P U T
+				#================================================================================
+				# (MAKE AN OPTION IN UI?)
+				try:
+					nexGlyph = glyphsList[idx + 1]
+					nexGlyphCat = glyphsList[idx + 1].category
+					categoryTag = "\n__%s:" % itrG_Cat
+					if nexGlyph:
+						# if nexGlyphCat == itrG_Cat:
+						if thisCategory != itrG_Cat:
+						# if nexGlyphCat != itrG_Cat:
+							tabOutput.append( categoryTag )
+							thisCategory = itrG_Cat
+				except: pass
+
+
+				#============================================
+				# F E E D   T H E   A C T U A L   O U T P U T
+				#============================================
+				thisOutput = self.stringMaker(UI_inputGlyph_Name, inputGlyphScript, itrG_Name, itrG_SubCat, removeUIGlyphAtSide=skipSide)
+				if thisOutput:
+					tabOutput.append( thisOutput )
+
+			self.makeTab(tabOutput)
+
+		else:
+			self.raiseMessage("Glyph not in Font")
+			## reset default using first glyph in font
+			self.prefwindow.w.glyphInput.set(self.firstGlyphInFont)
+			self.Glyphs.defaults["%s.glyphInput" % self.prefwindow.vID] = self.firstGlyphInFont
+			self.prefwindow.updateGlyphPreview(self.firstGlyphInFont)
 
 
 
@@ -782,8 +797,6 @@ class PreferenceWindow(object):
 		windowWidth = self.previewSize # 230
 
 		y = 0
-		# self.w = Window((50, 50, windowWidth, self.previewSize + 305 + len(self.catToSkipUI)*20 ), u"☢ Kernkraft ⚛", autosaveName="%s.mainwindow" % self.vID ) ## restore window position
-		# self.w = Window((50, 50, 0, self.previewSize + 370 + len(self.catToSkipUI)*20 ), u"K⚛rnkraft", autosaveName="%s.mainwindow" % self.vID ) ## restore window position
 		self.w = Window((50, 50, 0, 0), self.title, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
 		y += self.previewSize
 		# ----------------------------------------------------------------------------------------------------
@@ -896,10 +909,9 @@ class PreferenceWindow(object):
 		self.w.open()
 
 
-
-		# ----------------------------------------
-		# / Glyph Preview
-		# ----------------------------------------
+		#==============================
+		# /   G L Y P H   P R E V I E W
+		#==============================
 		#self.view = preview.GlyphView.alloc().initWithFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
 		self.view = preview.GlyphView.alloc().init()
 		self.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
@@ -919,19 +931,14 @@ class PreferenceWindow(object):
 		try: self.view.setToolTip_(self.w.glyphInput.get())
 		except:	pass
 		
-		
-
-		### Scroll View
-		## A) via setattr():
+		# Scroll View
+		#------------
 		attrName = "box"
 		setattr(self.w, attrName, self.scrollView())
-		## B) via vanilla-style:
-		# self.w.box = self.scrollView()
 
-	def helpButtonCallback(self, sender):
-		self.d.toggle()
 
-	### belongs to Glyph Preview
+	# Belongs to Glyph Preview
+	#-------------------------
 	def scrollView(self):
 		''' Generate vanilla attribute ScrollView'''
 		m = 10
@@ -945,6 +952,11 @@ class PreferenceWindow(object):
 			)
 		return s
 
+
+	def helpButtonCallback(self, sender):
+		self.d.toggle()
+
+
 	def updateKerningGroupText(self):
 		thisGlyph = self.thisFont.glyphs[self.w.glyphInput.get()]
 		thisLKG = str(thisGlyph.leftKerningGroup)
@@ -956,17 +968,20 @@ class PreferenceWindow(object):
 		self.w.TextLKG.set(thisLKG)
 		self.w.TextRKG.set(thisRKG)
 
+
 	def masterIndex(self, master):
 		''' return the index [0, 1, 2, ...] of the selected master '''
 		for mi, master in enumerate(self.thisFont.masters):
 			if master.id == self.mID:
 				return mi
 
+
 	def masterSelection(self, sender):
 		''' selected Master in the UI PopUpButton '''
 		self.chosenMasterID = sender.get()
 		self.updateGlyphPreview(self.w.glyphInput.get())
 		# self.SavePreferences()
+
 
 	def updateGlyphPreview(self, glyphName):
 		# self.view._layer = self.thisFont.glyphs[glyphName].layers[self.mID] # selected in GlyphsApp Master
@@ -1010,6 +1025,7 @@ class PreferenceWindow(object):
 			return False
 			
 		return True
+
 
 	def LoadPreferences( self ):
 		try:
@@ -1073,6 +1089,7 @@ class PreferenceWindow(object):
 		else:
 			return self.firstGlyphInFont # self.allGlyphsInFont[0]
 
+
 	def setNeighbourGlyphInEditText(self, direction):
 		otherGlyph = self.neighbourGlyph(direction)
 		self.w.glyphInput.set(otherGlyph)
@@ -1083,8 +1100,10 @@ class PreferenceWindow(object):
 	def buttonLeftCallback(self, sender):
 		self.setNeighbourGlyphInEditText(-1)  # previous Glyph in Font
 
+
 	def buttonRightCallback(self, sender):
 		self.setNeighbourGlyphInEditText(+1)  # next Glyph in Font
+
 
 	def submitButtonCallback(self, sender):
 		self.parent.skippedCategories = self.categoriesToSkipUI()
