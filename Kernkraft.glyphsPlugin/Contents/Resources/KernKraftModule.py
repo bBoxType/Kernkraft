@@ -7,6 +7,7 @@
 # 	+ rewrite variables, better names
 # 	+ sort functions by UI and Tool functionality
 #	+ Kerning strings for CamelCase (e.g: »drawAtPoint« etc )
+#	+ Add Option to include other Scripts right away if the input letter is reused as a component (Y/N) [e.g: input /K shows Latin, Cyrillic and Greek strings]
 
 # Changelog:
 # 	1.9
