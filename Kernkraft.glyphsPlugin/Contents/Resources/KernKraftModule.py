@@ -313,7 +313,8 @@ class KernKraft(object):
 
 	def checkKerningForPair(self, relation, G1, G2, anyKerning):
 		''' append kerning to any Kerning if any of these pair-relations match'''
-		
+		# TODO: Rewrite as dictionary
+
 		if relation == "noGroupToNoGroup":
 			thisKerning = self.kfp(self.mID, '%s' % G1, '%s' % G2)
 			# print "noGroupToNoGroup %s %s" % (G1, G2)
@@ -361,15 +362,13 @@ class KernKraft(object):
 
 			self.kfp = self.thisFont.kerningForPair
 
-			''' 1a)	RIGHT -> RIGHT SIDE OF INPUT GLYPH '''
+			# 1A)	RIGHT -> RIGHT SIDE OF INPUT GLYPH
+			#---------------------------------------
 			if side == "rightKerning":
-
 				pairAndKerningSide = inputGlyph, iteratedGlyph, anyKerningRight
-
 				for kerningRelation in self.kerningRelations:		
 					self.checkKerningForPair(kerningRelation, *pairAndKerningSide)
 
-				
 				anyKerning = anyKerningRight
 				# self.returnKerningBool(inputGlyph, iteratedGlyph, anyKerning, side)
 				if len(anyKerning) == 1 and anyKerning[0].__long__() == 9223372036854775808:
@@ -379,9 +378,9 @@ class KernKraft(object):
 					return True # kerning set
 
 
-			'''	2a)	LEFT -> LEFT SIDE OF INPUT GLYPH '''
+			# 2A)	LEFT -> LEFT SIDE OF INPUT GLYPH
+			#-------------------------------------
 			if side == "leftKerning":
-
 				pairAndKerningSide = iteratedGlyph, inputGlyph, anyKerningLeft
 				for kerningRelation in self.kerningRelations:		
 					self.checkKerningForPair(kerningRelation, *pairAndKerningSide)	
@@ -413,7 +412,8 @@ class KernKraft(object):
 
 
 	def setupTab(self):
-		''' ZOOM TO POINT SIZE & SET WRITING DIRECTION '''
+		# ZOOM TO POINT SIZE & SET WRITING DIRECTION
+		#-------------------------------------------
 		zoomFactor = self.UIPointSize/1000.0
 		thisTab = self.Glyphs.font.tabs[-1]
 		
@@ -423,7 +423,9 @@ class KernKraft(object):
 		except: pass # pre Glyphs 2.3 +
 		thisTab.setMasterIndex_(self.prefwindow.w.ChoseMaster.get())
 
-		''' SET CARET INTO POSITION **NOT 100 PERCENT READY** '''
+		# SET CARET INTO POSITION
+		#------------------------
+		# **NOT 100 PERCENT READY**
 		ContentView = self.Doc.windowController().activeEditViewController().contentView()
 		location = len( ContentView.textStorage().string() ) -6  # len of rightTail
 		myRange = NSMakeRange( location, 0 ) # 0 = length
@@ -528,12 +530,12 @@ class KernKraft(object):
 			itrGKerningGroups = []
 			for idx, itrG in enumerate(glyphsList): ## excluding prohibited categories
 
-				itrG_Name = itrG.name					# iteratedGlyphName
-				itrG_LKG = itrG.leftKerningGroup		# iteratedGlyphLeftKenringGroup
-				itrG_RKG = itrG.rightKerningGroup		# iteratedGlyphRightKenringGroup
-				itrG_Script = itrG.script				# iteratedGlyphScript
-				itrG_Cat = itrG.category				# iteratedGlyphCategory
-				itrG_SubCat = itrG.subCategory			# iteratedGlyphSubCategory
+				itrG_Name = itrG.name                # iteratedGlyphName
+				itrG_LKG = itrG.leftKerningGroup     # iteratedGlyphLeftKenringGroup
+				itrG_RKG = itrG.rightKerningGroup    # iteratedGlyphRightKenringGroup
+				itrG_Script = itrG.script            # iteratedGlyphScript
+				itrG_Cat = itrG.category             # iteratedGlyphCategory
+				itrG_SubCat = itrG.subCategory       # iteratedGlyphSubCategory
 			
 
 				#================
@@ -996,7 +998,6 @@ class PreferenceWindow(object):
 		delattr(self.w, "box")
 		setattr(self.w, "box", self.scrollView())
 		self.view.setToolTip_(glyphName)
-
 		self.updateKerningGroupText()
 
 
