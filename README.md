@@ -76,7 +76,7 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 - tried to add SubCategories to the UI. Decided to ditch them there: UI-Overkill
 - Instead:
  	customizable list: `excludedSubCategories` with Exceptions.
-- Exclude Kerning Class Members:
+- Exclude Kerning Group (»KG«) Members:
 	- A) The group members from the UI-Input Glyph
 	- B) The iterated Glyph when both it’s KG appeared already once in the Tab
 - Added All-Component highlight to GlyphPreview
