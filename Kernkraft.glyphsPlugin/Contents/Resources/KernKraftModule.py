@@ -617,6 +617,7 @@ class KernKraft(object):
 				#====================================================
 				# *New in 1.7*
 				# [PART A]
+				# TODO: Is this Part A really neccessary?!
 
 				if UI_SkipKGMembers:
 					# print "__KG-inp: %s --%s-- %s" % (UI_inputGlyph_LKG, UI_inputGlyph_Name, UI_inputGlyph_RKG)
