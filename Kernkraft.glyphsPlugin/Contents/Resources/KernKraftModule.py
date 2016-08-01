@@ -12,7 +12,6 @@
 # Changelog:
 # 	1.9
 #		+ Use Glyph with Group-Name if given (instead of first Group Member) [only if BOTH sides KG are the same]
-#		    1.9.1 + temporarily deactivated, needs fix with diacritic glyphs (shows their base glyph all the time)
 
 
 import os
@@ -696,7 +695,7 @@ class KernKraft(object):
 				#==========================================================================================================================
 				# E X C H A N G E   I T R G _ N A M E   B Y   K E R N I N G - G R O U P   I F   K G   =   G L Y P H   O F   T H E   F O N T
 				#==========================================================================================================================
-				# *New in 1.9* // deactivated in 1.9.1
+				# *New in 1.9*
 				# Behaviour and position in algorithm chain = experimental (!)
 				if UI_SkipKGMembers:
 					if UI_SkipComponents:
