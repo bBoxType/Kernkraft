@@ -698,9 +698,11 @@ class KernKraft(object):
 				#==========================================================================================================================
 				# *New in 1.9* // deactivated in 1.9.1
 				# Behaviour and position in algorithm chain = experimental (!)
-				# if itrG_LKG == itrG_RKG:
-				# 	if self.checkIfKGIsAGlyph(itrG_LKG): # use only left, because right is the same
-				# 		itrG_Name = itrG_LKG
+				if UI_SkipKGMembers:
+					if UI_SkipComponents:
+						if itrG_LKG == itrG_RKG:
+							if self.checkIfKGIsAGlyph(itrG_LKG): # use only left, because right is the same
+								itrG_Name = itrG_LKG
 
 
 				#====================================================
