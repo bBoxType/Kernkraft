@@ -59,8 +59,7 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 ### Changelog:
 
 ### 1.9
-- Use Glyph with KG-Name if given (instead of the first KG Member) [if both sides’ KG are the same]; example: `HHOHAƔAHOOI` will display `HHOHAYAHOOI` now if `/Ɣ` got `Y` as KG left & right. Very useful especially with very large character sets. *(Note: this function and its position in the algorithm chain is experimental, please report any issues)*
-- 1.9.1 Only applies if `Skip Group Members` and `Skip Components` are active in the UI.
+- Use Glyph with KG-Name if given (instead of the first KG Member) [if both sides’ KG are the same]; example: `HHOHAƔAHOOI` will display `HHOHAYAHOOI` now if `/Ɣ` got `Y` as KG left & right. Very useful especially with very large character sets. *(Note: this function and its position in the algorithm chain is experimental, please report any issues)* — ([1.9.1] Only applies if `Skip Group Members` and `Skip Components` are active in the UI.)
 
 #### 1.8
 - rebuild modules to make compilable package
