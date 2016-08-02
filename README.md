@@ -57,6 +57,9 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 
 ##
 ### Changelog:
+### 1.9.3
+- Add `Private Use` to the UI as an option to skip.
+
 ### 1.9.2
 - New Function: Include all occurrences of the Input Glyph in other scripts (Option in UI); (Showing only the Category `Letter`)
 
