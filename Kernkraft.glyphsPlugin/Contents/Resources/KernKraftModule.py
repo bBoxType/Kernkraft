@@ -7,11 +7,12 @@
 # 	+ rewrite variables, better names
 # 	+ sort functions by UI and Tool functionality
 #	+ Kerning strings for CamelCase (e.g: »drawAtPoint« etc )
-#	+ Add Option to include other Scripts right away if the input letter is reused as a component (Y/N) [e.g: input /K shows Latin, Cyrillic and Greek strings]
 
 # Changelog:
 # 	1.9
 #		+ Use Glyph with Group-Name if given (instead of first Group Member) [only if BOTH sides KG are the same]
+# 	1.9.2
+#		+ New Function: Include all occurances of the Input Glyph in other scripts (Option in UI)
 
 
 import os
@@ -37,6 +38,7 @@ excludedSubCategories = Customizables.excludedSubCategories
 
 
 screenHeight = NSScreen.mainScreen().frame().size.height
+noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transformed in any way.
 
 
 ##########################################################################
@@ -48,7 +50,7 @@ screenHeight = NSScreen.mainScreen().frame().size.height
 
 class KernKraft(object):
 
-	version = "1.9.1"
+	version = "1.9.2"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -87,6 +89,8 @@ class KernKraft(object):
 		self.prohibitedCategories = [ "Mark", "Separator" ]
 
 		self.kerningRelations = ["noGroupToNoGroup", "groupToGroup", "groupToNoGroup", "noGroupToGroup"  ]
+
+		self.showAllScripts = [] # mutable collector for all occurances of the input glyph in other scripts.
 
 
 
@@ -197,6 +201,27 @@ class KernKraft(object):
 						return True  # Skip
 			else:
 				return False  # Don’t Skip
+
+
+
+	def glyphIsReusedInAnotherScipt(self, glyphName, masterID): # *new in 1.9.2*
+		collector = []
+		thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, self.thisFont.masters[masterID].id)
+		if len(thisGlyphsReusedGlyphs) > 0:
+			for glyph in thisGlyphsReusedGlyphs:
+				masterLayer = glyph.layers[masterID]
+				layerComponents = masterLayer.components
+				if len(layerComponents) == 1:
+					if len(masterLayer.paths) == 0:
+						if layerComponents[0].componentName == glyphName:
+							if layerComponents[0].transform == noTransform:
+								collector.append(glyph.name)
+			if len(collector) > 0:
+				collector.insert(0, glyphName)
+				return collector
+			return None
+
+	
 
 
 
@@ -458,9 +483,6 @@ class KernKraft(object):
 				self.Doc.windowController().addTabWithString_( "__%s" % x )
 				self.setupTab()
 
-
-		self.prefwindow.w.close()
-
 		if debugMode:
 			self.Glyphs.showMacroWindow()
 
@@ -470,12 +492,23 @@ class KernKraft(object):
 	# M A I N
 	#========
 
-	def generateTabOutput(self):
+	def generateTabOutput(self, inputGlyphName):
 		''' MAIN FUNCTION GENERATING THE KERNING STRINGS '''
 
 		glyphsList = [g for g in self.thisFont.glyphs if g.category not in self.prohibitedCategories]
 
-		UI_inputGlyph_Name = self.prefwindow.w.glyphInput.get()
+
+		UI_inputGlyph_Name = inputGlyphName
+
+
+		isReused = self.glyphIsReusedInAnotherScipt(inputGlyphName, self.prefwindow.w.ChoseMaster.get())
+		if isReused:
+			self.showAllScripts = isReused
+			self.showAllScripts.remove(inputGlyphName)
+
+
+
+		
 		UI_SkipComponents = self.prefwindow.w.skipComponentCheck.get()
 		UI_SkipKGMembers = self.prefwindow.w.skipKGMembersCheck.get()
 		UI_SkipAlreadyKernedLeftCheck = self.prefwindow.w.skipAlreadyKernedLeftCheck.get()
@@ -517,6 +550,11 @@ class KernKraft(object):
 
 
 
+
+
+
+
+
 		# VALIDATE UI INPUT
 		#------------------
 		if UI_inputGlyph_Name in self.allGlyphsInFont:
@@ -536,7 +574,7 @@ class KernKraft(object):
 				itrG_Script = itrG.script            # iteratedGlyphScript
 				itrG_Cat = itrG.category             # iteratedGlyphCategory
 				itrG_SubCat = itrG.subCategory       # iteratedGlyphSubCategory
-			
+
 
 				#================
 				# S K I P   . T F
@@ -777,6 +815,8 @@ class PreferenceWindow(object):
 		self.allGlyphsInFont = self.parent.allGlyphsInFont
 		self.firstGlyphInFont = self.allGlyphsInFont[0]
 
+		self.chosenMasterID = self.thisFont.selectedFontMaster.id # default as long as no master is chosen in the UI
+
 		self.specialGuests = u"Ąj  Ą_  Ą)  Ęj  Ę_  Ę)  Įj  Į_  Į)  fï  Tï  Fï  *ï*  ‘ï‘  Ł⁰  Ł‘  ß‘  ß⁰  ¿j  ¿y  ¿g  c//o  …"
 
 		
@@ -786,6 +826,7 @@ class PreferenceWindow(object):
 
 		self.title = u"Kernkraft %s (beta)" % self.parent.version # ⚛
 		self.vID = "com.markfromberg.kernkraft" # vendorID
+		self.IOSTitle = "Include Other Scripts"
 
 		rowHeight = 30
 		mrgn = 5
@@ -832,6 +873,13 @@ class PreferenceWindow(object):
 		y += 30
 		self.w.line_CM = HorizontalLine((m, y, -m, 1))
 		y+= 10		
+		# ----------------------------------------------------------------------------------------------------
+		# / Include other scripts
+		#
+		self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, sizeStyle="regular", callback=self.SavePreferences)
+		y += 30
+		self.w.line_IOS = HorizontalLine((m, y, -m, 1))
+		y+= 10
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP COMPONENTS
 		#
@@ -912,6 +960,7 @@ class PreferenceWindow(object):
 		self.w.resize(windowWidth, 30 + y)
 		self.w.makeKey() ### Focus on Window and Button
 		self.w.open()
+		self.setCheckboxIOS(self.w.glyphInput.get(), self.chosenMasterID)
 
 
 		#==============================
@@ -1003,6 +1052,34 @@ class PreferenceWindow(object):
 		self.view.setToolTip_(glyphName)
 		self.updateKerningGroupText()
 
+		self.setCheckboxIOS(glyphName, self.chosenMasterID)
+
+
+
+	def setCheckboxIOS(self, glyphName, masterID):
+		### check if the current glyph is reused at all
+		### TODO: trigger the enable() of the UI checkbox to include other script’s occurances of this glyph
+		mid = self.thisFont.masters[masterID].id
+		glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
+		if glyphIsReused:
+			self.w.includeOtherScripts.enable(1)
+			self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused])) )
+		else:
+			self.w.includeOtherScripts.enable(0)
+			self.w.includeOtherScripts.setTitle( self.IOSTitle )
+
+
+	# def glyphIsReusedAtAll(self, glyphName, masterID): # unused function
+	# 	isReusedAtAll = None
+	# 	isReusedAtAll = len(self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, masterID))
+	# 	if isReusedAtAll > 0:
+	# 		return True
+	# 	return False
+
+
+
+
+
 
 	def SavePreferences( self, sender ):
 		try:
@@ -1015,6 +1092,7 @@ class PreferenceWindow(object):
 				self.Glyphs.defaults["%s.glyphInput" % self.vID] = self.w.glyphInput.get()
 			else:
 				self.Glyphs.defaults["%s.glyphInput" % self.vID] = self.firstGlyphInFont # allGlyphsInFont[0]
+			self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] = self.w.includeOtherScripts.get()
 			self.Glyphs.defaults["%s.skipComponentCheck" % self.vID] = self.w.skipComponentCheck.get()
 			self.Glyphs.defaults["%s.skipKGMembersCheck" % self.vID] = self.w.skipKGMembersCheck.get()
 			self.Glyphs.defaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = self.w.skipAlreadyKernedLeftCheck.get()
@@ -1036,6 +1114,7 @@ class PreferenceWindow(object):
 			''' MAKE DEFAULTS DICT TO INJECT INTO NSUserDefaults '''
 			collectedDefaults = {}
 			collectedDefaults["%s.glyphInput" % self.vID] = "a"
+			collectedDefaults["%s.includeOtherScripts" % self.vID] = "True"
 			collectedDefaults["%s.skipComponentCheck" % self.vID] = "True"
 			collectedDefaults["%s.skipKGMembersCheck" % self.vID] = "True"
 			collectedDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = "False"
@@ -1056,6 +1135,7 @@ class PreferenceWindow(object):
 			else:
 				self.w.glyphInput.set( self.firstGlyphInFont ) # allGlyphsInFont[0]
 				# Fallback Layer if user switched from one font to another and the stored glyph is not available
+			self.w.includeOtherScripts.set( self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] )
 			self.w.skipComponentCheck.set( self.Glyphs.defaults["%s.skipComponentCheck" % self.vID] )
 			self.w.skipKGMembersCheck.set( self.Glyphs.defaults["%s.skipKGMembersCheck" % self.vID] )
 			self.w.skipAlreadyKernedLeftCheck.set( self.Glyphs.defaults["%s.skipAlreadyKernedLeftCheck" % self.vID] )
@@ -1112,9 +1192,17 @@ class PreferenceWindow(object):
 	def submitButtonCallback(self, sender):
 		self.parent.skippedCategories = self.categoriesToSkipUI()
 		try:
-			self.parent.generateTabOutput()
+			actualInputGlyphName = self.w.glyphInput.get()
+			self.parent.generateTabOutput(actualInputGlyphName) # first main run
+			if self.w.includeOtherScripts.get() == 1:
+				# if there are more glyphs like the input glyph in other scripts:
+				while len( self.parent.showAllScripts ) > 0:
+					self.parent.generateTabOutput(self.parent.showAllScripts[0])
+					self.parent.showAllScripts.pop(0) # remove the currently set input script
 		except:
 			print traceback.format_exc()
+
+		self.w.close()
 
 		for error in self.parent.errorCollector:
 			print error
