@@ -14,6 +14,8 @@
 # 	1.9.2
 #		+ New Function: Include all occurrences of the Input Glyph in other scripts (Option in UI)
 #		  (Showing only the Category `Letter`)
+# 	1.9.3
+#		+ Add `Private Use` to the UI as an option to skip.
 
 
 import os
@@ -51,7 +53,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.2"
+	version = "1.9.3"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -831,7 +833,8 @@ class PreferenceWindow(object):
 		self.specialGuests = u"Ąj  Ą_  Ą)  Ęj  Ę_  Ę)  Įj  Į_  Į)  fï  Tï  Fï  *ï*  ‘ï‘  Ł⁰  Ł‘  ß‘  ß⁰  ¿j  ¿y  ¿g  c//o  …"
 
 		
-		self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", ]
+		# self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", ]
+		self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", "Private Use", ]
 		#### catToSkipUI--> UI will auto resize with items in this list; preferece save&load as well.
 		#### The latter does so just for developping (load/save prefs with variable number of items is not recommended.)
 
