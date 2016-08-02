@@ -57,6 +57,8 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 
 ##
 ### Changelog:
+### 1.9.2
+- New Function: Include all occurrences of the Input Glyph in other scripts (Option in UI); (Showing only the Category `Letter`)
 
 ### 1.9
 - Use Glyph with KG-Name if given (instead of the first KG Member) [if both sides’ KG are the same]; example: `HHOHAƔAHOOI` will display `HHOHAYAHOOI` now if `/Ɣ` got `Y` as KG left & right. Very useful especially with very large character sets. *(Note: this function and its position in the algorithm chain is experimental, please report any issues)* — ([1.9.1] Only applies if `Skip Group Members` and `Skip Components` are active in the UI.)
