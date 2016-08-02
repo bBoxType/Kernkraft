@@ -468,8 +468,6 @@ class KernKraft(object):
 
 	def makeTab(self, tabOutput):
 		''' OUTPUT TO EDIT-TAB '''
-		if self.prefwindow.w.deactivateReporterUI.get():
-			self.deactivateReporters()
 
 		self.UIPointSize = float(self.prefwindow.w.pointSize.get())
 		thisTabOutput = "\n".join(tabOutput)
@@ -1216,6 +1214,9 @@ class PreferenceWindow(object):
 			print traceback.format_exc()
 
 		self.w.close()
+
+		if self.w.deactivateReporterUI.get():
+			self.parent.deactivateReporters()		
 
 		for error in self.parent.errorCollector:
 			print error
