@@ -12,7 +12,7 @@
 # 	1.9
 #		+ Use Glyph with Group-Name if given (instead of first Group Member) [only if BOTH sides KG are the same]
 # 	1.9.2
-#		+ New Function: Include all occurances of the Input Glyph in other scripts (Option in UI)
+#		+ New Function: Include all occurrences of the Input Glyph in other scripts (Option in UI)
 #		  (Showing only the Category `Letter`)
 
 
@@ -91,7 +91,7 @@ class KernKraft(object):
 
 		self.kerningRelations = ["noGroupToNoGroup", "groupToGroup", "groupToNoGroup", "noGroupToGroup"  ]
 
-		self.showAllScripts = [] # mutable collector for all occurances of the input glyph in other scripts.
+		self.showAllScripts = [] # mutable collector for all occurrences of the input glyph in other scripts.
 
 
 
@@ -1069,7 +1069,7 @@ class PreferenceWindow(object):
 
 	def setCheckboxIOS(self, glyphName, masterID):
 		### check if the current glyph is reused at all
-		### TODO: trigger the enable() of the UI checkbox to include other script’s occurances of this glyph
+		### TODO: trigger the enable() of the UI checkbox to include other script’s occurrences of this glyph
 		mid = self.thisFont.masters[masterID].id
 		glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
 		if glyphIsReused:
