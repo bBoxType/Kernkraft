@@ -833,7 +833,6 @@ class PreferenceWindow(object):
 		self.specialGuests = u"Ąj  Ą_  Ą)  Ęj  Ę_  Ę)  Įj  Į_  Į)  fï  Tï  Fï  *ï*  ‘ï‘  Ł⁰  Ł‘  ß‘  ß⁰  ¿j  ¿y  ¿g  c//o  …"
 
 		
-		# self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", ]
 		self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", "Private Use", ]
 		#### catToSkipUI--> UI will auto resize with items in this list; preferece save&load as well.
 		#### The latter does so just for developping (load/save prefs with variable number of items is not recommended.)
