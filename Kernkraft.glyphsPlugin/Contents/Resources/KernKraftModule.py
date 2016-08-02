@@ -13,6 +13,7 @@
 #		+ Use Glyph with Group-Name if given (instead of first Group Member) [only if BOTH sides KG are the same]
 # 	1.9.2
 #		+ New Function: Include all occurances of the Input Glyph in other scripts (Option in UI)
+#		  (Showing only the Category `Letter`)
 
 
 import os
@@ -492,7 +493,7 @@ class KernKraft(object):
 	# M A I N
 	#========
 
-	def generateTabOutput(self, inputGlyphName):
+	def generateTabOutput(self, inputGlyphName, showLetterCategoryOnly=False):
 		''' MAIN FUNCTION GENERATING THE KERNING STRINGS '''
 
 		glyphsList = [g for g in self.thisFont.glyphs if g.category not in self.prohibitedCategories]
@@ -574,6 +575,16 @@ class KernKraft(object):
 				itrG_Script = itrG.script            # iteratedGlyphScript
 				itrG_Cat = itrG.category             # iteratedGlyphCategory
 				itrG_SubCat = itrG.subCategory       # iteratedGlyphSubCategory
+
+
+
+				#==================================================================================
+				# S K I P   A L L   C A T E G O R I E S   T H A T   A R E   N O T   ` L E T T E R `
+				#==================================================================================
+				# In the case of `Include Other Scripts` for the Input Glyph
+				if showLetterCategoryOnly:
+					if itrG_Cat != "Letter":
+						continue
 
 
 				#================
@@ -1063,7 +1074,7 @@ class PreferenceWindow(object):
 		glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
 		if glyphIsReused:
 			self.w.includeOtherScripts.enable(1)
-			self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused])) )
+			self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused][1:])) )
 		else:
 			self.w.includeOtherScripts.enable(0)
 			self.w.includeOtherScripts.setTitle( self.IOSTitle )
@@ -1197,7 +1208,7 @@ class PreferenceWindow(object):
 			if self.w.includeOtherScripts.get() == 1:
 				# if there are more glyphs like the input glyph in other scripts:
 				while len( self.parent.showAllScripts ) > 0:
-					self.parent.generateTabOutput(self.parent.showAllScripts[0])
+					self.parent.generateTabOutput(self.parent.showAllScripts[0], showLetterCategoryOnly=True)
 					self.parent.showAllScripts.pop(0) # remove the currently set input script
 		except:
 			print traceback.format_exc()
