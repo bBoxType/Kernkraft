@@ -853,14 +853,28 @@ class PreferenceWindow(object):
 		self.previewSize = self.thisFont.upm / (self.thisFont.upm / prevBox) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
 		windowWidth = self.previewSize # 230
 
+
+		
+		# Monkey Patches
+		#---------------
+		def __setColor(self, value):
+			# self._nsObject.setEditable_(value)
+			self._nsObject.setTextColor_(value)
+		TextBox.setColor = __setColor		
+
+
+
 		y = 0
 		self.w = Window((50, 50, 0, 0), self.title, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
 		y += self.previewSize
 		# ----------------------------------------------------------------------------------------------------
 		# / KERN-GLYPH KERNING CLASSES
 		#
+		KGColor = NSColor.blueColor()
 		self.w.TextLKG = TextBox((m, y, -m, 20), sizeStyle="small")
+		self.w.TextLKG.setColor(KGColor)
 		self.w.TextRKG = TextBox((m, y, -m, 20), sizeStyle="small", alignment="right")
+		self.w.TextRKG.setColor(KGColor)
 		y += 25	
 		self.w.line_KGKC = HorizontalLine((m, y, -m, 1))
 		y += 15
