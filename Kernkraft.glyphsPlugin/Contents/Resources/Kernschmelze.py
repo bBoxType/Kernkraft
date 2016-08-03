@@ -49,26 +49,26 @@ class KernschmelzeWindow(object):
 
 		self.font = font
 
-		#------------------------------------------------------
-		### MONKEY PATCH
-		### Create custom functions to [Vanilla] Objects:
+		#========================
+		# M O N K E Y   P A T C H
+		#========================
+		# Create custom functions to [Vanilla] Objects:
 		def __setID(self, customTitle):
 			'''
-			SET ACCESSIBILITY TITLE OR IDENTIFIER TO CALL OBJECT BY IT
+				Set accessibility title or identifier to call object by it.
 			'''			
-			self._nsObject.setIdentifier_(customTitle)
-			###### print help(self._nsObject)
+			self._nsObject.setIdentifier_(customTitle)  # help(self._nsObject)
 
 		def __getID(self):
 			'''
-			GET ACCESSIBILITY TITLE OR IDENTIFIER TO CALL OBJECT BY IT
+				Get accessibility title or identifier to call object by it.
 			'''			
 			return self._nsObject.identifier()
 
 		def __enable(self, onOff):
 			'''
-			REDUCING THE ALPHA FOR DEACTIVATED OBJECTS
-			*UC* Not disabling a PopUpButton
+				Reduce the alpha for deactivated objects.
+				*UC* Not disabling a PopUpButton
 			'''
 			alpha = onOff + 0.3
 			try: self._checkBox.enable(onOff)
@@ -90,23 +90,24 @@ class KernschmelzeWindow(object):
 			# except:
 			# 	pass
 
-		### Add custom functions to [PopUpButton, CheckBox]:
+		# Add custom functions to [PopUpButton, CheckBox]:
+		#-------------------------------------------------
 		PopUpButton.setID = __setID
 		PopUpButton.getID = __getID
 		# PopUpButton.enable = __enable # Monkey Patch, override given enable()
 		CheckBox.setID = __setID
 		CheckBox.getID = __getID
 		# CheckBox.enable = __enable # Monkey Patch, override given enable()
-		#------------------------------------------------------
 
 
 
-
-
-
+		#==========
+		# I N I T S
+		#==========
 		tab1 = 40
 		tab2 = 245
 		y = 10
+		self.UI_SelectedTargetMasters = []
 
 		source_Options = []
 		for i, m in enumerate(self.font.masters):
@@ -116,13 +117,15 @@ class KernschmelzeWindow(object):
 		self.UI_sourceMasterA = None
 		self.UI_sourceMasterB = None
 
-		# init dictionary master options with index 0
+		# Init dictionary master options with index 0
 		self.masterOptions = {}
 		for mi, m in enumerate(self.font.masters):
 			self.masterOptions[mi] = 0
 
-		self.UI_SelectedTargetMasters = []
 
+		#======
+		# G U I
+		#======
 		self.w = Window((0, 0), "Kernschmelze (beta)")
 		self.w.SourceMastersLabel = TextBox((10, y, -10, 20), "Source Masters:", alignment="center" )
 		y += 25
@@ -136,6 +139,8 @@ class KernschmelzeWindow(object):
 		y += 25
 		for i, master in enumerate(self.font.masters):
 			
+			# Target Master
+			#--------------
 			attrNameLine = "Line_%s" % str(i)
 			line = HorizontalLine((10, y, -10, 1))
 			setattr(self.w, attrNameLine, line)
@@ -146,6 +151,8 @@ class KernschmelzeWindow(object):
 			setattr(self.w, attrNameTargetMaster, checkBoxTargetMaster)
 			exec("self.w.CopyMasters_" + str(i) + ".setTitle('\"%s\"  [%s Pairs]" % (str(master.name), str(len(self.getKerningFromMaster( master )))) + "')")
 
+			# Source Master
+			#--------------
 			attrNameSourceMaster = "FromMaster_%s" % str(i)
 			radioGroupSourceMaster = PopUpButton((tab2, y, -10, 20), ["Interpolate", u"Copy from 🅐", u"Copy from 🅑"], sizeStyle="small", callback=self.targetMastersOptions )
 			radioGroupSourceMaster.setID(str(i)) # MONKEY PATCH
@@ -161,6 +168,7 @@ class KernschmelzeWindow(object):
 		self.w.resize(390, y)
 		self.w.center()
 		self.w.open()
+
 
 	def makeTargetMasters(self, sender):
 		masterID = int(sender.getID())
@@ -179,7 +187,7 @@ class KernschmelzeWindow(object):
 		masterID = int(sender.getID())
 		status = sender.get()
 		self.masterOptions[masterID] = status
-		# print self.masterOptions
+
 
 	def getSourceMasterA(self, sender):
 		self.UI_sourceMasterA = [self.font.masters[sender.get()], sender.get()]
@@ -192,20 +200,15 @@ class KernschmelzeWindow(object):
 
 
 	def toggleAvailability(self):
-
 		for i, master in enumerate(self.font.masters):
-			# exec("thisMaster = self.w.CopyMasters_" + str(i) + ".getTitle()")
 			thisMasterIndex = i
-			# if thisMaster == self.w.SourceMasterA.getTitle() or thisMaster == self.w.SourceMasterB.getTitle():  # tile
-			if thisMasterIndex == self.w.SourceMasterA.get() or thisMasterIndex == self.w.SourceMasterB.get():  # index
+			if thisMasterIndex == self.w.SourceMasterA.get() or thisMasterIndex == self.w.SourceMasterB.get():  # Get index, not name = safer
 				exec("thisMaster = self.w.CopyMasters_" + str(i) + ".enable(0)")
 				exec("thisMaster = self.w.CopyMasters_" + str(i) + ".set(0)")
 				exec("thisMaster = self.w.FromMaster_" + str(i) + ".enable(0)")
-
 			else:
 				exec("thisMaster = self.w.CopyMasters_" + str(i) + ".enable(1)")
 				exec("thisMaster = self.w.FromMaster_" + str(i) + ".enable(1)")
-				
 
 		if self.UI_sourceMasterA != None and self.UI_sourceMasterB != None:
 			self.w.button.enable(1)
@@ -217,17 +220,16 @@ class KernschmelzeWindow(object):
 		try:
 			thisKerning = self.font.kerning[fontMaster.id]
 		except:
-			# if no kerning in fontMaster:
-			thisKerning = {}
+			thisKerning = {}  # If no kerning in fontMaster:
 
 		thisKerningCollection = []
 		for leftSide, rightSide in thisKerning.iteritems():
-			if leftSide[:5] != "@MMK_":  # if single glyph (exception to Kerning Group)
+			if leftSide[:5] != "@MMK_":  # If single glyph (exception to Kerning Group)
 				leftSide = self.font.glyphForId_( leftSide ).name
 
 			for item in rightSide.viewitems():
 				value = item[1]
-				if item[0][:5] != "@MMK_":  # if single glyph (exception to Kerning Group)
+				if item[0][:5] != "@MMK_":  # If single glyph (exception to Kerning Group)
 					#print "----> %s" % font.glyphForId_( item[0] ).name
 					rightSide = self.font.glyphForId_( item[0] ).name
 				else:
@@ -250,13 +252,16 @@ class KernschmelzeWindow(object):
 	def EQKerningPairs(self, KerningM1, KerningM2, fillValue=None):
 		kernDict = {}
 		self.separator = " -- "
-		## iterate over M1 to render dict
+
+		# Iterate over M1 to render dict
+		#-------------------------------
 		for A in KerningM1:
 			pair = "%s%s%s" % (A[0], self.separator, A[1])
 			valueA = A[2]
 			kernDict[pair] = [valueA]
 
-		## iterate over M2 to fill up given pairs and append non existing ones
+		# Iterate over M2 to fill up given pairs and append non existing ones
+		#--------------------------------------------------------------------
 		for B in KerningM2:
 			pair = "%s%s%s" % (B[0], self.separator, B[1])
 			valueB = B[2]
@@ -265,13 +270,13 @@ class KernschmelzeWindow(object):
 			except:
 				kernDict[pair] = [fillValue, valueB] # case: 1st M has no entry for this pair, set it to 0
 
-		## iterate over M1 afain to fill up newly added pairs from M2
+		# Iterate over M1 afain to fill up newly added pairs from M2
+		#-----------------------------------------------------------
 		for A in KerningM1:
 			pair = "%s%s%s" % (A[0], self.separator, A[1])
 			valueA = A[2]
 			if len (kernDict[pair]) == 1:
 				kernDict[pair] = [valueA, fillValue] # case: 2nd M has no entry for this pair, set it to 0
-
 
 		# for key, val in kernDict.iteritems():
 		# 	print key.split(self.separator), val
@@ -286,12 +291,11 @@ class KernschmelzeWindow(object):
 
 
 	def copyKerning(self, choice):
-		''' COPY KERNING '''
+		''' Copy Kerning '''
 		if choice == 1:
 			copiedKernValue = self.KernValue_A
 		if choice == 2:
 			copiedKernValue = self.KernValue_B
-		# print choice
 		try:
 			self.font.setKerningForPair(self.master.id, '%s'  % self.leftSide_K, '%s'  % self.rightSide_K, copiedKernValue)
 		except:
@@ -300,24 +304,24 @@ class KernschmelzeWindow(object):
 
 
 	def buttonCallback(self, sender):
+
 		self.w.close()
 
 		try:
-
-			'''
-			Define the master IDs
-			'''
+			#==========================================
+			# D E F I N E   T H E   M A S T E R   I D S
+			#==========================================
 			UI_SelectedMasterA_IDX = self.UI_sourceMasterA[1]
-			UI_SelectedMasterAValue = self.UI_sourceMasterA[0].weightValue
+			UI_SelectedMasterA_Value = self.UI_sourceMasterA[0].weightValue
 
 			UI_SelectedMasterB_IDX = self.UI_sourceMasterB[1]
-			UI_SelectedMasterBValue = self.UI_sourceMasterB[0].weightValue
+			UI_SelectedMasterB_Value = self.UI_sourceMasterB[0].weightValue
 
 
-			'''
-			EQ KERNING
-			'''
-			### EQUALIZE BOTH SOURCE MASTERS, FILL UP NON MATCHING PAIRS WITH VALUE 0
+			#====================
+			# E Q   K E R N I N G
+			#====================
+			# Equalize both Source Masters, fill up non matching pairs with value `0`
 			kerningACollection = self.getKerningFromMaster(self.UI_sourceMasterA[0])
 			kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB[0])		
 			for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).iteritems():
@@ -333,17 +337,17 @@ class KernschmelzeWindow(object):
 					# print "set %s (%s %s) to ZERO" % (self.UI_sourceMasterB[0].name, self.leftSide_K, self.rightSide_K)
 
 
-
-
-
-			'''
-			APPLY KERNING TO TARGET MASTERS
-			'''
+			#==============================================================
+			# A P P L Y   K E R N I N G   T O   T A R G E T   M A S T E R S
+			#==============================================================
 			for i, master in enumerate(self.font.masters):
-				## include only selected Target Masters:	
+
+				# Include only selected Target Masters:
+				#--------------------------------------
 				self.master = master
 
-				## exclude Source Masters:
+				# Exclude Source Masters:
+				#------------------------
 				if i != UI_SelectedMasterA_IDX and i != UI_SelectedMasterB_IDX:  # by index
 					# print "Master: %s - Option: %s" % (i, self.masterOptions[i])
 					
@@ -353,20 +357,21 @@ class KernschmelzeWindow(object):
 						### I(!): reset kerning_Collection, to get the equalized(!) Kerning (masters with added zero-values):
 						kerningACollection = self.getKerningFromMaster(self.UI_sourceMasterA[0])
 						kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB[0])
+
 						for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).iteritems():
 							pair = key.split(self.separator)
-							# print pair
 							self.leftSide_K, self.rightSide_K = pair
 							self.KernValue_A, self.KernValue_B = values
 
-							### copy kerning
+							# Copy Kerning
+							#-------------
 							if self.masterOptions[i] != 0:
 								self.copyKerning(self.masterOptions[i])
-				
 
+							# Interpolate Kerning
+							#--------------------
 							if self.masterOptions[i] == 0:
-								### interpolate kerning
-								scale = UI_SelectedMasterAValue + UI_SelectedMasterBValue # weight values of Master_A + Master_B
+								scale = UI_SelectedMasterA_Value + UI_SelectedMasterB_Value # weight values of Master_A + Master_B
 								location = master.weightValue / scale # return factor 0…1 for interpolation, exceeding for extrapolation
 								try:
 									self.font.setKerningForPair(master.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, self.interpolate(self.KernValue_A, self.KernValue_B, location))

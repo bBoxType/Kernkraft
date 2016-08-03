@@ -6,7 +6,7 @@
 # TODO:
 # 	+ rewrite variables, better names
 # 	+ sort functions by UI and Tool functionality
-#	+ Kerning strings for CamelCase (e.g: »drawAtPoint« etc )
+#	+ Kerning strings for CamelCase (e.g: »drawAtPoint« etc), maybe as an option?
 
 # Changelog:
 # 	1.9
@@ -16,6 +16,8 @@
 #		  (Showing only the Category `Letter`)
 # 	1.9.3
 #		+ Add `Private Use` to the UI as an option to skip.
+# 	1.9.4
+#		+ Fix crash caused by function introduced in 1.9.2 with Glyphs builds below 911 (bypassing, thanks Botio)
 
 
 import os
