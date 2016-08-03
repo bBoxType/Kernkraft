@@ -976,12 +976,10 @@ class PreferenceWindow(object):
 		self.d.notesLabel = TextBox((0, 90, -0, 20), "Notes:", alignment="center")
 		self.d.UINotes = TextEditor((0, 110, -0, -0), callback=self.SavePreferences)
 
-
 		if not self.LoadPreferences():
 			print "Could not load preferences. Will resort to defaults."
 	
 		self.updateKerningGroupText()
-
 		self.w.resize(windowWidth, 30 + y)
 		self.w.makeKey() ### Focus on Window and Button
 		self.w.open()
@@ -994,19 +992,13 @@ class PreferenceWindow(object):
 		#self.view = preview.GlyphView.alloc().initWithFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
 		self.view = preview.GlyphView.alloc().init()
 		self.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
-
-		# self.view._upm = self.UPM ## // **RELATED
 		self.view._upm = self.thisFont.upm # fontUPM
 		self.view._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
 		self.view._margin = self.previewSize / 4
 		# self.view._scaleFactor
 		self.view.setFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
 		self.view.setNeedsDisplay_( True )
-		# print help(self.view)
-		# print self.view.autoresizesSubviews( )
-		# print self.view.bounds()
-		# self.view.setFlipped_(1) # Hihi
-		# self.view.setAlphaValue_(0.1)
+		# help(self.view), self.view.bounds(), self.view.setAlphaValue_(0.1)
 		try: self.view.setToolTip_(self.w.glyphInput.get())
 		except:	pass
 		
@@ -1093,16 +1085,12 @@ class PreferenceWindow(object):
 			self.w.includeOtherScripts.enable(0)
 			self.w.includeOtherScripts.setTitle( self.IOSTitle )
 
-
 	# def glyphIsReusedAtAll(self, glyphName, masterID): # unused function
 	# 	isReusedAtAll = None
 	# 	isReusedAtAll = len(self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, masterID))
 	# 	if isReusedAtAll > 0:
 	# 		return True
 	# 	return False
-
-
-
 
 
 
