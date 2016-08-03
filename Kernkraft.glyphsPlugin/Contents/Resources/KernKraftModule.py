@@ -1073,8 +1073,7 @@ class PreferenceWindow(object):
 		self.view.setToolTip_(glyphName)
 		self.updateKerningGroupText()
 
-		if Glyphs.buildNumber >= 911:
-			self.setCheckboxIOS(glyphName, self.chosenMasterID)
+		self.setCheckboxIOS(glyphName, self.chosenMasterID)
 
 
 
