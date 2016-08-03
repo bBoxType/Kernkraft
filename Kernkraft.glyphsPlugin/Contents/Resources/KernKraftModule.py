@@ -53,7 +53,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.3"
+	version = "1.9.4"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -208,20 +208,23 @@ class KernKraft(object):
 
 
 	def glyphIsReusedInAnotherScipt(self, glyphName, masterID): # *new in 1.9.2*
-		collector = []
-		thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, self.thisFont.masters[masterID].id)
-		if len(thisGlyphsReusedGlyphs) > 0:
-			for glyph in thisGlyphsReusedGlyphs:
-				masterLayer = glyph.layers[masterID]
-				layerComponents = masterLayer.components
-				if len(layerComponents) == 1:
-					if len(masterLayer.paths) == 0:
-						if layerComponents[0].componentName == glyphName:
-							if layerComponents[0].transform == noTransform:
-								collector.append(glyph.name)
-			if len(collector) > 0:
-				collector.insert(0, glyphName)
-				return collector
+		if Glyphs.buildNumber >= 911:
+			collector = []
+			thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, self.thisFont.masters[masterID].id)
+			if len(thisGlyphsReusedGlyphs) > 0:
+				for glyph in thisGlyphsReusedGlyphs:
+					masterLayer = glyph.layers[masterID]
+					layerComponents = masterLayer.components
+					if len(layerComponents) == 1:
+						if len(masterLayer.paths) == 0:
+							if layerComponents[0].componentName == glyphName:
+								if layerComponents[0].transform == noTransform:
+									collector.append(glyph.name)
+				if len(collector) > 0:
+					collector.insert(0, glyphName)
+					return collector
+				return None
+		else:
 			return None
 
 	
@@ -901,10 +904,11 @@ class PreferenceWindow(object):
 		# ----------------------------------------------------------------------------------------------------
 		# / Include other scripts
 		#
-		self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, sizeStyle="regular", callback=self.SavePreferences)
-		y += 30
-		self.w.line_IOS = HorizontalLine((m, y, -m, 1))
-		y+= 10
+		if Glyphs.buildNumber >= 911:
+			self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, sizeStyle="regular", callback=self.SavePreferences)
+			y += 30
+			self.w.line_IOS = HorizontalLine((m, y, -m, 1))
+			y+= 10
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP COMPONENTS
 		#
@@ -1069,7 +1073,8 @@ class PreferenceWindow(object):
 		self.view.setToolTip_(glyphName)
 		self.updateKerningGroupText()
 
-		self.setCheckboxIOS(glyphName, self.chosenMasterID)
+		if Glyphs.buildNumber >= 911:
+			self.setCheckboxIOS(glyphName, self.chosenMasterID)
 
 
 
@@ -1105,7 +1110,8 @@ class PreferenceWindow(object):
 				self.Glyphs.defaults["%s.glyphInput" % self.vID] = self.w.glyphInput.get()
 			else:
 				self.Glyphs.defaults["%s.glyphInput" % self.vID] = self.firstGlyphInFont # allGlyphsInFont[0]
-			self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] = self.w.includeOtherScripts.get()
+			if Glyphs.buildNumber >= 911:
+				self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] = self.w.includeOtherScripts.get()
 			self.Glyphs.defaults["%s.skipComponentCheck" % self.vID] = self.w.skipComponentCheck.get()
 			self.Glyphs.defaults["%s.skipKGMembersCheck" % self.vID] = self.w.skipKGMembersCheck.get()
 			self.Glyphs.defaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = self.w.skipAlreadyKernedLeftCheck.get()
@@ -1127,7 +1133,8 @@ class PreferenceWindow(object):
 			''' MAKE DEFAULTS DICT TO INJECT INTO NSUserDefaults '''
 			collectedDefaults = {}
 			collectedDefaults["%s.glyphInput" % self.vID] = "a"
-			collectedDefaults["%s.includeOtherScripts" % self.vID] = "True"
+			if Glyphs.buildNumber >= 911:
+				collectedDefaults["%s.includeOtherScripts" % self.vID] = "True"
 			collectedDefaults["%s.skipComponentCheck" % self.vID] = "True"
 			collectedDefaults["%s.skipKGMembersCheck" % self.vID] = "True"
 			collectedDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = "False"
@@ -1148,7 +1155,8 @@ class PreferenceWindow(object):
 			else:
 				self.w.glyphInput.set( self.firstGlyphInFont ) # allGlyphsInFont[0]
 				# Fallback Layer if user switched from one font to another and the stored glyph is not available
-			self.w.includeOtherScripts.set( self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] )
+			if Glyphs.buildNumber >= 911:
+				self.w.includeOtherScripts.set( self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] )
 			self.w.skipComponentCheck.set( self.Glyphs.defaults["%s.skipComponentCheck" % self.vID] )
 			self.w.skipKGMembersCheck.set( self.Glyphs.defaults["%s.skipKGMembersCheck" % self.vID] )
 			self.w.skipAlreadyKernedLeftCheck.set( self.Glyphs.defaults["%s.skipAlreadyKernedLeftCheck" % self.vID] )
