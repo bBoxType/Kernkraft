@@ -1079,16 +1079,19 @@ class PreferenceWindow(object):
 
 
 	def setCheckboxIOS(self, glyphName, masterID):
-		### check if the current glyph is reused at all
-		### TODO: trigger the enable() of the UI checkbox to include other script’s occurrences of this glyph
-		mid = self.thisFont.masters[masterID].id
-		glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
-		if glyphIsReused:
-			self.w.includeOtherScripts.enable(1)
-			self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused][1:])) )
-		else:
-			self.w.includeOtherScripts.enable(0)
-			self.w.includeOtherScripts.setTitle( self.IOSTitle )
+		if Glyphs.buildNumber >= 911:
+			### check if the current glyph is reused at all
+			### TODO: trigger the enable() of the UI checkbox to include other script’s occurrences of this glyph
+			mid = self.thisFont.masters[masterID].id
+			glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
+			if glyphIsReused:
+				self.w.includeOtherScripts.enable(1)
+				self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused][1:])) )
+			else:
+				self.w.includeOtherScripts.enable(0)
+				self.w.includeOtherScripts.setTitle( self.IOSTitle )
+
+		else: pass
 
 	# def glyphIsReusedAtAll(self, glyphName, masterID): # unused function
 	# 	isReusedAtAll = None
@@ -1215,11 +1218,12 @@ class PreferenceWindow(object):
 		try:
 			actualInputGlyphName = self.w.glyphInput.get()
 			self.parent.generateTabOutput(actualInputGlyphName) # first main run
-			if self.w.includeOtherScripts.get() == 1:
-				# if there are more glyphs like the input glyph in other scripts:
-				while len( self.parent.showAllScripts ) > 0:
-					self.parent.generateTabOutput(self.parent.showAllScripts[0], showLetterCategoryOnly=True)
-					self.parent.showAllScripts.pop(0) # remove the currently set input script
+			if Glyphs.buildNumber >= 911:
+				if self.w.includeOtherScripts.get() == 1:
+					# if there are more glyphs like the input glyph in other scripts:
+					while len( self.parent.showAllScripts ) > 0:
+						self.parent.generateTabOutput(self.parent.showAllScripts[0], showLetterCategoryOnly=True)
+						self.parent.showAllScripts.pop(0) # remove the currently set input script
 		except:
 			print traceback.format_exc()
 
