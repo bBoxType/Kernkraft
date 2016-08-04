@@ -56,15 +56,19 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 - Latin
 - Cyrillic
 - Greek
-- Hebrew *Under Construction*
+- Hebrew *(Under Construction)*
 
 #### Filters:
+- Include Other Scripts
+	E.g. when you deal with /A and it is also used in Greek and/or Cyrillic as /Alpha and /A-cy, you can see these in one go.
 - Skip categories (UI-Option)
-- Skip SubCategories (customizable list with Exceptions)
-- Exclude `SC` when the inputGlyph is `LC`
-(e.g. `nnona/a.sc annoi` does not make sense, does it?)
+	Check the categories that you don’t want to see in the new tab.
+- Skip SubCategories (Hardcoded)
+	There is a customizable list with exceptions.
 - Exclude `.tf` & `.tosf`
-- when Input = `SC`: Output -->
+- When Input = `LC`: Exclude `SC
+	(e.g. `nnona/a.sc annoi` does not make sense, does it?)
+- When Input = `SC`: Output -->
 	- a) `HHOHA/a.sc/h.sc/o.sc/o.sc/i.sc` for iteratedGlyph = `UC`
 	- b) `/h.sc/h.sc/o.sc/h.sc/a.sc/a.sc/a.sc/h.sc/o.sc/o.sc/i.sc` for iteratedGlyph = `SC`
 - Skip Kerning Group Members (UI-Option) (2-way)
@@ -75,18 +79,18 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 - Open Preview Panel (default size)
 - Set Text Tool
 - Hebrew inputGlyph triggers RTL writing direction
-	*under construction: Does it need to switch the kerning sides as well (?!)*
+	*under construction: Does it need to switch the kerning sides as well (?!), also the labels need to be written backwards.*
 
 #### User Interface:
 - GlyphPreview (best scale @ 1000 UPM):
 	Only-Components = Gray, Non-Exported = Orange
-- Display Kerning Groups
+- Display Kerning Groups in blue
 - Cycling through glyphs via Buttons or Cursor Keys
-- Saved Settings with Fallback for Glyph Input
 - Fallback for Glyph Input when Glyph not in Font
 - Master Selection
 - Deactivate Reporter Plugins (speed up Glyphsapp)
 - Drawer with user-reminder for special Guests and Notepad
+- Save Settings and Notes
 
 #### Error handling:
 - validate input glyph for being part of the font
