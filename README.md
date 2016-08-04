@@ -32,7 +32,7 @@ HHOHk£knnoi
 HHOHk¥knnoi
 ...
 ```
-and so on.
+And so on. The presentation of kerning strings depends on the Font’s character set. No predefined lists are used, as they would cause the overlooking of glyph pairs.
 
 Navigate in UI with your keyboard: ←,  → and ⏎. Save notes for later.
 
