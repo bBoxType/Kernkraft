@@ -3,7 +3,36 @@
 ### About:
 
 #### »Kernkraft«
-»Kernkraft« is a tool that might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is).
+»Kernkraft« is a tool that might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is). If you want to kern the glyph `k`, without any filtering checkboxes, you will get a tab with a bunch of stings like:
+__Letter:
+HHOHAknnoi
+HHOHÆknnoi
+HHOHBknnoi
+HHOHCknnoi
+HHOHDknnoi
+...
+__Punctuation:
+HHOHk*knnoi
+HHOHk\knnoi
+HHOHk·knnoi
+HHOHk•knnoi
+HHOHk:knnoi
+HHOHk,knnoi
+HHOHk…knnoi
+HHOHk!knnoi
+HHOHk¡knnoi
+HHOHk#knnoi
+...
+__Symbol:
+HHOHk¢knnoi
+HHOHk$knnoi
+HHOHk€knnoi
+HHOHk£knnoi
+HHOHk¥knnoi
+...
+and so on.
+
+Navigate in UI with your keyboard: ←,  → and ⏎. Save notes for later.
 
 #### »Kernschmelze«
 »Kernschmelze« is a tool that will help you interpolate the kerning (given a glyphs file with at least 2 masters). It uses the weight value to calculate, no further axes (e.g. width) are currently supported.
