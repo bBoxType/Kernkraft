@@ -40,7 +40,9 @@ HHOHk¥knnoi
 ```
 And so on. The presentation of kerning strings depends on the Font’s character set. No predefined lists are used, as they would cause the overlooking of glyph pairs.
 
-Navigate in UI with your keyboard: ←,  → and ⏎. Save notes for later.
+Navigate through your glyphset with your keyboard: ←,  → and hit enter ⏎ to open the new tab(s).
+
+Putting the caret to the right hand side of the input glpyh (in this example `k` --> `HHOHk|aknnoi`) allows you to kern both sides (`ka` and `ak`) with the Glyphs kerning shortcuts `ctrl + opt + ←/→` for left and `cmd + opt + ←/→` for right . Hold `shift` for 10 units increments.
 
 #### »Kernschmelze«
 »Kernschmelze« is a tool that will help you interpolate the kerning (given a glyphs file with at least 2 masters). It uses the weight value to calculate, no further axes (e.g. width) are currently supported.
