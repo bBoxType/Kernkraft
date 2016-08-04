@@ -12,6 +12,12 @@ HHOHBknnoi
 HHOHCknnoi
 HHOHDknnoi
 ...
+HHOHkaknnoi
+HHOHkæknnoi
+HHOHkbknnoi
+HHOHkcknnoi
+HHOHkdknnoi
+...
 __Punctuation:
 HHOHk*knnoi
 HHOHk\knnoi
