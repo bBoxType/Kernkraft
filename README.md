@@ -44,6 +44,10 @@ Navigate through your glyphset with your keyboard: ←,  → and hit enter ⏎ t
 
 Putting the caret to the right hand side of the to-be-kerned-glyph (in this example `k` --> `HHOHk|aknnoi`) allows you to kern both sides (`ka` and `ak`) with the Glyphs kerning shortcuts `ctrl + opt + ←/→` for left and `cmd + opt + ←/→` for right . Hold `shift` for 10 units increments.Then just use the up or down keys to dedicate yourself to the next kerning pair.
 
+The checkboxes help you to increase the speed of your workflow. In the very beginning it could be useful to have `Skip already kerned pairs` unchecked. `Skip Components` and `Skip Kerning Group Members`could be checked in most cases. This means, that you are not confronted with duplicates of an already kerned pair (e.g. KA, KÄ, …). In case you want to see them anyway, uncheck these boxes.
+
+The other settings are hopefully self explanatory. Let me know if you got any questions.
+
 #### »Kernschmelze«
 »Kernschmelze« is a tool that will help you interpolate the kerning (given a glyphs file with at least 2 masters). It uses the weight value to calculate, no further axes (e.g. width) are currently supported.
 
