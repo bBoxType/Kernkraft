@@ -2,6 +2,8 @@
 
 ### About:
 
+This set of plugins for the font editor »Glyphs« is based on the way of kerning by [Carrois Apostrophe](https://www.carrois.com). The code is written by [Mark Frömberg](http://www.markfromberg.com) (@Mark2Mark). Please contact me for any issues or ideas.
+
 #### »Kernkraft«
 »Kernkraft« is a tool that might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is). If you want to kern the glyph `k`, without any filtering checkboxes but `Skip Components` checked, you will get a tab with a bunch of stings like:
 ```
@@ -50,8 +52,6 @@ The other settings are hopefully self explanatory. Let me know if you got any qu
 
 #### »Kernschmelze«
 »Kernschmelze« is a tool that will help you interpolate the kerning (given a glyphs file with at least 2 masters). It uses the weight value to calculate, no further axes (e.g. width) are currently supported.
-
-This set of plugins for the font editor »Glyphs« is based on the way of kerning by [Carrois Apostrophe](https://www.carrois.com). The code is written by [Mark Frömberg](http://www.markfromberg.com) (@Mark2Mark). Please contact me for any issues or ideas.
 
 ##
 ### Features:
