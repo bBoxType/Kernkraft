@@ -3,7 +3,7 @@
 ### About:
 
 #### »Kernkraft«
-»Kernkraft« is a tool that might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is). If you want to kern the glyph `k`, without any filtering checkboxes, you will get a tab with a bunch of stings like:
+»Kernkraft« is a tool that might help you to be easily confronted with all the neccessary pairs your Font provides (no matter how extended the character set is). If you want to kern the glyph `k`, without any filtering checkboxes but `Skip Components` checked, you will get a tab with a bunch of stings like:
 ```
 __Letter:
 HHOHAknnoi
