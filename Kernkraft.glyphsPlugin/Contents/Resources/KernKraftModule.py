@@ -55,7 +55,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.4"
+	version = "1.9.5"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -209,9 +209,18 @@ class KernKraft(object):
 
 
 
+
+
+	#================================
+	# C H E C K S   F O R   R E U S E
+	#================================
+	# 1
 	def glyphIsReusedInAnotherScipt(self, glyphName, masterID): # *new in 1.9.2*
+
 		if Glyphs.buildNumber >= 911:
+			
 			collector = []
+			
 			thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, self.thisFont.masters[masterID].id)
 			if len(thisGlyphsReusedGlyphs) > 0:
 				for glyph in thisGlyphsReusedGlyphs:
@@ -229,7 +238,73 @@ class KernKraft(object):
 		else:
 			return None
 
-	
+	# 2
+	def glyphsWithSameKG(self, glyphName, masterID): # *new in 1.9.5*
+		''' *Not active yet* '''
+		# also catch the glyphs with the same KG on both sides:
+		if Glyphs.buildNumber >= 911:
+
+			collector = []
+
+			try:
+				thisGlyphLKG = self.thisFont.glyphs[glyphName].leftKerningGroup
+				thisGlyphRKG = self.thisFont.glyphs[glyphName].rightKerningGroup
+				for ggg in [self.thisFont.glyphs[g] for g in self.allGlyphsInFont]:
+					if thisGlyphLKG == ggg.leftKerningGroup and thisGlyphRKG == ggg.rightKerningGroup:
+						collector.append(ggg.name)
+
+				if len(collector) > 0:
+					collector.insert(0, glyphName)
+					return list(set(collector))
+				return None
+
+			except:
+				print traceback.format_exc()
+
+		else:
+			return None
+
+	# TODO: Also add another, third check: If all the components are reused the same way. E.g.: idieresis --> iotadieresis
+	# 3
+	def sameComponentSetup(self, glyphName, masterID):
+		'''
+			Return list of GlyphNames that are made from the same components as the Input Glyph (including that one)
+			Avoids situations like:
+			`jdotlessstrokehook > [u'ghook', u'jdotlessstrokehook', u'dhook', u'eshcurl', u'qhook']`
+			So it also checkes that not paths are in the layer
+		'''
+		if Glyphs.buildNumber >= 911:
+
+			collector = []
+
+			try:
+
+				try:
+					thisGlyphComponents = [c.componentName for c in self.thisFont.glyphs[glyphName].layers[self.mID].components]
+				except:
+					thisGlyphComponents = None
+
+				if thisGlyphComponents and len(self.thisFont.glyphs[glyphName].layers[self.mID].paths) == 0:
+					for ggg in self.allGlyphsInFont:
+						try:
+							iteratedGlyphComponents = [c.componentName for c in self.thisFont.glyphs[ggg].layers[self.mID].components]
+						except:
+							iteratedGlyphComponents = None
+
+						if iteratedGlyphComponents and len(self.thisFont.glyphs[ggg].layers[self.mID].paths) == 0:
+							if thisGlyphComponents == iteratedGlyphComponents:
+								collector.append(ggg)
+
+					if len(collector) > 0:
+						collector.insert(0, glyphName)
+						return list(set(collector))
+					return None
+
+			except:
+				print traceback.format_exc()
+
+		else:
+			return None
 
 
 
@@ -511,6 +586,25 @@ class KernKraft(object):
 		if isReused:
 			self.showAllScripts = isReused
 			self.showAllScripts.remove(inputGlyphName)
+
+		# *new in 1.9.5*
+		# sameComponents = self.sameComponentSetup(inputGlyphName, self.prefwindow.w.ChoseMaster.get())
+		# if sameComponents:
+		# 	try:
+		# 		self.showAllScripts = list(set(isReused.append(sameComponents)))
+		# 	except:
+		# 		self.showAllScripts = sameComponents
+
+
+		# *new in 1.9.5*
+		# isReused_B = self.glyphsWithSameKG(inputGlyphName, self.prefwindow.w.ChoseMaster.get())
+		# if isReused_B:
+		# 	try:
+		# 		self.showAllScripts = isReused.append(isReused_B)
+		# 	except:
+		# 		self.showAllScripts = isReused_B
+		# 	print "-_-_-_-_-_", self.showAllScripts
+		# 	# self.showAllScripts.remove(inputGlyphName)
 
 
 
@@ -1085,12 +1179,16 @@ class PreferenceWindow(object):
 			### TODO: trigger the enable() of the UI checkbox to include other script’s occurrences of this glyph
 			mid = self.thisFont.masters[masterID].id
 			glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
+	
 			if glyphIsReused:
 				self.w.includeOtherScripts.enable(1)
 				self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused][1:])) )
 			else:
 				self.w.includeOtherScripts.enable(0)
 				self.w.includeOtherScripts.setTitle( self.IOSTitle )
+
+			# print "2:", self.parent.glyphsWithSameKG(glyphName, mid) # *new in 1.9.5* *UC*
+			# print "3:", self.parent.sameComponentSetup(glyphName, mid) # *new in 1.9.5* *UC*
 
 		else: pass
 
@@ -1224,7 +1322,14 @@ class PreferenceWindow(object):
 					# if there are more glyphs like the input glyph in other scripts:
 					while len( self.parent.showAllScripts ) > 0:
 						self.parent.generateTabOutput(self.parent.showAllScripts[0], showLetterCategoryOnly=True)
+						
+						# A
 						self.parent.showAllScripts.pop(0) # remove the currently set input script
+						# B
+						# try:
+						# 	self.parent.showAllScripts.pop(0) # remove the currently set input script
+						# except: pass
+
 		except:
 			print traceback.format_exc()
 
