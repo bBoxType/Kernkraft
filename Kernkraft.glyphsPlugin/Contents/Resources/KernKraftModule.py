@@ -18,6 +18,8 @@
 #		+ Add `Private Use` to the UI as an option to skip.
 # 	1.9.4
 #		+ Fix crash caused by function introduced in 1.9.2 with Glyphs builds below 911 (bypassing, thanks Botio)
+# 	1.9.6
+#		+ Add editable Kering Group Text Boxes (commented out, not working here (just in the stand alone snippet))
 
 
 import os
@@ -55,7 +57,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.5"
+	version = "1.9.6"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -911,9 +913,29 @@ class KernKraft(object):
 ##########################################################################
 
 
+# # For the editable TextBoxes
+# #---------------------------
+# class AppDelegate(NSObject): # New in 1.9.6
+
+# 	def textDidChange_(self, sender):
+# 		try:
+# 			print sender.stringValue()
+# 		except:
+# 			pass #print traceback.format_exc()
+
+
 
 class PreferenceWindow(object):
-	
+
+	# For the editable TextBoxes
+	#---------------------------
+	# New in 1.9.6
+	# app = NSApplication.sharedApplication()
+	# delegate = AppDelegate.alloc().init()
+	# NSApp().setDelegate_(delegate)
+	#
+
+
 	def __init__(self, parent):
 		super(PreferenceWindow, self).__init__()
 		self.parent = parent
@@ -943,7 +965,7 @@ class PreferenceWindow(object):
 		self.scrollViewMargin = 10
 		m = 10
 		bW = 25
-		if screenHeight > 800:
+		if screenHeight > 900:
 			prevBox = 300.0
 			layerScale = 1
 		else:
@@ -953,13 +975,31 @@ class PreferenceWindow(object):
 		windowWidth = self.previewSize # 230
 
 
-		
+		#---------------
 		# Monkey Patches
 		#---------------
 		def __setColor(self, value):
 			# self._nsObject.setEditable_(value)
 			self._nsObject.setTextColor_(value)
-		TextBox.setColor = __setColor		
+		TextBox.setColor = __setColor
+
+
+		# For the editable TextBoxes
+		#---------------------------
+		# New in 1.9.6
+		# def __setEditable(self, value):
+		# 	self._nsObject.setEditable_(value)
+		# 	self._nsObject.setBackgroundColor_(NSColor.blueColor())
+		# 	self._nsObject.setTextColor_(NSColor.blueColor())
+		# TextBox.setEditable = __setEditable
+		
+		# def __setTarget(self, target):
+		# 	self._target = target
+		# 	self._nsObject.setAction_( "textDidChange:" )	
+
+		# TextBox.setTarget = __setTarget
+		#
+
 
 
 
@@ -972,6 +1012,8 @@ class PreferenceWindow(object):
 		KGColor = NSColor.blueColor()
 		self.w.TextLKG = TextBox((m, y, -m, 20), sizeStyle="small")
 		self.w.TextLKG.setColor(KGColor)
+		# self.w.TextLKG.setEditable(True) # New in 1.9.6
+		# self.w.TextLKG.setTarget( app.delegate() ) # New in 1.9.6
 		self.w.TextRKG = TextBox((m, y, -m, 20), sizeStyle="small", alignment="right")
 		self.w.TextRKG.setColor(KGColor)
 		y += 25	
