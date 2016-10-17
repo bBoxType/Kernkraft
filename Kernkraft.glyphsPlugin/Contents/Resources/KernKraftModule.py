@@ -4,6 +4,7 @@
 # Kerning procedure by Ralph du Carrois ( @Carrois, www.carrois.com )
 
 # TODO:
+# 	+ BUG: when kerning SC `a.sc` it opens way too many tabs (29 in fira instad of 3 like with `A`)
 # 	+ rewrite variables, better names
 # 	+ sort functions by UI and Tool functionality
 #	+ Kerning strings for CamelCase (e.g: »drawAtPoint« etc), maybe as an option?
