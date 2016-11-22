@@ -40,10 +40,16 @@ class KernkraftPlugin(GeneralPlugin):
 			NSLog(traceback.format_exc())
 	
 	def kernkraft(self):
-		thisFont = Glyphs.font
-		mID = thisFont.selectedFontMaster.id
-		kkk = KKM.KernKraft(Glyphs, thisFont, mID)
+		try:
+			thisFont = Glyphs.font
+			mID = thisFont.selectedFontMaster.id
+			kkk = KKM.KernKraft(Glyphs, thisFont, mID)
+		except:
+			NSLog(traceback.format_exc())
 	
 	def kernschmelze(self):
-		thisFont = Glyphs.font
-		KernschmelzeWindow(thisFont)
+		try:
+			thisFont = Glyphs.font
+			KernschmelzeWindow(thisFont)
+		except:
+			NSLog(traceback.format_exc())
