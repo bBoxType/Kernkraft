@@ -6,6 +6,8 @@ This set of plugins for the font editor »Glyphs« is based on the way of kernin
 
 For detailed information check the [Kernkraft Wiki](https://github.com/carrois/Kernkraft/wiki). There you’ll find the documentation of the tools.
 
+:fire: Depends on `Vanilla` module to be installed. Please install via Glyphs Preferences > Addons > Modules.
+
 ### Licence:
 
 Kernkraft is free software.
