@@ -22,13 +22,21 @@ class GlyphView(NSView):
 			layerWidth = self._layer.width * scaleFactor
 			descender = self._layer.glyphMetrics()[3] * scaleFactor
 			
+			# ## This order is important! Wont work the other way around.
+			# try: # pre Glyphs 2.3
+			# 	bezierPathOnly = self._layer.copy().bezierPath()  # Path Only
+			# 	bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath() # Path & Components
+			# except: # Glyphs 2.3
+			# 	bezierPathOnly = self._layer.copy().bezierPath  # Path Only
+			# 	bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath  # Path & Components
+
 			## This order is important! Wont work the other way around.
-			try: # pre Glyphs 2.3
-				bezierPathOnly = self._layer.copy().bezierPath()  # Path Only
-				bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath() # Path & Components				
-			except: # Glyphs 2.3
+			try: # Glyphs 2.3
 				bezierPathOnly = self._layer.copy().bezierPath  # Path Only
-				bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath  # Path & Components			
+				bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath  # Path & Components
+			except: # Glyphs 2.4
+				bezierPathOnly = self._layer.copy().bezierPath  # Path Only
+				bezierPathWithComponents = self._layer.completeBezierPath  # Path & Components
 
 
 			# Set the scale
