@@ -57,6 +57,14 @@ class KerningStrings:
 					},
 				},
 			},
+		"thai" : {
+			"Letter" : {
+				"Other" : {
+					"Left" : "/thoThahan-thai/thoThahan-thai/doDek-thai/thoThahan-thai",
+					"Right" : "/thoThahan-thai/doDek-thai/doDek-thai/noNu-thai",
+					},
+				},
+			},
 		"hebrew" : {
 			"Letter" : {
 				"Other" : {
