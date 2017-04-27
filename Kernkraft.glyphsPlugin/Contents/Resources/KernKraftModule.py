@@ -23,6 +23,8 @@
 #		+ Add editable Kering Group Text Boxes (commented out, not working here (just in the stand alone snippet))
 # 	1.9.7
 #		+ updated deprecated Method layer.drawBezierPath w/ layer.completeBezierPath
+#	1.9.8
+#		+ Add Thai to kernKit
 
 
 import os
@@ -60,7 +62,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.7"
+	version = "1.9.8"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
