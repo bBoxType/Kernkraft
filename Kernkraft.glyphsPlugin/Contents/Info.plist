@@ -19,9 +19,9 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.9.8</string>
+	<string>1.9.9</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2</string>
+	<string>3</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<false/>
 	<key>NSAppleScriptEnabled</key>

@@ -31,7 +31,7 @@ __doc__ = """
 	= Always applied on run
 '''
 
-
+from AppKit import NSSwitchButton, NSShadowlessSquareBezelStyle, NSLeftTextAlignment, NSNoCellMask
 from vanilla import *
 import traceback
 from GlyphsApp import *
@@ -42,7 +42,131 @@ Glyphs.clearLog()
 # thisMasterID = font.selectedFontMaster.id
 
 
-version = "0.7"
+
+
+
+########################################
+########################################
+########################################
+# Classes almost exactly as in the vanilla LIB
+# @ https://github.com/typesupply/vanilla/blob/master/Lib/vanilla/vanillaCheckBox.py
+#
+# Basically I just aim for a change of pos values for style `mini` at `textBoxPosSize` 
+#
+# --> All this code can be removed* to use a classic vanilla style CheckBox, also change
+# checkBox = MFCheckBox( ...
+# back to:
+# checkBox = CheckBox( ...
+#
+# *) Also can be removed if Typesupply accepts my pull request to change these values
+# [https://github.com/typesupply/vanilla/pull/36]
+
+class _CheckBoxManualBuildButton(Button):
+
+    nsButtonType = NSSwitchButton
+    frameAdjustments = {
+        "regular": (-2, -3, 4, 4),
+        "small": (-3, -7, 5, 4),
+        "mini": (-3, -11, 6, 8),
+        }
+
+    def set(self, value):
+        self._nsObject.setState_(value)
+
+    def get(self):
+        return self._nsObject.state()
+
+    def toggle(self):
+        state = self.get()
+        self.set(not state)
+
+
+class _CheckBoxManualBuildTextButton(Button):
+
+    nsBezelStyle = NSShadowlessSquareBezelStyle
+    frameAdjustments = None
+
+    def __init__(self, posSize, title, callback, sizeStyle):
+        super(_CheckBoxManualBuildTextButton, self).__init__(posSize, title=title, callback=callback)
+        self._nsObject.setBordered_(False)
+        self._setSizeStyle(sizeStyle)
+        self._nsObject.setAlignment_(NSLeftTextAlignment)
+        self._nsObject.cell().setHighlightsBy_(NSNoCellMask)
+
+########################################
+
+
+class MFCheckBox(CheckBox):
+
+	allFrameAdjustments = {
+		"mini": (0, -4, 0, 8),
+		"small": (0, -2, 0, 4),
+		"regular": (0, -2, 0, 4),
+		}
+
+	def __init__(self, posSize, title, callback=None, value=False, sizeStyle="regular"):
+
+		self._setupView("NSView", posSize)
+
+		self._callback = callback
+
+		buttonSizes = {
+				"mini": (10, 10),
+				"small": (18, 18),
+				"regular": (22, 22)
+				}
+		left, top, width, height = posSize
+
+		self.frameAdjustments = self.allFrameAdjustments[sizeStyle]
+
+		buttonWidth, buttonHeight = buttonSizes[sizeStyle]
+		buttonLeft, buttonTop = self.frameAdjustments[:2]
+		buttonLeft= abs(buttonLeft)
+		buttonTop = abs(buttonTop)
+
+		# adjust the position of the text button in relation to the check box
+		textBoxPosSize = {
+				# left, top, height
+				## ************************
+				"mini": (12, 5, 12), # Changed by Mark, original: (10, 4, 12)
+				"small": (14, 6, 14), # Changed by Mark, original: (14, 4, 14)
+				## ************************
+				"regular": (16, 3, 17)
+				}
+		textBoxLeft, textBoxTop, textBoxHeight = textBoxPosSize[sizeStyle]
+		textBoxWidth = 0
+
+		self._checkBox = _CheckBoxManualBuildButton((0, 0, buttonWidth, buttonHeight), "", callback=self._buttonHit, sizeStyle=sizeStyle)
+		self._checkBox.set(value)
+
+		self._textButton = _CheckBoxManualBuildTextButton((textBoxLeft, textBoxTop, textBoxWidth, textBoxHeight), title=title, callback=self._buttonHit, sizeStyle=sizeStyle)
+		######
+
+
+		### Added by Mark:
+		try:
+			nsbutton = self._textButton.getNSButton()
+			## Optional Button Styles
+			# nsbutton.setBordered_(1)
+			# nsbutton.setBezelStyle_(1)
+			# nsbutton.setButtonType_(0) # 1 is funky
+			# nsbutton.setAlignment_(0)
+		except:
+			print traceback.format_exc()
+
+########################################
+########################################
+########################################
+
+
+
+
+
+
+
+
+
+version = "0.8"
 class KernschmelzeWindow(object):
 
 	def __init__(self, font):
@@ -146,7 +270,7 @@ class KernschmelzeWindow(object):
 			setattr(self.w, attrNameLine, line)
 			y += 8
 			attrNameTargetMaster = "CopyMasters_%s" % str(i)
-			checkBoxTargetMaster = CheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
+			checkBoxTargetMaster = MFCheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
 			checkBoxTargetMaster.setID(str(i)) # MONKEY PATCH
 			setattr(self.w, attrNameTargetMaster, checkBoxTargetMaster)
 			exec("self.w.CopyMasters_" + str(i) + ".setTitle('\"%s\"  [%s Pairs]" % (str(master.name), str(len(self.getKerningFromMaster( master )))) + "')")
