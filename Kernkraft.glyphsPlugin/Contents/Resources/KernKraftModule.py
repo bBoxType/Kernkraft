@@ -542,7 +542,8 @@ class KernKraft(object):
 		#------------------------
 		# **NOT 100 PERCENT READY**
 		ContentView = self.Doc.windowController().activeEditViewController().contentView()
-		location = len( ContentView.textStorage().string() ) -6  # len of rightTail
+		# location = len( ContentView.textStorage().string() ) -6  # len of rightTail
+		location = len( ContentView.textStorage().text() ) -6  # len of rightTail // change in API, Glyphs 2.4 AND 2.5
 		myRange = NSMakeRange( location, 0 ) # 0 = length
 		GraphicView = self.Doc.windowController().activeEditViewController().graphicView()
 		GraphicView.setSelectedRange_( myRange )
@@ -1153,6 +1154,8 @@ class PreferenceWindow(object):
 		#------------
 		attrName = "box"
 		setattr(self.w, attrName, self.scrollView())
+
+		# print self.w.getPosSize()
 
 
 	# Belongs to Glyph Preview
