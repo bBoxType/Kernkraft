@@ -25,6 +25,9 @@
 #		+ updated deprecated Method layer.drawBezierPath w/ layer.completeBezierPath
 #	1.9.8
 #		+ Add Thai to kernKit
+#	1.9.9
+#		+ New "Done" List, which automatically adds items with each Glyph to Tab(s).
+#		+ Drawer remembers status now.
 
 
 import os
@@ -62,7 +65,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.8"
+	version = "1.9.9"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
@@ -1116,13 +1119,17 @@ class PreferenceWindow(object):
 		# self.w.helpButton = HelpButton((windowWidth - 30, y, -m, 20), callback=self.helpButtonCallback)
 		self.w.helpButton = SquareButton((windowWidth - 30, y, -m, 20), u"...", callback=self.helpButtonCallback)
 		# / DRAWER (TOGGLED BY HELP BUTTON)
-		self.d = Drawer((220, 150), self.w)
-		#self.d.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
-		#self.d.openSpecialGuest = Button((10, 10, -10, -10), u"open in Tab")
-		self.d.specialGuestLabel = TextBox((0, 0, -0, 20), u"Don’t forget:\n%s", alignment="center")
-		self.d.specialGuest = TextEditor((0, 25, -0, 60), self.specialGuests)
-		self.d.notesLabel = TextBox((0, 90, -0, 20), "Notes:", alignment="center")
-		self.d.UINotes = TextEditor((0, 110, -0, -0), callback=self.SavePreferences)
+		self.drawer = Drawer((220, 150), self.w)			
+		#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
+		#self.drawer.openSpecialGuest = Button((10, 10, -10, -10), u"open in Tab")
+		self.drawer.specialGuestLabel = TextBox((0, 0, -0, 20), u"Don’t forget:\n%s", alignment="center")
+		self.drawer.specialGuest =      TextEditor((0, 25, -0, 60), self.specialGuests)
+		
+		self.drawer.notesLabel =        TextBox((0, 90, -0, 20), "Notes:", alignment="center")
+		self.drawer.UINotes =           TextEditor((0, 110, -0, -500), callback=self.SavePreferences)
+		
+		self.drawer.doneLabel =         TextBox((0, -490, -0, 20), "Done:", alignment="center")
+		self.drawer.UIDone =            TextEditor((0, -470, -0, -0), callback=self.SavePreferences)
 
 		if not self.LoadPreferences():
 			print "Could not load preferences. Will resort to defaults."
@@ -1175,7 +1182,9 @@ class PreferenceWindow(object):
 
 
 	def helpButtonCallback(self, sender):
-		self.d.toggle()
+		self.Glyphs.defaults["%s.drawer" % self.vID] = not self.Glyphs.defaults["%s.drawer" % self.vID] # Toggle Value and= safePreference
+		self.drawer.getNSDrawer().toggle_( self.Glyphs.defaults["%s.drawer" % self.vID] ) # Toggle Drawer
+		# self.SavePreferences(sender)
 
 
 	def updateKerningGroupText(self):
@@ -1273,7 +1282,10 @@ class PreferenceWindow(object):
 			self.Glyphs.defaults["%s.pointSize" % self.vID] = self.w.pointSize.get()
 			self.Glyphs.defaults["%s.deactivateReporterUI" % self.vID] = self.w.deactivateReporterUI.get()
 			self.Glyphs.defaults["%s.separateTabsUI" % self.vID] = self.w.separateTabsUI.get()
-			self.Glyphs.defaults["%s.UINotes" % self.vID] = self.d.UINotes.get()
+			
+			# self.Glyphs.defaults["%s.drawer" % self.vID] = self.drawer.getNSDrawer().isOpen() # Not needed here, will be toggled in helpButtonCallback
+			self.Glyphs.defaults["%s.UINotes" % self.vID] = self.drawer.UINotes.get()
+			self.Glyphs.defaults["%s.UIDone" % self.vID] = self.drawer.UIDone.get()
 		except:
 			return False
 			
@@ -1294,7 +1306,9 @@ class PreferenceWindow(object):
 			collectedDefaults["%s.pointSize" % self.vID] = "250"
 			collectedDefaults["%s.deactivateReporterUI" % self.vID] = "True"
 			collectedDefaults["%s.separateTabsUI" % self.vID] = "False"
-			collectedDefaults["%s.UINotes" % self.vID] = "None"
+			collectedDefaults["%s.UINotes" % self.vID] = "" #"None"
+			collectedDefaults["%s.UIDone" % self.vID] = "" #"None"
+			collectedDefaults["%s.drawer" % self.vID] = "False"
 			for i, thisCat in enumerate(self.catToSkipUI):
 				collectedDefaults["%s.skipCategory%s" % (self.vID, str(i+1) ) ] = "False"
 			# print collectedDefaults
@@ -1318,7 +1332,13 @@ class PreferenceWindow(object):
 			self.w.pointSize.set( self.Glyphs.defaults["%s.pointSize" % self.vID] )
 			self.w.deactivateReporterUI.set( self.Glyphs.defaults["%s.deactivateReporterUI" % self.vID] )
 			self.w.separateTabsUI.set( self.Glyphs.defaults["%s.separateTabsUI" % self.vID] )
-			self.d.UINotes.set( self.Glyphs.defaults["%s.UINotes" % self.vID] )
+
+			if self.Glyphs.defaults["%s.drawer" % self.vID] == True:
+				self.drawer.getNSDrawer().open()
+			else:
+				self.drawer.getNSDrawer().close()	
+			self.drawer.UINotes.set( self.Glyphs.defaults["%s.UINotes" % self.vID] )
+			self.drawer.UIDone.set( self.Glyphs.defaults["%s.UIDone" % self.vID] )
 		except:
 			print traceback.format_exc()
 			return False
@@ -1354,6 +1374,18 @@ class PreferenceWindow(object):
 		self.updateGlyphPreview(otherGlyph)
 
 
+	def addGlyphToDoneList(self, glyphName):
+		## Add current Glyphs to List [New in 1.9.9]
+		# TODO: Check Current Glyph if in this list and notify!
+		try:
+			currentUIDone = self.drawer.UIDone.get()
+			currentUIDone += u"✅ %s\n" % glyphName
+			self.drawer.UIDone.set(currentUIDone)
+			self.Glyphs.defaults["%s.UIDone" % self.vID] = self.drawer.UIDone.get() # Same as in savePreferences
+		except:
+			print traceback.format_exc()
+
+
 	def buttonLeftCallback(self, sender):
 		self.setNeighbourGlyphInEditText(-1)  # previous Glyph in Font
 
@@ -1364,8 +1396,12 @@ class PreferenceWindow(object):
 
 	def submitButtonCallback(self, sender):
 		self.parent.skippedCategories = self.categoriesToSkipUI()
+
 		try:
 			actualInputGlyphName = self.w.glyphInput.get()
+
+			self.addGlyphToDoneList(actualInputGlyphName)
+
 			self.parent.generateTabOutput(actualInputGlyphName) # first main run
 			if Glyphs.buildNumber >= 911:
 				if self.w.includeOtherScripts.get() == 1:
