@@ -1,4 +1,8 @@
 <p align="center"> 
+<a href='https://ko-fi.com/M4M580HG' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+</p>
+
+<p align="center"> 
 <img src="https://raw.githubusercontent.com/carrois/Kernkraft/master/Kernkraft%2001.png" height="900">
 <img src="https://github.com/carrois/Kernkraft/blob/master/Kernschmelze%2001.png" width="400">
 </p>
