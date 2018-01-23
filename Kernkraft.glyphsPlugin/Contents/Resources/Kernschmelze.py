@@ -166,7 +166,7 @@ class MFCheckBox(CheckBox):
 
 
 
-version = "0.8"
+version = "0.9"
 class KernschmelzeWindow(object):
 
 	def __init__(self, font):
@@ -270,7 +270,10 @@ class KernschmelzeWindow(object):
 			setattr(self.w, attrNameLine, line)
 			y += 8
 			attrNameTargetMaster = "CopyMasters_%s" % str(i)
-			checkBoxTargetMaster = MFCheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
+			try:
+				checkBoxTargetMaster = MFCheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
+			except:
+				checkBoxTargetMaster = CheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
 			checkBoxTargetMaster.setID(str(i)) # MONKEY PATCH
 			setattr(self.w, attrNameTargetMaster, checkBoxTargetMaster)
 			exec("self.w.CopyMasters_" + str(i) + ".setTitle('\"%s\"  [%s Pairs]" % (str(master.name), str(len(self.getKerningFromMaster( master )))) + "')")

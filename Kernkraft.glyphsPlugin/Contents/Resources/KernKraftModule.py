@@ -28,6 +28,9 @@
 #	1.9.9
 #		+ New "Done" List, which automatically adds items with each Glyph to Tab(s).
 #		+ Drawer remembers status now.
+#	2.0.0
+#		+ Fix CheckBox bug (Same as in Reporter Toggler)
+
 
 
 import os
@@ -65,7 +68,7 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 class KernKraft(object):
 
-	version = "1.9.9"
+	version = "2.0.0"
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
