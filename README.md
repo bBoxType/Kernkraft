@@ -23,4 +23,3 @@ Copyright (c) 2016 by Mark Frömberg @ Carrois. All rights reserved.
 
 Published under [GNU General Public License v3.0](https://github.com/carrois/Kernkraft/blob/master/LICENSE.txt)
 
-# Mirroring Repo Test
