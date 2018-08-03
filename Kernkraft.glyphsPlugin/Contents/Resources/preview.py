@@ -14,21 +14,13 @@ class GlyphView(NSView):
 		rectX, rectY, rectWidth, rectHeight = 0, 0, thisUPM, thisUPM
 		self.rect = rect
 
-
 		# self._layer.drawInFrame_(bounds)  # used in Georgs GlyphView
 
 		try:
 			thisGlyph = self._layer.parent
 			layerWidth = self._layer.width * scaleFactor
 			descender = self._layer.glyphMetrics()[3] * scaleFactor
-			
-			# ## This order is important! Wont work the other way around.
-			# try: # pre Glyphs 2.3
-			# 	bezierPathOnly = self._layer.copy().bezierPath()  # Path Only
-			# 	bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath() # Path & Components
-			# except: # Glyphs 2.3
-			# 	bezierPathOnly = self._layer.copy().bezierPath  # Path Only
-			# 	bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath  # Path & Components
+			ascender = self._layer.glyphMetrics()[1] * scaleFactor
 
 			## This order is important! Wont work the other way around.
 			try: # Glyphs 2.3
@@ -42,7 +34,7 @@ class GlyphView(NSView):
 			# Set the scale
 			#--------------
 			scale = NSAffineTransform.transform()
-			scale.translateXBy_yBy_( rectWidth/2 - (layerWidth / 2.0) + self._margin/2, -descender + self._margin/2 )
+			scale.translateXBy_yBy_((bounds.size.width - layerWidth) / 2.0, (bounds.size.height - ascender + descender) / 2.0 - descender)
 			scale.scaleBy_( scaleFactor )
 
 			if bezierPathWithComponents:
@@ -68,21 +60,26 @@ class GlyphView(NSView):
 				NSColor.orangeColor().set()
 				bezierPathWithComponents.fill()
 			
+			attributes = {}
+			attributes[NSFontAttributeName] = NSFont.systemFontOfSize_(14)
+			
+			thisLKG = thisGlyph.leftKerningGroup
+			thisRKG = thisGlyph.rightKerningGroup
+			if thisLKG != None:
+				String = NSAttributedString.alloc().initWithString_attributes_(thisLKG, attributes)
+				String.drawAtPoint_alignment_((12, 5), 0)
+			if thisRKG != "None":
+				String = NSAttributedString.alloc().initWithString_attributes_(thisRKG, attributes)
+				String.drawAtPoint_alignment_((self.rect.size.width - 12, 5), 2)
+
 			# AUTO-WIDTH LABEL
 			#-----------------
 			if self._layer.hasAlignedWidth():
-				paragraphStyle = NSMutableParagraphStyle.alloc().init()
-				paragraphStyle.setAlignment_(2) ## 0=L, 1=R, 2=C, 3=justified
-				attributes = {}
-				attributes[NSFontAttributeName] = NSFont.systemFontOfSize_(10)
 				attributes[NSForegroundColorAttributeName] = NSColor.lightGrayColor()
-				attributes[NSParagraphStyleAttributeName] = paragraphStyle
+				attributes[NSFontAttributeName] = NSFont.systemFontOfSize_(11)
 				String = NSAttributedString.alloc().initWithString_attributes_("Auto-Width", attributes)
-				# String.drawAtPoint_((rectWidth, 0))
-				NSColor.redColor().set()
-				# NSRectFill(((0, 0), (self.rect.size.width, 15)))
-				String.drawInRect_(((0, 0), (self.rect.size.width, 15)))
+				String.drawAtPoint_alignment_((self.rect.size.width / 2.0, 5), 1)
 		except:
-			pass # print traceback.format_exc()
+			print traceback.format_exc()
 			
 
