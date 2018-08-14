@@ -41,7 +41,7 @@ import kernKit as KK
 import Customizables
 from GlyphsApp import Glyphs
 from Foundation import NSColor, NSUserDefaults, NSMakeRange
-from AppKit import NSScreen
+from AppKit import NSScreen, NSNoBorder
 
 
 # # # # # # # # # 
@@ -939,15 +939,6 @@ class KernKraft(object):
 
 class PreferenceWindow(object):
 
-	# For the editable TextBoxes
-	#---------------------------
-	# New in 1.9.6
-	# app = NSApplication.sharedApplication()
-	# delegate = AppDelegate.alloc().init()
-	# NSApp().setDelegate_(delegate)
-	#
-
-
 	def __init__(self, parent):
 		super(PreferenceWindow, self).__init__()
 		self.parent = parent
@@ -974,170 +965,117 @@ class PreferenceWindow(object):
 
 		rowHeight = 30
 		mrgn = 5
-		self.scrollViewMargin = 10
-		m = 10
+		self.scrollViewMargin = 0
+		m = 12
 		bW = 25
-		if screenHeight > 900:
-			prevBox = 300.0
-			layerScale = 1
-		else:
-			prevBox = 200.0
-			layerScale = .666
+		prevBox = 250.0
+		layerScale = 1
 		self.previewSize = self.thisFont.upm / (self.thisFont.upm / prevBox) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
 		windowWidth = self.previewSize # 230
-
-
-		#---------------
-		# Monkey Patches
-		#---------------
-		def __setColor(self, value):
-			# self._nsObject.setEditable_(value)
-			self._nsObject.setTextColor_(value)
-		TextBox.setColor = __setColor
-
-
-		# For the editable TextBoxes
-		#---------------------------
-		# New in 1.9.6
-		# def __setEditable(self, value):
-		# 	self._nsObject.setEditable_(value)
-		# 	self._nsObject.setBackgroundColor_(NSColor.blueColor())
-		# 	self._nsObject.setTextColor_(NSColor.blueColor())
-		# TextBox.setEditable = __setEditable
-		
-		# def __setTarget(self, target):
-		# 	self._target = target
-		# 	self._nsObject.setAction_( "textDidChange:" )	
-
-		# TextBox.setTarget = __setTarget
-		#
-
-
-
 
 		y = 0
 		self.w = Window((50, 50, 0, 0), self.title, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
 		y += self.previewSize
-		# ----------------------------------------------------------------------------------------------------
-		# / KERN-GLYPH KERNING CLASSES
-		#
-		KGColor = NSColor.blueColor()
-		self.w.TextLKG = TextBox((m, y, -m, 20), sizeStyle="small")
-		self.w.TextLKG.setColor(KGColor)
-		# self.w.TextLKG.setEditable(True) # New in 1.9.6
-		# self.w.TextLKG.setTarget( app.delegate() ) # New in 1.9.6
-		self.w.TextRKG = TextBox((m, y, -m, 20), sizeStyle="small", alignment="right")
-		self.w.TextRKG.setColor(KGColor)
-		y += 25	
-		self.w.line_KGKC = HorizontalLine((m, y, -m, 1))
-		y += 15
+		
+		self.w.line_Scrooller = HorizontalLine((0, y, self.previewSize, 1))
+		y += 8
 		# ----------------------------------------------------------------------------------------------------
 		# / KERN-GLYPH INPUT
 		#
-		self.w.glyphInput = EditText((m + bW + mrgn*2, y, -m - bW - mrgn*2, 23), placeholder="GlyphName", sizeStyle="regular", callback=self.SavePreferences)
-		self.w.buttonLeft = SquareButton((m, y, bW, 23 ), u"←", callback=self.buttonLeftCallback)
+		self.w.glyphInput = EditText((m + bW + mrgn*2, y, -m - bW - mrgn*2, 23), placeholder="GlyphName", callback=self.SavePreferences)
+		self.w.buttonLeft = Button((m, y, bW, 23 ), u"←", callback=self.buttonLeftCallback)
 		self.w.buttonLeft.bind("leftarrow", [])
-		self.w.buttonRight = SquareButton(( -m - bW, y, bW, 23 ), u"→", callback=self.buttonRightCallback)
+		self.w.buttonRight = Button(( -m - bW, y, bW, 23 ), u"→", callback=self.buttonRightCallback)
 		self.w.buttonRight.bind("rightarrow", [])
-		y += 38
-		self.w.line_KGI = HorizontalLine((m, y, -m, 1))
-		y += 10
+		y += 30
 		# ----------------------------------------------------------------------------------------------------
 		# / CHOSE MASTER
 		#
 		mastersList = ["%s" % thisMaster.name for thisMaster in self.thisFont.masters]
 		self.w.ChoseMaster = PopUpButton((m, y, -m, 20), mastersList, callback=self.masterSelection) ## **UC** NOT IMPLEMENTED IN SAVE & LOAD
 		self.w.ChoseMaster.set( self.masterIndex(self.mID) )
-		y += 30
+		y += 28
 		self.w.line_CM = HorizontalLine((m, y, -m, 1))
-		y+= 10		
+		y+= 4
 		# ----------------------------------------------------------------------------------------------------
 		# / Include other scripts
 		#
 		if Glyphs.buildNumber >= 911:
-			self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, sizeStyle="regular", callback=self.SavePreferences)
-			y += 30
-			self.w.line_IOS = HorizontalLine((m, y, -m, 1))
-			y+= 10
+			self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, callback=self.SavePreferences)
+			y += 20
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP COMPONENTS
 		#
-		self.w.skipComponentCheck = CheckBox((m, y, -m, 20), "Skip Components", sizeStyle="regular", callback=self.SavePreferences)
-		y += 30
-		self.w.line_SC = HorizontalLine((m, y, -m, 1))
-		y+= 10
+		self.w.skipComponentCheck = CheckBox((m, y, -m, 20), "Skip Components", callback=self.SavePreferences)
+		y += 20
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP KERNING CLASS MEMBERS
 		#
-		self.w.skipKGMembersCheck = CheckBox((m, y, -m, 20), "Skip Kerning Group Members", sizeStyle="regular", callback=self.SavePreferences)
-		y += 30
-		self.w.line_SKGM = HorizontalLine((m, y, -m, 1))
-		y+= 10
+		self.w.skipKGMembersCheck = CheckBox((m, y, -m, 20), "Skip Kerning Group Members", callback=self.SavePreferences)
+		y += 24
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP KERNING
 		#
-		self.w.skipKernText = TextBox((m, y, -m, 20), "Skip already kerned pairs:", sizeStyle="small")
-		y += 20
-		self.w.skipAlreadyKernedLeftCheck = CheckBox((m, y, -m, 20), "Left", sizeStyle="regular", callback=self.SavePreferences)
-		self.w.skipAlreadyKernedRightCheck = CheckBox((windowWidth/2, y, -m, 20), "Right", sizeStyle="regular", callback=self.SavePreferences)
-		y += 30
-		self.w.line_SK = HorizontalLine((m, y, -m, 1))
+		self.w.skipKernText = TextBox((m + 17, y, -m, 20), "Skip already kerned pairs:")
+		y += 18
+		self.w.skipAlreadyKernedLeftCheck = CheckBox((m, y, -m, 20), "Left", callback=self.SavePreferences)
+		self.w.skipAlreadyKernedRightCheck = CheckBox((windowWidth * 0.33, y, -m, 20), "Right", callback=self.SavePreferences)
+		y += 24
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP CATEGORIES
 		#
-		y+= 10
-		self.w.skipCategoriesText = TextBox((m, y, -m, 20), "Skip Categories:", sizeStyle="small")
-		y += 20
+		# y+= 10
+		self.w.skipCategoriesText = TextBox((m + 17, y, -m, 20), "Skip Categories:")
+		y += 18
 		for i, thisCat in enumerate(self.catToSkipUI):
 			exec("self.w.skipCategory"+str(i+1)+" = CheckBox( (m, y, -m, 20), '" + thisCat + "', sizeStyle='regular', callback=self.SavePreferences )")
 			exec("y += 20")
-		y += 10
+		y += 4
 		self.w.line_SCT = HorizontalLine((m, y, -m, 1))
 		# ----------------------------------------------------------------------------------------------------
 		# / SPLIT CATEGORIES INTO SEPARATE TABS
 		#
-		y+= 5
-		self.w.separateTabsUI = CheckBox((m, y + 5, -m, 23), "Separate Categories Tabs", callback=self.SavePreferences) # Split Categories into separate Tabs
-		# self.w.separateTabsUI.enable(False)
+		y+= 2
+		self.w.separateTabsUI = CheckBox((m, y + 5, -m, 20), "Separate Categories Tabs", callback=self.SavePreferences) # Split Categories into separate Tabs
 		# ----------------------------------------------------------------------------------------------------
 		# / DEACTIVATE REPORTERS
 		#
-		y += 25
-		self.w.deactivateReporterUI = CheckBox((m, y + 5, -m, 23), "Deactivate Reporter Plugins", callback=self.SavePreferences)
-		y += 35
-		# ----------------------------------------------------------------------------------------------------
-		# / POINT SIZE
-		#
-		self.w.pointSizeText = TextBox((m + 20, y + 5, -m, 23), "Font Size:", sizeStyle="small")
-		self.w.pointSize = EditText((windowWidth/2, y, -m, 23), "250", sizeStyle="regular", callback=self.SavePreferences)
+		y += 20
+		self.w.deactivateReporterUI = CheckBox((m, y + 5, -m, 20), "Deactivate Reporter Plugins", callback=self.SavePreferences)
 		y += 30
 		self.w.line_PS = HorizontalLine((m, y, -m, 1))
 		# ----------------------------------------------------------------------------------------------------
 		# / SUBMIT BUTTON
-		#		
-		y += 10 # 35
-		self.w.make_button = Button((m, y, -m - 25, 20), u"Open Tab", sizeStyle="regular", callback=self.submitButtonCallback)  # u"💥🚀⚛" # (m, y, -m, 20)
+		#
+		y += 8 # 35
+		self.w.make_button = Button((m, y, -m - 30, 20), u"Open Tab", callback=self.submitButtonCallback)  # u"💥🚀⚛" # (m, y, -m, 20)
 		self.w.setDefaultButton(self.w.make_button)
 		# / HELP BUTTON
 		# self.w.helpButton = HelpButton((windowWidth - 30, y, -m, 20), callback=self.helpButtonCallback)
-		self.w.helpButton = SquareButton((windowWidth - 30, y, -m, 20), u"...", callback=self.helpButtonCallback)
+		self.w.helpButton = Button((windowWidth - 35, y, -m, 20), u"...", callback=self.helpButtonCallback)
 		# / DRAWER (TOGGLED BY HELP BUTTON)
-		self.drawer = Drawer((220, 150), self.w)			
+		self.drawer = Drawer((220, 150), self.w)
 		#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
 		#self.drawer.openSpecialGuest = Button((10, 10, -10, -10), u"open in Tab")
-		self.drawer.specialGuestLabel = TextBox((0, 0, -0, 20), u"Don’t forget:\n%s", alignment="center")
-		self.drawer.specialGuest =      TextEditor((0, 25, -0, 60), self.specialGuests)
+		self.drawer.specialGuestLabel = TextBox((m+10, 0, -0, 20), u"Don’t forget:\n%s")
+		self.drawer.specialGuest =      TextEditor((5, 20, -0, 60), self.specialGuests)
 		
-		self.drawer.notesLabel =        TextBox((0, 90, -0, 20), "Notes:", alignment="center")
-		self.drawer.UINotes =           TextEditor((0, 110, -0, -500), callback=self.SavePreferences)
+		self.drawer.notesLabel =        TextBox((m+10, 86, -0, 20), "Notes:")
+		self.drawer.UINotes =           TextEditor((5, 106, -0, -476), callback=self.SavePreferences)
 		
-		self.drawer.doneLabel =         TextBox((0, -490, -0, 20), "Done:", alignment="center")
-		self.drawer.UIDone =            TextEditor((0, -470, -0, -0), callback=self.SavePreferences)
+		self.drawer.doneLabel =         TextBox((m+10, -470, -0, 20), "Done:")
+		self.drawer.UIDone =            TextEditor((5, -450, -0, -30), callback=self.SavePreferences)
+		# ----------------------------------------------------------------------------------------------------
+		# / POINT SIZE
+		#
+		self.drawer.pointSizeText = TextBox((m+10, -24, -m, 23), "Font Size:")
+		self.drawer.pointSize = EditText((m+75, -27, 50, 23), "250", callback=self.SavePreferences)
+		
+		
 
 		if not self.LoadPreferences():
 			print "Could not load preferences. Will resort to defaults."
 	
-		self.updateKerningGroupText()
 		self.w.resize(windowWidth, 30 + y)
 		self.w.makeKey() ### Focus on Window and Button
 		self.w.open()
@@ -1181,6 +1119,7 @@ class PreferenceWindow(object):
 			backgroundColor=bgColor,
 			# drawsBackground=False,
 			)
+		s._nsObject.setBorderType_(NSNoBorder)
 		return s
 
 
@@ -1188,18 +1127,6 @@ class PreferenceWindow(object):
 		self.Glyphs.defaults["%s.drawer" % self.vID] = not self.Glyphs.defaults["%s.drawer" % self.vID] # Toggle Value and= safePreference
 		self.drawer.getNSDrawer().toggle_( self.Glyphs.defaults["%s.drawer" % self.vID] ) # Toggle Drawer
 		# self.SavePreferences(sender)
-
-
-	def updateKerningGroupText(self):
-		thisGlyph = self.thisFont.glyphs[self.w.glyphInput.get()]
-		thisLKG = str(thisGlyph.leftKerningGroup)
-		thisRKG = str(thisGlyph.rightKerningGroup)
-		if thisLKG == "None":
-			thisLKG = ""
-		if thisRKG == "None":
-			thisRKG = ""
-		self.w.TextLKG.set(thisLKG)
-		self.w.TextRKG.set(thisRKG)
 
 
 	def masterIndex(self, master):
@@ -1229,7 +1156,6 @@ class PreferenceWindow(object):
 		delattr(self.w, "box")
 		setattr(self.w, "box", self.scrollView())
 		self.view.setToolTip_(glyphName)
-		self.updateKerningGroupText()
 
 		self.setCheckboxIOS(glyphName, self.chosenMasterID)
 
