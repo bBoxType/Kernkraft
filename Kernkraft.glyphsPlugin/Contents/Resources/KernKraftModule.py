@@ -563,7 +563,7 @@ class KernKraft(object):
 	def makeTab(self, tabOutput):
 		''' OUTPUT TO EDIT-TAB '''
 
-		self.UIPointSize = float(self.drawer.pointSize.get())
+		self.UIPointSize = float(self.prefwindow.drawer.pointSize.get())
 		thisTabOutput = "\n".join(tabOutput)
 
 		self.Doc = self.Glyphs.currentDocument
