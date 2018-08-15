@@ -41,7 +41,7 @@ import kernKit as KK
 import Customizables
 from GlyphsApp import Glyphs
 from Foundation import NSColor, NSUserDefaults, NSMakeRange
-from AppKit import NSScreen, NSNoBorder
+from AppKit import NSScreen, NSNoBorder, NSNormalWindowLevel, NSFloatingWindowLevel
 
 
 # # # # # # # # #
@@ -975,6 +975,10 @@ class PreferenceWindow(object):
 
 		y = 0
 		self.w = Window((50, 50, 0, 0), self.title, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
+		try:
+			self.w._window.setLevel_(NSFloatingWindowLevel) # NSNormalWindowLevel / NSFloatingWindowLevel
+		except:
+			print traceback.format_exc()
 		y += self.previewSize
 
 		self.w.line_Scrooller = HorizontalLine((0, y, self.previewSize, 1))
