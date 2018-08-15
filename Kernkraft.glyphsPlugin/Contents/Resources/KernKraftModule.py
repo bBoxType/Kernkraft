@@ -1348,7 +1348,7 @@ class PreferenceWindow(object):
 		except:
 			print traceback.format_exc()
 
-		self.w.close()
+		# self.w.close()
 
 		if self.w.deactivateReporterUI.get():
 			self.parent.deactivateReporters()
