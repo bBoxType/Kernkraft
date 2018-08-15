@@ -1208,7 +1208,7 @@ class PreferenceWindow(object):
 			self.Glyphs.defaults["%s.skipAlreadyKernedRightCheck" % self.vID] = self.w.skipAlreadyKernedRightCheck.get()
 			for i, thisCat in enumerate(self.catToSkipUI):
 				exec('self.Glyphs.defaults["%s.skipCategory%i"] = self.w.skipCategory%i.get()' % (self.vID, i+1, i+1) ) # self.Glyphs.defaults["com.markfromberg.kernkraft.skipCategory1"] = self.w.skipCategory1.get() # etc.
-			self.Glyphs.defaults["%s.pointSize" % self.vID] = self.w.pointSize.get()
+			self.Glyphs.defaults["%s.pointSize" % self.vID] = self.drawer.pointSize.get()
 			self.Glyphs.defaults["%s.deactivateReporterUI" % self.vID] = self.w.deactivateReporterUI.get()
 			self.Glyphs.defaults["%s.separateTabsUI" % self.vID] = self.w.separateTabsUI.get()
 
@@ -1258,7 +1258,7 @@ class PreferenceWindow(object):
 			self.w.skipAlreadyKernedRightCheck.set( self.Glyphs.defaults["%s.skipAlreadyKernedRightCheck" % self.vID] )
 			for i, thisCat in enumerate(self.catToSkipUI):
 				exec('self.w.skipCategory%i.set( self.Glyphs.defaults["%s.skipCategory%s"] )' % (i+1, self.vID, i+1) )
-			self.w.pointSize.set( self.Glyphs.defaults["%s.pointSize" % self.vID] )
+			self.drawer.pointSize.set( self.Glyphs.defaults["%s.pointSize" % self.vID] )
 			self.w.deactivateReporterUI.set( self.Glyphs.defaults["%s.deactivateReporterUI" % self.vID] )
 			self.w.separateTabsUI.set( self.Glyphs.defaults["%s.separateTabsUI" % self.vID] )
 
