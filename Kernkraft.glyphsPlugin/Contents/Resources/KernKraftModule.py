@@ -975,7 +975,7 @@ class PreferenceWindow(object):
 
 		y = 0
 		self.w = Window((50, 50, 0, 0), self.title, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
-		try:
+		try: # Make it a FloatingWindow without the ugly look of vanilla's FW:
 			self.w._window.setLevel_(NSFloatingWindowLevel) # NSNormalWindowLevel / NSFloatingWindowLevel
 		except:
 			print traceback.format_exc()
