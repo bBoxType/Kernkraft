@@ -1052,7 +1052,7 @@ class PreferenceWindow(object):
 		self.w.setDefaultButton(self.w.make_button)
 		# / HELP BUTTON
 		# self.w.helpButton = HelpButton((windowWidth - 30, y, -m, 20), callback=self.helpButtonCallback)
-		self.w.helpButton = Button((windowWidth - 35, y, -m, 20), u"...", callback=self.helpButtonCallback)
+		self.w.helpButton = Button((windowWidth - 35, y, -m, 20), u"…", callback=self.helpButtonCallback)
 		# / DRAWER (TOGGLED BY HELP BUTTON)
 		self.drawer = Drawer((220, 150), self.w)
 		#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
@@ -1068,8 +1068,8 @@ class PreferenceWindow(object):
 		# ----------------------------------------------------------------------------------------------------
 		# / POINT SIZE
 		#
-		self.drawer.pointSizeText = TextBox((m+10, -24, -m, 23), "Font Size:")
-		self.drawer.pointSize = EditText((m+75, -27, 50, 23), "250", callback=self.SavePreferences)
+		self.drawer.pointSizeText =     TextBox((m+10, -24, -m, 23), "Font Size:")
+		self.drawer.pointSize =         EditText((m+75, -27, 50, 23), "250", callback=self.SavePreferences)
 
 
 
