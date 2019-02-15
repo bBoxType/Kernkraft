@@ -63,6 +63,10 @@ class KerningStrings:
 					"Left" : "/thoThahan-thai/thoThahan-thai/doDek-thai/thoThahan-thai",
 					"Right" : "/thoThahan-thai/doDek-thai/doDek-thai/noNu-thai",
 					},
+				"Spacing" : {
+					"Left" : "/khoKhwai-thai/khoKhwai-thai/doDek-thai/khoKhwai-thai",
+					"Right" : "/khoKhwai-thai/doDek-thai/doDek-thai/khoKhwai-thai",
+					},
 				},
 			},
 		"hebrew" : {
