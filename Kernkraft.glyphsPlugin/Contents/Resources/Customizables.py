@@ -35,5 +35,20 @@ excludedSubCategories = [
 
 	[ [ "Symbol", "Arrow" ],		{ "Exceptions" : [] } ],
 	[ [ "Symbol", "Geometry" ],		{ "Exceptions" : [] } ],
-	[ [ "Symbol", "Other" ],		{ "Exceptions" : ["ampersand", "at", "trademark"]} ],
+	[ [ "Symbol", "Other" ],		{ "Exceptions" : [
+													"ampersand",
+												  	"at",
+												  	"trademark",
+												 	"lozenge",
+													"paragraph",
+													"section",
+													"registered",
+													"degree",
+													"bar",
+													"brokenbar",
+													"dagger",
+													"daggerdbl",
+													"numero",
+													"estimated",
+												 	]} ],
 ]
