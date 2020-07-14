@@ -1233,22 +1233,22 @@ class PreferenceWindow(object):
 			collectedDefaults = {}
 			collectedDefaults["%s.glyphInput" % self.vID] = "a"
 			if Glyphs.buildNumber >= 911:
-				collectedDefaults["%s.includeOtherScripts" % self.vID] = "True"
-			collectedDefaults["%s.skipComponentCheck" % self.vID] = "True"
-			collectedDefaults["%s.skipKGMembersCheck" % self.vID] = "True"
-			collectedDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = "False"
-			collectedDefaults["%s.skipAlreadyKernedRightCheck" % self.vID] = "False"
-			collectedDefaults["%s.pointSize" % self.vID] = "250"
-			collectedDefaults["%s.deactivateReporterUI" % self.vID] = "True"
-			collectedDefaults["%s.separateTabsUI" % self.vID] = "False"
+				collectedDefaults["%s.includeOtherScripts" % self.vID] = True
+			collectedDefaults["%s.skipComponentCheck" % self.vID] = True
+			collectedDefaults["%s.skipKGMembersCheck" % self.vID] = True
+			collectedDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = False
+			collectedDefaults["%s.skipAlreadyKernedRightCheck" % self.vID] = False
+			collectedDefaults["%s.pointSize" % self.vID] = 250
+			collectedDefaults["%s.deactivateReporterUI" % self.vID] = True
+			collectedDefaults["%s.separateTabsUI" % self.vID] = False
 			collectedDefaults["%s.UINotes" % self.vID] = "" #"None"
 			collectedDefaults["%s.UIDone" % self.vID] = "" #"None"
-			collectedDefaults["%s.drawer" % self.vID] = "False"
+			collectedDefaults["%s.drawer" % self.vID] = False
 			for i, thisCat in enumerate(self.catToSkipUI):
-				collectedDefaults["%s.skipCategory%s" % (self.vID, str(i+1) ) ] = "False"
-			# print collectedDefaults
+				collectedDefaults["%s.skipCategory%s" % (self.vID, str(i+1) ) ] = False
+			# print(collectedDefaults)
 
-			NSUserDefaults.standardUserDefaults().registerDefaults_( collectedDefaults )
+			Glyphs.registerDefaults(collectedDefaults)
 
 			''' SET THE UI ELEMENTS WITH VALUES FROM THE PREFERENCES '''
 			if self.Glyphs.defaults["%s.glyphInput" % self.vID] in self.allGlyphsInFont:
@@ -1257,15 +1257,15 @@ class PreferenceWindow(object):
 				self.w.glyphInput.set( self.firstGlyphInFont ) # allGlyphsInFont[0]
 				# Fallback Layer if user switched from one font to another and the stored glyph is not available
 			if Glyphs.buildNumber >= 911:
-				self.w.includeOtherScripts.set( self.Glyphs.defaults["%s.includeOtherScripts" % self.vID] )
-			self.w.skipComponentCheck.set( self.Glyphs.defaults["%s.skipComponentCheck" % self.vID] )
-			self.w.skipKGMembersCheck.set( self.Glyphs.defaults["%s.skipKGMembersCheck" % self.vID] )
-			self.w.skipAlreadyKernedLeftCheck.set( self.Glyphs.defaults["%s.skipAlreadyKernedLeftCheck" % self.vID] )
-			self.w.skipAlreadyKernedRightCheck.set( self.Glyphs.defaults["%s.skipAlreadyKernedRightCheck" % self.vID] )
+				self.w.includeOtherScripts.set( self.Glyphs.boolDefaults["%s.includeOtherScripts" % self.vID] )
+			self.w.skipComponentCheck.set( self.Glyphs.boolDefaults["%s.skipComponentCheck" % self.vID] )
+			self.w.skipKGMembersCheck.set( self.Glyphs.boolDefaults["%s.skipKGMembersCheck" % self.vID] )
+			self.w.skipAlreadyKernedLeftCheck.set( self.Glyphs.boolDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID] )
+			self.w.skipAlreadyKernedRightCheck.set( self.Glyphs.boolDefaults["%s.skipAlreadyKernedRightCheck" % self.vID] )
 			for i, thisCat in enumerate(self.catToSkipUI):
-				exec('self.w.skipCategory%i.set( self.Glyphs.defaults["%s.skipCategory%s"] )' % (i+1, self.vID, i+1) )
+				exec('self.w.skipCategory%i.set( self.Glyphs.boolDefaults["%s.skipCategory%s"] )' % (i+1, self.vID, i+1) )
 			self.drawer.pointSize.set( self.Glyphs.defaults["%s.pointSize" % self.vID] )
-			self.w.deactivateReporterUI.set( self.Glyphs.defaults["%s.deactivateReporterUI" % self.vID] )
+			self.w.deactivateReporterUI.set( self.Glyphs.boolDefaults["%s.deactivateReporterUI" % self.vID] )
 			self.w.separateTabsUI.set( self.Glyphs.defaults["%s.separateTabsUI" % self.vID] )
 
 			if self.Glyphs.defaults["%s.drawer" % self.vID] == True:
