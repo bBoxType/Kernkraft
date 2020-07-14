@@ -1117,7 +1117,7 @@ class PreferenceWindow(object):
 	def scrollView(self):
 		''' Generate vanilla attribute ScrollView'''
 		m = 10
-		bgColor = NSColor.colorWithCalibratedRed_green_blue_alpha_(.96, .96, .96, 1) # NSColor.yellowColor()
+		bgColor = NSColor.textBackgroundColor() # NSColor.yellowColor()
 		s = ScrollView((self.scrollViewMargin, self.scrollViewMargin, self.previewSize - self.scrollViewMargin*2, self.previewSize - self.scrollViewMargin*2), # with margins
 			self.view,
 			hasHorizontalScroller=False,

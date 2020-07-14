@@ -35,24 +35,23 @@ class GlyphView(NSView):
 			#--------------
 			scale = NSAffineTransform.transform()
 			scale.translateXBy_yBy_((bounds.size.width - layerWidth) / 2.0, (bounds.size.height - ascender + descender) / 2.0 - descender)
-			scale.scaleBy_( scaleFactor )
+			scale.scaleBy_(scaleFactor)
 
 			if bezierPathWithComponents:
-				bezierPathWithComponents.transformUsingAffineTransform_( scale )
-			if bezierPathOnly:
-				bezierPathOnly.transformUsingAffineTransform_( scale )
-
-			# Draw components in gray
-			#------------------------
-			NSColor.darkGrayColor().set() # lightGrayColor
-			bezierPathWithComponents.fill()
+				bezierPathWithComponents.transformUsingAffineTransform_(scale)
+			
+				# Draw components in gray
+				#------------------------
+				NSColor.secondaryLabelColor().set() # lightGrayColor
+				bezierPathWithComponents.fill()
 			
 			
 			# Draw only path in black
 			#------------------------
 			if thisGlyph.export:
-				NSColor.blackColor().set()
+				NSColor.textColor().set()
 				if bezierPathOnly:
+					bezierPathOnly.transformUsingAffineTransform_(scale)
 					bezierPathOnly.fill()
 			# Draw non-exported glyphs in orange
 			#-----------------------------------
@@ -65,10 +64,10 @@ class GlyphView(NSView):
 			
 			thisLKG = thisGlyph.leftKerningGroup
 			thisRKG = thisGlyph.rightKerningGroup
-			if thisLKG != None:
+			if thisLKG is not None:
 				String = NSAttributedString.alloc().initWithString_attributes_(thisLKG, attributes)
 				String.drawAtPoint_alignment_((12, 5), 0)
-			if thisRKG != "None":
+			if thisRKG is not None:
 				String = NSAttributedString.alloc().initWithString_attributes_(thisRKG, attributes)
 				String.drawAtPoint_alignment_((self.rect.size.width - 12, 5), 2)
 
