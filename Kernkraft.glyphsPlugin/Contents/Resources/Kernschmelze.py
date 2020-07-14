@@ -152,7 +152,7 @@ class MFCheckBox(CheckBox):
 			# nsbutton.setButtonType_(0) # 1 is funky
 			# nsbutton.setAlignment_(0)
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 ########################################
 ########################################
@@ -307,7 +307,7 @@ class KernschmelzeWindow(object):
 		if status == 0:
 			if master in self.UI_SelectedTargetMasters:
 				self.UI_SelectedTargetMasters.remove(master)
-		# print self.UI_SelectedTargetMasters
+		# print(self.UI_SelectedTargetMasters)
 
 
 	def targetMastersOptions(self, sender):
@@ -343,7 +343,7 @@ class KernschmelzeWindow(object):
 
 
 	def getKerningFromMaster(self, fontMaster):
-		# print "__sourceMaster:", fontMaster.name ## sourceMasterA or sourceMasterB
+		# print("__sourceMaster:", fontMaster.name ## sourceMasterA or sourceMasterB)
 		try:
 			thisKerning = self.font.kerning[fontMaster.id]
 		except:
@@ -357,19 +357,19 @@ class KernschmelzeWindow(object):
 			for item in rightSide.viewitems():
 				value = item[1]
 				if item[0][:5] != "@MMK_":  # If single glyph (exception to Kerning Group)
-					#print "----> %s" % font.glyphForId_( item[0] ).name
+					#print("----> %s" % font.glyphForId_( item[0] ).name)
 					rightSide = self.font.glyphForId_( item[0] ).name
 				else:
 					rightSide = item[0]
 
-				# print item
+				# print(item)
 				thisKerningCollection.append([leftSide, rightSide, value ])
 
 		### DEBUG
-		# print "__thisKerningCollection:"
-		# print "  %s Pairs:" % len(thisKerningCollection)
+		# print("__thisKerningCollection:")
+		# print("  %s Pairs:" % len(thisKerningCollection))
 		# for x in thisKerningCollection:
-		# 	print x
+		# 	print(x)
 		# print
 
 		return thisKerningCollection
@@ -406,7 +406,7 @@ class KernschmelzeWindow(object):
 				kernDict[pair] = [valueA, fillValue] # case: 2nd M has no entry for this pair, set it to 0
 
 		# for key, val in kernDict.iteritems():
-		# 	print key.split(self.separator), val
+		# 	print(key.split(self.separator), val)
 		return kernDict
 
 
@@ -426,7 +426,7 @@ class KernschmelzeWindow(object):
 		try:
 			self.font.setKerningForPair(self.master.id, '%s'  % self.leftSide_K, '%s'  % self.rightSide_K, copiedKernValue)
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 
@@ -455,13 +455,13 @@ class KernschmelzeWindow(object):
 				pair = key.split(self.separator)
 				self.leftSide_K, self.rightSide_K = pair
 				self.KernValue_A, self.KernValue_B = values
-				# print self.leftSide_K, self.rightSide_K, self.KernValue_A, self.KernValue_B
+				# print(self.leftSide_K, self.rightSide_K, self.KernValue_A, self.KernValue_B)
 				if self.KernValue_A == None:
 					self.font.setKerningForPair(self.UI_sourceMasterA[0].id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
-					# print "set %s (%s %s) to ZERO" % (self.UI_sourceMasterA[0].name, self.leftSide_K, self.rightSide_K)
+					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterA[0].name, self.leftSide_K, self.rightSide_K))
 				if self.KernValue_B == None:
 					self.font.setKerningForPair(self.UI_sourceMasterB[0].id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
-					# print "set %s (%s %s) to ZERO" % (self.UI_sourceMasterB[0].name, self.leftSide_K, self.rightSide_K)
+					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterB[0].name, self.leftSide_K, self.rightSide_K))
 
 
 			#==============================================================
@@ -476,7 +476,7 @@ class KernschmelzeWindow(object):
 				# Exclude Source Masters:
 				#------------------------
 				if i != UI_SelectedMasterA_IDX and i != UI_SelectedMasterB_IDX:  # by index
-					# print "Master: %s - Option: %s" % (i, self.masterOptions[i])
+					# print("Master: %s - Option: %s" % (i, self.masterOptions[i]))
 					
 					if master in self.UI_SelectedTargetMasters:
 
@@ -503,9 +503,9 @@ class KernschmelzeWindow(object):
 								try:
 									self.font.setKerningForPair(master.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, self.interpolate(self.KernValue_A, self.KernValue_B, location))
 								except:
-									print traceback.format_exc()
+									print(traceback.format_exc())
 
 
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 

@@ -80,6 +80,6 @@ class GlyphView(NSView):
 				String = NSAttributedString.alloc().initWithString_attributes_("Auto-Width", attributes)
 				String.drawAtPoint_alignment_((self.rect.size.width / 2.0, 5), 1)
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 			
 

@@ -118,7 +118,7 @@ class KernKraft(object):
 
 	def debugPrint(self, s):
 		if debugMode:
-			print s
+			print(s)
 
 
 	def escName(self, glyphName):
@@ -193,12 +193,12 @@ class KernKraft(object):
 	# 	for item in excludedSubCategories:
 	# 		[thisCat, thisSubCat], dic = item
 	# 		# if glyphName.split(".")[0] in dic['Exceptions']:  # DEBUG
-	# 		# 	print "++++++++++ in exceptions, kept in", glyphName  # DEBUG
+	# 		# 	print("++++++++++ in exceptions, kept in", glyphName)  # DEBUG
 	# 		if glyphName.split(".")[0] not in dic['Exceptions']:  # let through all suffixed versions (e.g. ampersand, ampersand.ss01, etc)
 	# 			if category == thisCat:
 	# 				if subCategory == thisSubCat:
 	# 					if debugMode:
-	# 						print '{:10}{:45}{} {} {}'.format("skipped:", glyphName, u"-> excluded Cat & SubCat:", thisCat, thisSubCat)
+	# 						print('{:10}{:45}{} {} {}'.format("skipped:", glyphName, u"-> excluded Cat & SubCat:", thisCat, thisSubCat))
 	# 					return True  # Skip
 	# 		else:
 	# 			return False  # Don’t Skip
@@ -209,7 +209,7 @@ class KernKraft(object):
 		for item in excludedSubCategories:
 			[thisCat, thisSubCat], dic = item
 			# if glyphName.split(".")[0] in dic['Exceptions']:  # DEBUG
-			# 	print "++++++++++ in exceptions, kept in", glyphName  # DEBUG
+			# 	print("++++++++++ in exceptions, kept in", glyphName)  # DEBUG
 			if glyphName.split(".")[0] not in dic['Exceptions']:  # let through all suffixed versions (e.g. ampersand, ampersand.ss01, etc)
 				if category == thisCat:
 					if subCategory == thisSubCat:
@@ -233,8 +233,10 @@ class KernKraft(object):
 		if Glyphs.buildNumber >= 911:
 
 			collector = []
-
-			thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, self.thisFont.masters[masterID].id)
+			if Glyphs.buildNumber > 3000:
+				thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterId_(glyphName, self.thisFont.masters[masterID].id)
+			else:
+				thisGlyphsReusedGlyphs = self.thisFont.glyphsContainingComponentWithName_masterID_(glyphName, self.thisFont.masters[masterID].id)
 			if len(thisGlyphsReusedGlyphs) > 0:
 				for glyph in thisGlyphsReusedGlyphs:
 					masterLayer = glyph.layers[masterID]
@@ -272,7 +274,7 @@ class KernKraft(object):
 				return None
 
 			except:
-				print traceback.format_exc()
+				print(traceback.format_exc())
 
 		else:
 			return None
@@ -314,7 +316,7 @@ class KernKraft(object):
 					return None
 
 			except:
-				print traceback.format_exc()
+				print(traceback.format_exc())
 
 		else:
 			return None
@@ -424,7 +426,7 @@ class KernKraft(object):
 			return thisLine
 
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 
@@ -438,26 +440,26 @@ class KernKraft(object):
 
 		if relation == "noGroupToNoGroup":
 			thisKerning = self.kfp(self.mID, '%s' % G1, '%s' % G2)
-			# print "noGroupToNoGroup %s %s" % (G1, G2)
+			# print("noGroupToNoGroup %s %s" % (G1, G2))
 
 		if relation == "groupToGroup":
 			thisKerning = self.kfp(self.mID, '@MMK_L_%s' % self.thisFont.glyphs[G1].rightKerningGroup, '@MMK_R_%s' % self.thisFont.glyphs[G2].leftKerningGroup)
-			# print "groupToGroup %s %s" % (G1, G2)
+			# print("groupToGroup %s %s" % (G1, G2))
 
 		if relation == "groupToNoGroup":
 			thisKerning = self.kfp(self.mID, '@MMK_L_%s' % self.thisFont.glyphs[G1].rightKerningGroup, '%s' % G2)
-			# print "groupToNoGroup %s %s" % (G1, G2)
+			# print("groupToNoGroup %s %s" % (G1, G2))
 
 		if relation == "noGroupToGroup":
 			thisKerning = self.kfp(self.mID, '%s'  % G1, '@MMK_R_%s' % self.thisFont.glyphs[G2].leftKerningGroup)
-			# print "noGroupToGroup %s %s" % (G1, G2)
+			# print("noGroupToGroup %s %s" % (G1, G2))
 
 		try:
 			if thisKerning not in anyKerning:
-				# print thisKerning
+				# print(thisKerning)
 				anyKerning.append(thisKerning)
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 
@@ -466,7 +468,7 @@ class KernKraft(object):
 	# 	if len(anyKerning) == 1 and anyKerning[0].__long__() == 9223372036854775808:
 	# 		return False # no kerning set
 	# 	else:
-	# 		print "skipped %s, %s, (%s) [2b]" % (inputGlyph, iteratedGlyph, side)
+	# 		print("skipped %s, %s, (%s) [2b]" % (inputGlyph, iteratedGlyph, side))
 	# 		return True # kerning set
 
 
@@ -495,7 +497,7 @@ class KernKraft(object):
 				if len(anyKerning) == 1 and anyKerning[0].__long__() == 9223372036854775808:
 					return False # no kerning set
 				else:
-					# print "skipped %s, %s, (%s) [2a]" % (inputGlyph, iteratedGlyph, side)
+					# print("skipped %s, %s, (%s) [2a]" % (inputGlyph, iteratedGlyph, side))
 					return True # kerning set
 
 
@@ -511,11 +513,11 @@ class KernKraft(object):
 				if len(anyKerning) == 1 and anyKerning[0].__long__() == 9223372036854775808:
 					return False # no kerning set
 				else:
-					# print "skipped %s, %s, (%s) [2b]" % (inputGlyph, iteratedGlyph, side)
+					# print("skipped %s, %s, (%s) [2b]" % (inputGlyph, iteratedGlyph, side))
 					return True # kerning set
 
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 
@@ -529,7 +531,7 @@ class KernKraft(object):
 			for reporter in self.Glyphs.activeReporters:
 				self.Glyphs.deactivateReporter(reporter)
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 	def setupTab(self):
@@ -617,7 +619,7 @@ class KernKraft(object):
 		# 		self.showAllScripts = isReused.append(isReused_B)
 		# 	except:
 		# 		self.showAllScripts = isReused_B
-		# 	print "-_-_-_-_-_", self.showAllScripts
+		# 	print("-_-_-_-_-_", self.showAllScripts)
 		# 	# self.showAllScripts.remove(inputGlyphName)
 
 
@@ -707,7 +709,7 @@ class KernKraft(object):
 				### Cover cases like `zero.tf.sc`
 				# if itrG_Name[-3:] == ".tf" or itrG_Name[-5:] == ".tosf": # DEPRECATED
 				if ".tf" in itrG_Name or ".tosf" in itrG_Name: # *new in 1.8*
-					# print "__excluded %s for being .tf or .tosf" % itrG_Name
+					# print("__excluded %s for being .tf or .tosf" % itrG_Name)
 					continue
 
 
@@ -718,14 +720,14 @@ class KernKraft(object):
 				if UI_SkipAlreadyKernedRightCheck:
 					## UNDER CONSTRUCTION
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning"):
-						# print "__excluded %s for already kerned right" % itrG_Name
+						# print("__excluded %s for already kerned right" % itrG_Name)
 						self.debugPrint( "special Case [RK] %s" % itrG_Name )
 						skipSide = "chopRight"
 						# continue ## DONT CONTINUE, BUT REWRITE STRING
 				if UI_SkipAlreadyKernedLeftCheck:
 					## UNDER CONSTRUCTION
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
-						# print "__excluded %s for already kerned left" % itrG_Name
+						# print("__excluded %s for already kerned left" % itrG_Name)
 						self.debugPrint( "special Case [LK] %s" % itrG_Name )
 						skipSide = "chopLeft"
 						# continue ## DONT CONTINUE, BUT REWRITE STRING
@@ -782,14 +784,14 @@ class KernKraft(object):
 				# TODO: Is this Part A really neccessary?!
 
 				if UI_SkipKGMembers:
-					# print "__KG-inp: %s --%s-- %s" % (UI_inputGlyph_LKG, UI_inputGlyph_Name, UI_inputGlyph_RKG)
-					# print "__KG-itr: %s --%s-- %s" % (itrG_LKG, itrG_Name, itrG_RKG)
-					# print
+					# print("__KG-inp: %s --%s-- %s" % (UI_inputGlyph_LKG, UI_inputGlyph_Name, UI_inputGlyph_RKG))
+					# print("__KG-itr: %s --%s-- %s" % (itrG_LKG, itrG_Name, itrG_RKG))
+					# print()
 
 					# if UI_inputGlyph_LKG == itrG_LKG:
-					# 	print "match Left", itrG_LKG
+					# 	print("match Left", itrG_LKG)
 					# if UI_inputGlyph_RKG == itrG_RKG:
-					# 	print "match Right", itrG_RKG
+					# 	print("match Right", itrG_RKG)
 					# ^^^ *** DITCH THAT ***
 
 					## --------------------------------
@@ -799,10 +801,10 @@ class KernKraft(object):
 						isLKGMember = False
 						isRKGMember = False
 						if itrG_Name in UI_inputGlyph_LKGroupMembers:
-							# print "IN LKG:", itrG_Name
+							# print("IN LKG:", itrG_Name)
 							isLKGMember = True
 						if itrG_Name in UI_inputGlyph_RKGroupMembers:
-							# print "IN RKG:", itrG_Name
+							# print("IN RKG:", itrG_Name)
 							isRKGMember = True
 
 						if isLKGMember and isRKGMember:
@@ -931,9 +933,9 @@ class KernKraft(object):
 
 # 	def textDidChange_(self, sender):
 # 		try:
-# 			print sender.stringValue()
+# 			print(sender.stringValue())
 # 		except:
-# 			pass #print traceback.format_exc()
+# 			pass #print(traceback.format_exc())
 
 
 
@@ -942,7 +944,7 @@ class PreferenceWindow(object):
 	def __init__(self, parent):
 		super(PreferenceWindow, self).__init__()
 		self.parent = parent
-		# print help(self.parent)
+		# print(help(self.parent))
 
 		self.Glyphs = self.parent.Glyphs
 		self.thisFont = self.parent.thisFont
@@ -978,7 +980,7 @@ class PreferenceWindow(object):
 		try: # Make it a FloatingWindow without the ugly look of vanilla's FW:
 			self.w._window.setLevel_(NSFloatingWindowLevel) # NSNormalWindowLevel / NSFloatingWindowLevel
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 		y += self.previewSize
 
 		self.w.line_Scrooller = HorizontalLine((0, y, self.previewSize, 1))
@@ -1078,7 +1080,7 @@ class PreferenceWindow(object):
 
 
 		if not self.LoadPreferences():
-			print "Could not load preferences. Will resort to defaults."
+			print("Could not load preferences. Will resort to defaults.")
 
 		self.w.resize(windowWidth, 30 + y)
 		self.w.makeKey() ### Focus on Window and Button
@@ -1097,9 +1099,9 @@ class PreferenceWindow(object):
 		self.view._margin = self.previewSize / 4
 		# self.view._scaleFactor
 		self.view.setFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
-		self.view.setNeedsDisplay_( True )
 		# help(self.view), self.view.bounds(), self.view.setAlphaValue_(0.1)
-		try: self.view.setToolTip_(self.w.glyphInput.get())
+		try:
+			self.view.setToolTip_(self.w.glyphInput.get())
 		except:	pass
 
 		# Scroll View
@@ -1107,7 +1109,7 @@ class PreferenceWindow(object):
 		attrName = "box"
 		setattr(self.w, attrName, self.scrollView())
 
-		# print self.w.getPosSize()
+		# print(self.w.getPosSize())
 
 
 	# Belongs to Glyph Preview
@@ -1152,11 +1154,11 @@ class PreferenceWindow(object):
 		try:
 			chosenMaster = self.thisFont.masters[self.chosenMasterID]
 			self.view._layer = self.thisFont.glyphs[glyphName].layers[chosenMaster.id] # chosen in UI Master
-			# print "updateGlyphPreview"
+			# print("updateGlyphPreview")
 		except:
 			self.view._layer = self.thisFont.glyphs[glyphName].layers[self.mID] # selected Master from GlyphsApp
 
-		## print self.view._layer
+		## print(self.view._layer)
 		delattr(self.w, "box")
 		setattr(self.w, "box", self.scrollView())
 		self.view.setToolTip_(glyphName)
@@ -1170,7 +1172,7 @@ class PreferenceWindow(object):
 			### check if the current glyph is reused at all
 			### TODO: trigger the enable() of the UI checkbox to include other script’s occurrences of this glyph
 			mid = self.thisFont.masters[masterID].id
-			glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print self.glyphIsReusedAtAll(glyphName, mid)
+			glyphIsReused = self.parent.glyphIsReusedInAnotherScipt(glyphName, mid) # print(self.glyphIsReusedAtAll(glyphName, mid))
 
 			if glyphIsReused:
 				self.w.includeOtherScripts.enable(1)
@@ -1179,8 +1181,8 @@ class PreferenceWindow(object):
 				self.w.includeOtherScripts.enable(0)
 				self.w.includeOtherScripts.setTitle( self.IOSTitle )
 
-			# print "2:", self.parent.glyphsWithSameKG(glyphName, mid) # *new in 1.9.5* *UC*
-			# print "3:", self.parent.sameComponentSetup(glyphName, mid) # *new in 1.9.5* *UC*
+			# print("2:", self.parent.glyphsWithSameKG(glyphName, mid)) # *new in 1.9.5* *UC*
+			# print("3:", self.parent.sameComponentSetup(glyphName, mid)) # *new in 1.9.5* *UC*
 
 		else: pass
 
@@ -1273,7 +1275,7 @@ class PreferenceWindow(object):
 			self.drawer.UINotes.set( self.Glyphs.defaults["%s.UINotes" % self.vID] )
 			self.drawer.UIDone.set( self.Glyphs.defaults["%s.UIDone" % self.vID] )
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 			return False
 
 		return True
@@ -1316,7 +1318,7 @@ class PreferenceWindow(object):
 			self.drawer.UIDone.set(currentUIDone)
 			self.Glyphs.defaults["%s.UIDone" % self.vID] = self.drawer.UIDone.get() # Same as in savePreferences
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 	def buttonLeftCallback(self, sender):
@@ -1350,7 +1352,7 @@ class PreferenceWindow(object):
 						# except: pass
 
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 		# self.w.close()
 
@@ -1358,7 +1360,7 @@ class PreferenceWindow(object):
 			self.parent.deactivateReporters()
 
 		for error in self.parent.errorCollector:
-			print error
+			print(error)
 
 
 #KernKraft()

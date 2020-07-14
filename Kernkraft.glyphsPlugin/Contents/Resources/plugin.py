@@ -11,8 +11,8 @@
 #
 ###########################################################################################################
 
+from __future__ import division, print_function, unicode_literals
 import KernKraftModule as KKM
-reload(KKM)
 
 from Kernschmelze import KernschmelzeWindow
 from GlyphsApp import Glyphs
@@ -21,33 +21,34 @@ from GlyphsApp.plugins import *
 import traceback
 
 class KernkraftPlugin(GeneralPlugin):
+	@objc.python_method
 	def settings(self):
 		self.name = "Kernkraft"
-	
+	@objc.python_method
 	def start(self):
 		try:
 			mainMenu = NSApplication.sharedApplication().mainMenu()
 			glyphMenu = mainMenu.itemWithTag_(7).submenu()
-			s = objc.selector(self.kernkraft, signature='v@:')
+			s = objc.selector(self.kernkraft_, signature=b'v@:@')
 			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Kernkraft", s, "")
 			newMenuItem.setTarget_(self)
 			glyphMenu.addItem_(newMenuItem)
-			s = objc.selector(self.kernschmelze, signature='v@:')
+			s = objc.selector(self.kernschmelze_, signature=b'v@:@')
 			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Kernschmelze", s, "")
 			newMenuItem.setTarget_(self)
 			glyphMenu.addItem_(newMenuItem)
 		except:
 			NSLog(traceback.format_exc())
-	
-	def kernkraft(self):
+
+	def kernkraft_(self, sender):
 		try:
 			thisFont = Glyphs.font
 			mID = thisFont.selectedFontMaster.id
 			kkk = KKM.KernKraft(Glyphs, thisFont, mID)
 		except:
 			NSLog(traceback.format_exc())
-	
-	def kernschmelze(self):
+
+	def kernschmelze_(self, sender):
 		try:
 			thisFont = Glyphs.font
 			KernschmelzeWindow(thisFont)
