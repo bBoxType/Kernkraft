@@ -24,10 +24,10 @@ class GlyphView(NSView):
 
 			## This order is important! Wont work the other way around.
 			try: # Glyphs 2.3
-				bezierPathOnly = self._layer.copy().bezierPath  # Path Only
+				bezierPathOnly = self._layer.bezierPath.copy()  # Path Only
 				bezierPathWithComponents = self._layer.copyDecomposedLayer().bezierPath  # Path & Components
 			except: # Glyphs 2.4
-				bezierPathOnly = self._layer.copy().bezierPath  # Path Only
+				bezierPathOnly = self._layer.bezierPath.copy()  # Path Only
 				bezierPathWithComponents = self._layer.completeBezierPath  # Path & Components
 
 
