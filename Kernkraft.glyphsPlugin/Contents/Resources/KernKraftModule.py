@@ -1034,8 +1034,8 @@ class PreferenceWindow(object):
 		self.w.skipCategoriesText = TextBox((m + 17, y, -m, 20), "Skip Categories:")
 		y += 18
 		for i, thisCat in enumerate(self.catToSkipUI):
-			exec("self.w.skipCategory"+str(i+1)+" = CheckBox( (m, y, -m, 20), '" + thisCat + "', sizeStyle='regular', callback=self.SavePreferences )")
-			exec("y += 20")
+			setattr(self.w, "skipCategory"+str(i+1), CheckBox( (m, y, -m, 20), thisCat, sizeStyle='regular', callback=self.SavePreferences))
+			y += 20
 		y += 4
 		self.w.line_SCT = HorizontalLine((m, y, -m, 1))
 		# ----------------------------------------------------------------------------------------------------
