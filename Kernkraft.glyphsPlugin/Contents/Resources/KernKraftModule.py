@@ -540,11 +540,11 @@ class KernKraft(object):
 		zoomFactor = self.UIPointSize/1000.0
 		thisTab = self.Glyphs.font.tabs[-1]
 
-		thisTab.graphicView().zoomViewToAbsoluteScale_( zoomFactor )
-		thisTab.setWritingDirection_( self.writingDirection )
+		thisTab.scale = zoomFactor
+		thisTab.direction = self.writingDirection
 		try: thisTab.previewHeight = 80
 		except: pass # pre Glyphs 2.3 +
-		thisTab.setMasterIndex_(self.prefwindow.w.ChoseMaster.get())
+		thisTab.masterIndex = self.prefwindow.w.ChoseMaster.get()
 
 		# SET CARET INTO POSITION
 		#------------------------
@@ -967,20 +967,20 @@ class PreferenceWindow(object):
 
 		rowHeight = 30
 		mrgn = 5
-		self.scrollViewMargin = 0
 		m = 12
 		bW = 25
-		prevBox = 250.0
+		windowWidth = 250.0
+		windowHeight = 700.0
 		layerScale = 1
-		self.previewSize = self.thisFont.upm / (self.thisFont.upm / prevBox) # 2000 / (2000 / 300.0)  # keep same size (300) no matter which upm the font has
-		windowWidth = self.previewSize # 230
+		self.previewSize = windowWidth
 
 		y = 0
-		self.w = Window((50, 50, 0, 0), self.title, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
+		self.w = Window((windowWidth, windowHeight), self.title) #, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
 		try: # Make it a FloatingWindow without the ugly look of vanilla's FW:
 			self.w._window.setLevel_(NSFloatingWindowLevel) # NSNormalWindowLevel / NSFloatingWindowLevel
 		except:
 			print(traceback.format_exc())
+		
 		y += self.previewSize
 
 		self.w.line_Scrooller = HorizontalLine((0, y, self.previewSize, 1))
@@ -1006,9 +1006,9 @@ class PreferenceWindow(object):
 		# ----------------------------------------------------------------------------------------------------
 		# / Include other scripts
 		#
-		if Glyphs.buildNumber >= 911:
-			self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, callback=self.SavePreferences)
-			y += 20
+
+		self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, callback=self.SavePreferences)
+		y += 20
 		# ----------------------------------------------------------------------------------------------------
 		# / SKIP COMPONENTS
 		#
@@ -1091,49 +1091,16 @@ class PreferenceWindow(object):
 		#==============================
 		# /   G L Y P H   P R E V I E W
 		#==============================
-		#self.view = preview.GlyphView.alloc().initWithFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
-		self.view = preview.GlyphView.alloc().init()
-		self.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
-		self.view._upm = self.thisFont.upm # fontUPM
-		self.view._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
-		self.view._margin = self.previewSize / 4
-		# self.view._scaleFactor
-		self.view.setFrame_( ((0, 0), (self.previewSize - self.scrollViewMargin * 2, self.previewSize - self.scrollViewMargin * 2)) )  # visible frame (crops if too small), if too big, the view scrolls
-		# help(self.view), self.view.bounds(), self.view.setAlphaValue_(0.1)
-		try:
-			self.view.setToolTip_(self.w.glyphInput.get())
-		except:	pass
-
-		# Scroll View
-		#------------
-		attrName = "box"
-		setattr(self.w, attrName, self.scrollView())
-
-		# print(self.w.getPosSize())
-
-
-	# Belongs to Glyph Preview
-	#-------------------------
-	def scrollView(self):
-		''' Generate vanilla attribute ScrollView'''
-		m = 10
-		bgColor = NSColor.textBackgroundColor() # NSColor.yellowColor()
-		s = ScrollView((self.scrollViewMargin, self.scrollViewMargin, self.previewSize - self.scrollViewMargin*2, self.previewSize - self.scrollViewMargin*2), # with margins
-			self.view,
-			hasHorizontalScroller=False,
-			hasVerticalScroller=False,
-			backgroundColor=bgColor,
-			# drawsBackground=False,
-			)
-		s._nsObject.setBorderType_(NSNoBorder)
-		return s
-
+		layer = Glyphs.font.selectedLayers[0]
+		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
+		self.w.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
+		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
+		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
+		self.w.view._nsObject._margin = self.previewSize / 4
 
 	def helpButtonCallback(self, sender):
 		self.Glyphs.defaults["%s.drawer" % self.vID] = not self.Glyphs.defaults["%s.drawer" % self.vID] # Toggle Value and= safePreference
 		self.drawer.getNSDrawer().toggle_( self.Glyphs.defaults["%s.drawer" % self.vID] ) # Toggle Drawer
-		# self.SavePreferences(sender)
-
 
 	def masterIndex(self, master):
 		''' return the index [0, 1, 2, ...] of the selected master '''
@@ -1152,16 +1119,11 @@ class PreferenceWindow(object):
 	def updateGlyphPreview(self, glyphName):
 		# self.view._layer = self.thisFont.glyphs[glyphName].layers[self.mID] # selected in GlyphsApp Master
 		try:
-			chosenMaster = self.thisFont.masters[self.chosenMasterID]
-			self.view._layer = self.thisFont.glyphs[glyphName].layers[chosenMaster.id] # chosen in UI Master
-			# print("updateGlyphPreview")
+			chosenMasterId = self.chosenMasterID
 		except:
-			self.view._layer = self.thisFont.glyphs[glyphName].layers[self.mID] # selected Master from GlyphsApp
-
-		## print(self.view._layer)
-		delattr(self.w, "box")
-		setattr(self.w, "box", self.scrollView())
-		self.view.setToolTip_(glyphName)
+			chosenMasterId = self.thisFont.selectedFontMaster.id # selected Master from GlyphsApp
+		self.w.view.layer = self.thisFont.glyphs[glyphName].layers[chosenMasterId]
+		#self.w.view.setToolTip_(glyphName)
 
 		self.setCheckboxIOS(glyphName, self.chosenMasterID)
 
