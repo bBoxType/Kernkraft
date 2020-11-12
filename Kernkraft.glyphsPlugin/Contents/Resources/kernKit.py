@@ -69,6 +69,14 @@ class KerningStrings:
 					},
 				},
 			},
+		"lao" : {
+			"Letter" : {
+				"Other" : {
+					"Left" : "/doDek-lao/doDek-lao/phoPhu-lao/doDek-lao",
+					"Right" : "/doDek-lao/phoPhu-lao/phoPhu-lao/moMa-lao",
+					},
+				},
+			},
 		"hebrew" : {
 			"Letter" : {
 				"Other" : {
