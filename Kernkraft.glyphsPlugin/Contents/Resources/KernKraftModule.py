@@ -40,7 +40,7 @@ import preview as preview
 import kernKit as KK
 import Customizables
 from GlyphsApp import Glyphs
-from Foundation import NSColor, NSUserDefaults, NSMakeRange
+from Foundation import NSColor, NSDictionary, NSUserDefaults, NSMakeRange
 from AppKit import NSScreen, NSNoBorder, NSNormalWindowLevel, NSFloatingWindowLevel
 
 
@@ -67,8 +67,9 @@ noTransform = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) # components that are not transform
 
 
 class KernKraft(object):
-
-	version = "2.0.0"
+	
+	plist = NSDictionary.dictionaryWithContentsOfFile_(os.path.join(os.path.dirname(__file__), '..', 'Info.plist'))
+	version = plist['CFBundleVersion']
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
