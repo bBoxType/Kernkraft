@@ -1322,7 +1322,7 @@ class PreferenceWindow(object):
 		if self.w.deactivateReporterUI.get():
 			self.parent.deactivateReporters()
 
-		for error in self.parent.errorCollector:
+		for error in self.errorCollector:
 			print(error)
 
 
