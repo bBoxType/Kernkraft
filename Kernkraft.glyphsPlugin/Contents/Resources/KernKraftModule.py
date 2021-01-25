@@ -81,9 +81,7 @@ class KernKraft(object):
 		self.allGlyphsInFont = [g.name for g in self.thisFont.glyphs] ## genuinely all glyphs
 		self.firstGlyphInFont = self.allGlyphsInFont[0]
 
-		# User Interface
-		#---------------
-		self.prefwindow = PreferenceWindow(self)
+
 
 		# Kerning Strings
 		#----------------
@@ -111,7 +109,9 @@ class KernKraft(object):
 
 		self.showAllScripts = [] # mutable collector for all occurrences of the input glyph in other scripts.
 
-
+		# User Interface
+		#---------------
+		self.prefwindow = PreferenceWindow(self)
 
 	#==============
 	# H E L P E R S
@@ -1092,12 +1092,22 @@ class PreferenceWindow(object):
 		#==============================
 		# /   G L Y P H   P R E V I E W
 		#==============================
-		layer = Glyphs.font.selectedLayers[0]
-		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
-		self.w.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
-		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
-		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
-		self.w.view._nsObject._margin = self.previewSize / 4
+		'''
+		This was missing a check if any layer is selected.
+		Hence causing a headaching bug, that the entire PreferenceWindow
+		was not initilized completely and hence threw hard to debug errors.
+		'''
+		try:
+			layer = Glyphs.font.selectedLayers[0]
+		except:
+			layer = None			
+		if layer:
+			self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
+			self.w.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
+			self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
+			self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
+			self.w.view._nsObject._margin = self.previewSize / 4
+		
 
 	def helpButtonCallback(self, sender):
 		self.Glyphs.defaults["%s.drawer" % self.vID] = not self.Glyphs.defaults["%s.drawer" % self.vID] # Toggle Value and= safePreference
