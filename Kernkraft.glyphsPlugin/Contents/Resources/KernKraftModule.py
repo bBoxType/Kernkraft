@@ -1101,10 +1101,11 @@ class PreferenceWindow(object):
 		
 		'''
 		try:
-			layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
+			uiGlyphName = self.w.glyphInput.get()
+			layer = self.thisFont.glyphs[uiGlyphName].layers[self.mID] # self.thisFont.selectedFontMaster.id
 		except:
 			layer = Glyphs.font.selectedLayers[0]
-		finally:
+		except:
 			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
 			
 		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
