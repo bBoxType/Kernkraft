@@ -1105,7 +1105,7 @@ class PreferenceWindow(object):
 			layer = self.thisFont.glyphs[uiGlyphName].layers[self.mID] # self.thisFont.selectedFontMaster.id
 		except:
 			layer = Glyphs.font.selectedLayers[0]
-		except:
+		finally:
 			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
 			
 		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
