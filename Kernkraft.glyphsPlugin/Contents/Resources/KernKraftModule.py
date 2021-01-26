@@ -1104,12 +1104,14 @@ class PreferenceWindow(object):
 			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
 		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
 		try:
-			self.w.view._layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
-			self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
-			self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
-			self.w.view._nsObject._margin = self.previewSize / 4
+			UIGlyphNameLayer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
+			print(UIGlyphNameLayer)
+			self.w.view._layer = UIGlyphNameLayer
 		except:
 			print(traceback.format_exc())
+		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
+		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
+		self.w.view._nsObject._margin = self.previewSize / 4			
 		
 
 	def helpButtonCallback(self, sender):
