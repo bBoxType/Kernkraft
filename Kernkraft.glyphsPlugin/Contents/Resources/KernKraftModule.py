@@ -1098,18 +1098,18 @@ class PreferenceWindow(object):
 		was not initilized completely and hence threw hard to debug errors.
 		#
 		Update v2.1: layer could be None. Leave that and handle case layer=None in GlyphView!
+		
 		'''
-		layer = Glyphs.font.selectedLayers[0]
-		if layer is None:
-			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
-		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=None) # 
 		try:
-			UIGlyphNameLayer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
-			print(UIGlyphNameLayer)
-			self.w.view._layer = UIGlyphNameLayer
-			self.w.view._nsObject.setNeedsDisplay_(True)
+			layer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
 		except:
-			print(traceback.format_exc())
+			layer = Glyphs.font.selectedLayers[0]
+		finally:
+			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
+			
+		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
+		# self.w.view._layer = UIGlyphNameLayer
+		self.w.view._nsObject.setNeedsDisplay_(True)
 		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
 		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
 		self.w.view._nsObject._margin = self.previewSize / 4			
