@@ -13,9 +13,9 @@
 	<key>CFBundleName</key>
 	<string>Kernkraft</string>
 	<key>CFBundleVersion</key>
-	<string>2.2</string>
+	<string>2.3</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5</string>
+	<string>6</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Mark Frömberg @ bBox Type GmbH, 2016</string>
 	<key>NSPrincipalClass</key>

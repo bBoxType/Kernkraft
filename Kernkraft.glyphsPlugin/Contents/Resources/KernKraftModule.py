@@ -1097,18 +1097,19 @@ class PreferenceWindow(object):
 		Hence causing a headaching bug, that the entire PreferenceWindow
 		was not initilized completely and hence threw hard to debug errors.
 		#
-		Update v2.1: layer could be None. Leave that and handle case layer=None in GlyphView!
-		
 		'''
-		layer = Glyphs.font.glyphs[0].layers[0] # Fallback
+		layer = Glyphs.font.glyphs[0].layers[0] # Fallback first.
 		try:
+			# Get the layer from the UI glyphName if given.
 			uiGlyphName = self.w.glyphInput.get()
 			layer = self.thisFont.glyphs[uiGlyphName].layers[self.mID] # self.thisFont.selectedFontMaster.id
 		except:
-			layer = Glyphs.font.selectedLayers[0]
+			# If not, try to use the selected layer
+			selectedLayer = Glyphs.font.selectedLayers[0]
+			if selectedLayer:
+				layer = selectedLayer
 
 		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
-		# self.w.view._layer = UIGlyphNameLayer
 		self.w.view._nsObject.setNeedsDisplay_(True)
 		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
 		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
