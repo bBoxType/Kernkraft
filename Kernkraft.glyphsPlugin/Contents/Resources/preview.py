@@ -67,6 +67,7 @@ class MFGlyphView(NSView):
 			
 			attributes = {}
 			attributes[NSFontAttributeName] = NSFont.systemFontOfSize_(14)
+			attributes[NSForegroundColorAttributeName] = NSColor.secondaryLabelColor()
 			
 			thisLKG = thisGlyph.leftKerningGroup
 			thisRKG = thisGlyph.rightKerningGroup
