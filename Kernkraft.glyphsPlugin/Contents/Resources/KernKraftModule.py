@@ -1102,7 +1102,7 @@ class PreferenceWindow(object):
 		layer = Glyphs.font.selectedLayers[0]
 		if layer is None:
 			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
-		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
+		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=None) # 
 		try:
 			UIGlyphNameLayer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
 			print(UIGlyphNameLayer)
