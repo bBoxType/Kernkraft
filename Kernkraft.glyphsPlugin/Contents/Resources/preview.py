@@ -12,7 +12,6 @@ class MFGlyphView(NSView):
 	def drawRect_(self, rect):
 		# self._layer.drawInFrame_(bounds)  # used in Georgs GlyphView
 		try:
-			print("__test__")
 			bounds = self.bounds()
 			NSColor.textBackgroundColor().set()
 			NSRectFill(bounds)
