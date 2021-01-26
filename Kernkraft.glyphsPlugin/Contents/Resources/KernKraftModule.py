@@ -1107,6 +1107,7 @@ class PreferenceWindow(object):
 			UIGlyphNameLayer = self.thisFont.glyphs[self.w.glyphInput.get()].layers[self.mID] # self.thisFont.selectedFontMaster.id
 			print(UIGlyphNameLayer)
 			self.w.view._layer = UIGlyphNameLayer
+			self.w.view.setNeedsDisplay_(True)
 		except:
 			print(traceback.format_exc())
 		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
