@@ -1100,14 +1100,13 @@ class PreferenceWindow(object):
 		Update v2.1: layer could be None. Leave that and handle case layer=None in GlyphView!
 		
 		'''
+		layer = Glyphs.font.glyphs[0].layers[0] # Fallback
 		try:
 			uiGlyphName = self.w.glyphInput.get()
 			layer = self.thisFont.glyphs[uiGlyphName].layers[self.mID] # self.thisFont.selectedFontMaster.id
 		except:
 			layer = Glyphs.font.selectedLayers[0]
-		finally:
-			layer = Glyphs.font.glyphs[0].layers[0] # Fallback
-			
+
 		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
 		# self.w.view._layer = UIGlyphNameLayer
 		self.w.view._nsObject.setNeedsDisplay_(True)
