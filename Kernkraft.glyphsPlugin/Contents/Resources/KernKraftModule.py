@@ -34,7 +34,7 @@
 
 
 import os
-from vanilla import *
+from vanilla import Window, EditText, Button, PopUpButton, HorizontalLine, CheckBox, TextBox, TextEditor, EditText, Drawer
 import traceback
 import preview as preview
 import kernKit as KK
@@ -73,14 +73,12 @@ class KernKraft(object):
 	# excludeCategories = []
 
 	def __init__(self, Glyphs, thisFont, mID):
-
 		self.Glyphs = Glyphs
 		self.thisFont = thisFont
 		self.mID = mID
 
 		self.allGlyphsInFont = [g.name for g in self.thisFont.glyphs] ## genuinely all glyphs
 		self.firstGlyphInFont = self.allGlyphsInFont[0]
-
 
 
 		# Kerning Strings
@@ -982,111 +980,114 @@ class PreferenceWindow(object):
 		except:
 			print(traceback.format_exc())
 		
-		y += self.previewSize
+		try:
+			y += self.previewSize
 
-		self.w.line_Scrooller = HorizontalLine((0, y, self.previewSize, 1))
-		y += 8
-		# ----------------------------------------------------------------------------------------------------
-		# / KERN-GLYPH INPUT
-		#
-		self.w.glyphInput = EditText((m + bW + mrgn*2, y, -m - bW - mrgn*2, 23), placeholder="GlyphName", callback=self.SavePreferences)
-		self.w.buttonLeft = Button((m, y, bW, 23 ), u"←", callback=self.buttonLeftCallback)
-		self.w.buttonLeft.bind("leftarrow", [])
-		self.w.buttonRight = Button(( -m - bW, y, bW, 23 ), u"→", callback=self.buttonRightCallback)
-		self.w.buttonRight.bind("rightarrow", [])
-		y += 30
-		# ----------------------------------------------------------------------------------------------------
-		# / CHOSE MASTER
-		#
-		mastersList = ["%s" % thisMaster.name for thisMaster in self.thisFont.masters]
-		self.w.ChoseMaster = PopUpButton((m, y, -m, 20), mastersList, callback=self.masterSelection) ## **UC** NOT IMPLEMENTED IN SAVE & LOAD
-		self.w.ChoseMaster.set( self.masterIndex(self.mID) )
-		y += 28
-		self.w.line_CM = HorizontalLine((m, y, -m, 1))
-		y+= 4
-		# ----------------------------------------------------------------------------------------------------
-		# / Include other scripts
-		#
+			self.w.line_Scrooller = HorizontalLine((0, y, self.previewSize, 1))
+			y += 8
+			# ----------------------------------------------------------------------------------------------------
+			# / KERN-GLYPH INPUT
+			#
+			self.w.glyphInput = EditText((m + bW + mrgn*2, y, -m - bW - mrgn*2, 23), placeholder="GlyphName", callback=self.SavePreferences)
+			self.w.buttonLeft = Button((m, y, bW, 23 ), u"←", callback=self.buttonLeftCallback)
+			self.w.buttonLeft.bind("leftarrow", [])
+			self.w.buttonRight = Button(( -m - bW, y, bW, 23 ), u"→", callback=self.buttonRightCallback)
+			self.w.buttonRight.bind("rightarrow", [])
+			y += 30
+			# ----------------------------------------------------------------------------------------------------
+			# / CHOSE MASTER
+			#
+			mastersList = ["%s" % thisMaster.name for thisMaster in self.thisFont.masters]
+			self.w.ChoseMaster = PopUpButton((m, y, -m, 20), mastersList, callback=self.masterSelection) ## **UC** NOT IMPLEMENTED IN SAVE & LOAD
+			self.w.ChoseMaster.set( self.masterIndex(self.mID) )
+			y += 28
+			self.w.line_CM = HorizontalLine((m, y, -m, 1))
+			y+= 4
+			# ----------------------------------------------------------------------------------------------------
+			# / Include other scripts
+			#
 
-		self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, callback=self.SavePreferences)
-		y += 20
-		# ----------------------------------------------------------------------------------------------------
-		# / SKIP COMPONENTS
-		#
-		self.w.skipComponentCheck = CheckBox((m, y, -m, 20), "Skip Components", callback=self.SavePreferences)
-		y += 20
-		# ----------------------------------------------------------------------------------------------------
-		# / SKIP KERNING CLASS MEMBERS
-		#
-		self.w.skipKGMembersCheck = CheckBox((m, y, -m, 20), "Skip Kerning Group Members", callback=self.SavePreferences)
-		y += 24
-		# ----------------------------------------------------------------------------------------------------
-		# / SKIP KERNING
-		#
-		self.w.skipKernText = TextBox((m + 17, y, -m, 20), "Skip already kerned pairs:")
-		y += 18
-		self.w.skipAlreadyKernedLeftCheck = CheckBox((m, y, -m, 20), "Left", callback=self.SavePreferences)
-		self.w.skipAlreadyKernedRightCheck = CheckBox((windowWidth * 0.33, y, -m, 20), "Right", callback=self.SavePreferences)
-		y += 24
-		# ----------------------------------------------------------------------------------------------------
-		# / SKIP CATEGORIES
-		#
-		# y+= 10
-		self.w.skipCategoriesText = TextBox((m + 17, y, -m, 20), "Skip Categories:")
-		y += 18
-		for i, thisCat in enumerate(self.catToSkipUI):
-			setattr(self.w, "skipCategory"+str(i+1), CheckBox( (m, y, -m, 20), thisCat, sizeStyle='regular', callback=self.SavePreferences))
+			self.w.includeOtherScripts = CheckBox((m, y, -m, 20), self.IOSTitle, callback=self.SavePreferences)
 			y += 20
-		y += 4
-		self.w.line_SCT = HorizontalLine((m, y, -m, 1))
-		# ----------------------------------------------------------------------------------------------------
-		# / SPLIT CATEGORIES INTO SEPARATE TABS
-		#
-		y+= 2
-		self.w.separateTabsUI = CheckBox((m, y + 5, -m, 20), "Separate Categories Tabs", callback=self.SavePreferences) # Split Categories into separate Tabs
-		# ----------------------------------------------------------------------------------------------------
-		# / DEACTIVATE REPORTERS
-		#
-		y += 20
-		self.w.deactivateReporterUI = CheckBox((m, y + 5, -m, 20), "Deactivate Reporter Plugins", callback=self.SavePreferences)
-		y += 30
-		self.w.line_PS = HorizontalLine((m, y, -m, 1))
-		# ----------------------------------------------------------------------------------------------------
-		# / SUBMIT BUTTON
-		#
-		y += 8 # 35
-		self.w.make_button = Button((m, y, -m - 30, 20), u"Open Tab", callback=self.submitButtonCallback)  # u"💥🚀⚛" # (m, y, -m, 20)
-		self.w.setDefaultButton(self.w.make_button)
-		# / HELP BUTTON
-		# self.w.helpButton = HelpButton((windowWidth - 30, y, -m, 20), callback=self.helpButtonCallback)
-		self.w.helpButton = Button((windowWidth - 35, y, -m, 20), u"…", callback=self.helpButtonCallback)
-		# / DRAWER (TOGGLED BY HELP BUTTON)
-		self.drawer = Drawer((220, 150), self.w)
-		#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
-		#self.drawer.openSpecialGuest = Button((10, 10, -10, -10), u"open in Tab")
-		self.drawer.specialGuestLabel = TextBox((m+10, 0, -0, 20), u"Don’t forget:\n%s")
-		self.drawer.specialGuest =      TextEditor((5, 20, -0, 60), self.specialGuests)
+			# ----------------------------------------------------------------------------------------------------
+			# / SKIP COMPONENTS
+			#
+			self.w.skipComponentCheck = CheckBox((m, y, -m, 20), "Skip Components", callback=self.SavePreferences)
+			y += 20
+			# ----------------------------------------------------------------------------------------------------
+			# / SKIP KERNING CLASS MEMBERS
+			#
+			self.w.skipKGMembersCheck = CheckBox((m, y, -m, 20), "Skip Kerning Group Members", callback=self.SavePreferences)
+			y += 24
+			# ----------------------------------------------------------------------------------------------------
+			# / SKIP KERNING
+			#
+			self.w.skipKernText = TextBox((m + 17, y, -m, 20), "Skip already kerned pairs:")
+			y += 18
+			self.w.skipAlreadyKernedLeftCheck = CheckBox((m, y, -m, 20), "Left", callback=self.SavePreferences)
+			self.w.skipAlreadyKernedRightCheck = CheckBox((windowWidth * 0.33, y, -m, 20), "Right", callback=self.SavePreferences)
+			y += 24
+			# ----------------------------------------------------------------------------------------------------
+			# / SKIP CATEGORIES
+			#
+			# y+= 10
+			self.w.skipCategoriesText = TextBox((m + 17, y, -m, 20), "Skip Categories:")
+			y += 18
+			for i, thisCat in enumerate(self.catToSkipUI):
+				setattr(self.w, "skipCategory"+str(i+1), CheckBox( (m, y, -m, 20), thisCat, sizeStyle='regular', callback=self.SavePreferences))
+				y += 20
+			y += 4
+			self.w.line_SCT = HorizontalLine((m, y, -m, 1))
+			# ----------------------------------------------------------------------------------------------------
+			# / SPLIT CATEGORIES INTO SEPARATE TABS
+			#
+			y+= 2
+			self.w.separateTabsUI = CheckBox((m, y + 5, -m, 20), "Separate Categories Tabs", callback=self.SavePreferences) # Split Categories into separate Tabs
+			# ----------------------------------------------------------------------------------------------------
+			# / DEACTIVATE REPORTERS
+			#
+			y += 20
+			self.w.deactivateReporterUI = CheckBox((m, y + 5, -m, 20), "Deactivate Reporter Plugins", callback=self.SavePreferences)
+			y += 30
+			self.w.line_PS = HorizontalLine((m, y, -m, 1))
+			# ----------------------------------------------------------------------------------------------------
+			# / SUBMIT BUTTON
+			#
+			y += 8 # 35
+			self.w.make_button = Button((m, y, -m - 30, 20), u"Open Tab", callback=self.submitButtonCallback)  # u"💥🚀⚛" # (m, y, -m, 20)
+			self.w.setDefaultButton(self.w.make_button)
+			# / HELP BUTTON
+			# self.w.helpButton = HelpButton((windowWidth - 30, y, -m, 20), callback=self.helpButtonCallback)
+			self.w.helpButton = Button((windowWidth - 35, y, -m, 20), u"…", callback=self.helpButtonCallback)
+			# / DRAWER (TOGGLED BY HELP BUTTON)
+			self.drawer = Drawer((220, 150), self.w)
+			#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
+			#self.drawer.openSpecialGuest = Button((10, 10, -10, -10), u"open in Tab")
+			self.drawer.specialGuestLabel = TextBox((m+10, 0, -0, 20), u"Don’t forget:\n%s")
+			self.drawer.specialGuest =      TextEditor((5, 20, -0, 60), self.specialGuests)
 
-		self.drawer.notesLabel =        TextBox((m+10, 86, -0, 20), "Notes:")
-		self.drawer.UINotes =           TextEditor((5, 106, -0, -476), callback=self.SavePreferences)
+			self.drawer.notesLabel =        TextBox((m+10, 86, -0, 20), "Notes:")
+			self.drawer.UINotes =           TextEditor((5, 106, -0, -476), callback=self.SavePreferences)
 
-		self.drawer.doneLabel =         TextBox((m+10, -470, -0, 20), "Done:")
-		self.drawer.UIDone =            TextEditor((5, -450, -0, -30), callback=self.SavePreferences)
-		# ----------------------------------------------------------------------------------------------------
-		# / POINT SIZE
-		#
-		self.drawer.pointSizeText =     TextBox((m+10, -24, -m, 23), "Font Size:")
-		self.drawer.pointSize =         EditText((m+75, -27, 50, 23), "250", callback=self.SavePreferences)
+			self.drawer.doneLabel =         TextBox((m+10, -470, -0, 20), "Done:")
+			self.drawer.UIDone =            TextEditor((5, -450, -0, -30), callback=self.SavePreferences)
+			# ----------------------------------------------------------------------------------------------------
+			# / POINT SIZE
+			#
+			self.drawer.pointSizeText =     TextBox((m+10, -24, -m, 23), "Font Size:")
+			self.drawer.pointSize =         EditText((m+75, -27, 50, 23), "250", callback=self.SavePreferences)
 
 
 
-		if not self.LoadPreferences():
-			print("Could not load preferences. Will resort to defaults.")
+			if not self.LoadPreferences():
+				print("Could not load preferences. Will resort to defaults.")
 
-		self.w.resize(windowWidth, 30 + y)
-		self.w.makeKey() ### Focus on Window and Button
-		self.w.open()
-		self.setCheckboxIOS(self.w.glyphInput.get(), self.chosenMasterID)
+			self.w.resize(windowWidth, 30 + y)
+			self.w.makeKey() ### Focus on Window and Button
+			self.w.open()
+			self.setCheckboxIOS(self.w.glyphInput.get(), self.chosenMasterID)
+		except:
+			print traceback.format_exc()
 
 
 		#==============================
