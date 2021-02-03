@@ -573,7 +573,7 @@ class KernKraft(object):
 			self.setupTab()
 
 		else:
-			print
+			print()
 			splittedTabOutput =  thisTabOutput.split("\n__")
 			for x in splittedTabOutput[1:]:  # 0 index would be empty, so we exclude it here
 				self.Doc.windowController().addTabWithString_( "__%s" % x )
@@ -1087,7 +1087,7 @@ class PreferenceWindow(object):
 			self.w.open()
 			self.setCheckboxIOS(self.w.glyphInput.get(), self.chosenMasterID)
 		except:
-			print traceback.format_exc()
+			print(traceback.format_exc())
 
 
 		#==============================
