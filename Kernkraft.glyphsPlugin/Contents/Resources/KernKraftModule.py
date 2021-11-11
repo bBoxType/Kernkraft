@@ -30,6 +30,8 @@
 #		+ Drawer remembers status now.
 #	2.0.0
 #		+ Fix CheckBox bug (Same as in Reporter Toggler)
+#	2.3.3
+#		+ Fix broken strings due to missing subCategory in Glyphs 3
 
 
 
@@ -329,6 +331,9 @@ class KernKraft(object):
 		try:
 			category = self.thisFont.glyphs[inputGlyphName].category
 			subCategory = self.thisFont.glyphs[inputGlyphName].subCategory
+
+			if not subCategory:
+				subCategory = "Lowercase" # Fallback SubCategory
 
 			if inputGlyphScript == "hebrew":
 				self.writingDirection = 1 # RTL
