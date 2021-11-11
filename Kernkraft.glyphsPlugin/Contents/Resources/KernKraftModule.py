@@ -324,6 +324,14 @@ class KernKraft(object):
 
 
 
+	def caseFromGSCase(self, case):
+		if case == 1:
+			return 'Uppercase'
+		if case == 2:
+			return 'Lowercase'
+		if case == 3:
+			return 'Smallcaps'
+		return None
 
 
 	def stringMaker(self, inputGlyphName, inputGlyphScript, itrGlyphName, itrGlyphCase, removeUIGlyphAtSide=None):
@@ -333,13 +341,7 @@ class KernKraft(object):
 			subCategory = self.thisFont.glyphs[inputGlyphName].subCategory
 
 			if Glyphs.versionNumber >= 3.0:
-				case = self.thisFont.glyphs[inputGlyphName].case
-				if case == 1:
-					case = 'Uppercase'
-				if case == 2:
-					case = 'Lowercase'
-				if case == 3:
-					case = 'Smallcaps'
+				case = self.caseFromGSCase(self.thisFont.glyphs[inputGlyphName].case)
 				if not subCategory:
 					subCategory = case
 
