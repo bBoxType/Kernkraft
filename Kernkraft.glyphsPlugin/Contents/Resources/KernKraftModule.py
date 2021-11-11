@@ -332,8 +332,16 @@ class KernKraft(object):
 			category = self.thisFont.glyphs[inputGlyphName].category
 			subCategory = self.thisFont.glyphs[inputGlyphName].subCategory
 
-			if not subCategory:
-				subCategory = "Lowercase" # Fallback SubCategory
+			if Glyphs.versionNumber >= 3.0:
+				case = self.thisFont.glyphs[inputGlyphName].case
+				if case == 1:
+					case = 'Uppercase'
+				if case == 2:
+					case = 'Lowercase'
+				if case == 3:
+					case = 'Smallcaps'
+				if not subCategory:
+					subCategory = case
 
 			if inputGlyphScript == "hebrew":
 				self.writingDirection = 1 # RTL
