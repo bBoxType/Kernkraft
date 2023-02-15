@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# Code written by Mark Frömberg ( @Mark2Mark, markfromberg.com )
-# Kerning procedure by Ralph du Carrois ( @Carrois, www.carrois.com )
+# Code written by Mark Frömberg (@Mark2Mark, markfromberg.com)
+# Kerning procedure by Ralph du Carrois (@Carrois, www.carrois.com)
 
 # TODO:
 # 	+ BUG: when kerning SC `a.sc` it opens way too many tabs (29 in fira instad of 3 like with `A`)
@@ -103,9 +103,9 @@ class KernKraft(object):
 			"Math",
 			"Private Use",
 		] ## for the glyphs put downwards step by step between the to-be-kerned glyph
-		self.prohibitedCategories = [ "Mark", "Separator" ]
+		self.prohibitedCategories = ["Mark", "Separator"]
 
-		self.kerningRelations = ["noGroupToNoGroup", "groupToGroup", "groupToNoGroup", "noGroupToGroup"  ]
+		self.kerningRelations = ["noGroupToNoGroup", "groupToGroup", "groupToNoGroup", "noGroupToGroup" ]
 
 		self.showAllScripts = [] # mutable collector for all occurrences of the input glyph in other scripts.
 
@@ -150,8 +150,8 @@ class KernKraft(object):
 		possibleNumberSuffixes = ["lf", "osf", "dnom", "numr", "hb"]  # more? Include dnom & numr? **UC**
 		numberSuffix = thisGlyphName.split(".")[-1]
 		if numberSuffix in possibleNumberSuffixes:
-			tails.append( "".join(['/{0}.{1}'.format(x, numberSuffix) for x in leftTail.split("/")][1:]) )  # leftTail
-			tails.append( "".join(['/{0}.{1}'.format(x, numberSuffix) for x in rightTail.split("/")][1:]) )  # rightTail
+			tails.append("".join(['/{0}.{1}'.format(x, numberSuffix) for x in leftTail.split("/")][1:]))  # leftTail
+			tails.append("".join(['/{0}.{1}'.format(x, numberSuffix) for x in rightTail.split("/")][1:]))  # rightTail
 		return tails
 
 
@@ -216,7 +216,7 @@ class KernKraft(object):
 					if subCategory == thisSubCat:
 						if ".sc" in inputGlyphName and ".sc" in glyphName: # * 1.8
 							return False # CASE: Input is SC, hence do not skip here
-						self.debugPrint( '{:10}{:45}{} {} {}'.format("skipped:", glyphName, u"-> excluded Cat & SubCat:", thisCat, thisSubCat) )
+						self.debugPrint('{:10}{:45}{} {} {}'.format("skipped:", glyphName, u"-> excluded Cat & SubCat:", thisCat, thisSubCat))
 						return True  # Skip
 			else:
 				return False  # Don’t Skip
@@ -564,7 +564,7 @@ class KernKraft(object):
 		#------------------------
 		# **NOT 100 PERCENT READY**
 		GraphicView = thisTab.graphicView()
-		location = len(GraphicView.textStorage().text()) -6  # len of rightTail // change in API, Glyphs 2.4 AND 2.5
+		location = len(GraphicView.textStorage().text()) - 6  # len of rightTail // change in API, Glyphs 2.4 AND 2.5
 		thisTab.textCursor = location
 
 		GraphicView.setToolTip_("Kernkraft Tab")
@@ -581,14 +581,14 @@ class KernKraft(object):
 
 		self.Doc = self.Glyphs.currentDocument
 		if self.prefwindow.w.separateTabsUI.get() == False:
-			self.Glyphs.font.newTab( thisTabOutput )
+			self.Glyphs.font.newTab(thisTabOutput)
 			self.setupTab()
 
 		else:
 			print()
 			splittedTabOutput =  thisTabOutput.split("\n__")
 			for x in splittedTabOutput[1:]:  # 0 index would be empty, so we exclude it here
-				self.Glyphs.font.newTab( "__%s" % x )
+				self.Glyphs.font.newTab("__%s" % x)
 				self.setupTab()
 
 		if debugMode:
@@ -655,10 +655,10 @@ class KernKraft(object):
 		UI_inputGlyph_IsLGK = False
 		UI_inputGlyph_IsRGK = False
 		if UI_inputGlyph_Name == UI_inputGlyph_LKG:
-			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT") )
+			self.debugPrint((UI_inputGlyph_Name, "=", UI_inputGlyph_LKG, "LEFT"))
 			UI_inputGlyph_IsLGK = True
 		if UI_inputGlyph_Name == UI_inputGlyph_RKG:
-			self.debugPrint( (UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT") )
+			self.debugPrint((UI_inputGlyph_Name, "=", UI_inputGlyph_RKG, "RIGHT"))
 			UI_inputGlyph_IsRGK = True
 
 		## make group key: either first item of group OR the letter itself, if in group
@@ -732,21 +732,21 @@ class KernKraft(object):
 					## UNDER CONSTRUCTION
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning"):
 						# print("__excluded %s for already kerned right" % itrG_Name)
-						self.debugPrint( "special Case [RK] %s" % itrG_Name )
+						self.debugPrint("special Case [RK] %s" % itrG_Name)
 						skipSide = "chopRight"
 						# continue ## DONT CONTINUE, BUT REWRITE STRING
 				if UI_SkipAlreadyKernedLeftCheck:
 					## UNDER CONSTRUCTION
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
 						# print("__excluded %s for already kerned left" % itrG_Name)
-						self.debugPrint( "special Case [LK] %s" % itrG_Name )
+						self.debugPrint("special Case [LK] %s" % itrG_Name)
 						skipSide = "chopLeft"
 						# continue ## DONT CONTINUE, BUT REWRITE STRING
 
 				## Skip if BOTH sides do have kerning
 				if UI_SkipAlreadyKernedRightCheck and UI_SkipAlreadyKernedLeftCheck:
 					if self.hasKerning(UI_inputGlyph_Name, itrG_Name, "rightKerning") and self.hasKerning(UI_inputGlyph_Name, itrG_Name, "leftKerning"):
-						self.debugPrint( "special Case [LK & RK] %s" % itrG_Name )
+						self.debugPrint("special Case [LK & RK] %s" % itrG_Name)
 						continue
 
 
@@ -770,7 +770,7 @@ class KernKraft(object):
 				# S K I P   S M A L L C A P S   B E T W E E N   L O W E R C A S E
 				#================================================================
 				if UI_inputGlyph_SubCategory == "Smallcaps" and itrG_SubCat == "Lowercase":
-					self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, "-> SC between LC") )
+					self.debugPrint('{:10}{:45}{}'.format("skipped:", itrG_Name, "-> SC between LC"))
 					continue
 
 
@@ -783,7 +783,7 @@ class KernKraft(object):
 					if len(itrG_Layer.components) > 0 and len(itrG_Layer.paths) == 0:
 						if itrG_Cat == "Letter": # or "Number" (Not using Number or it might exclude denominators or alike)
 						# if itrG_Cat == "Number": # excluding Numbers, excludes denominators or alike **UC**
-							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> only components & category: 'Letter'") )
+							self.debugPrint('{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> only components & category: 'Letter'"))
 							continue
 
 
@@ -806,7 +806,7 @@ class KernKraft(object):
 					# ^^^ *** DITCH THAT ***
 
 					## --------------------------------
-					## SKIP KERNING GROUP MEMBERS A) (see end of chain for part B! )
+					## SKIP KERNING GROUP MEMBERS A) (see end of chain for part B!)
 					## SKIP MEMBERS OF INPUT GLYPH'S LKG & RKG
 					if itrG_Name != firstLKGItem and itrG_Name != firstRKGItem:
 						isLKGMember = False
@@ -819,7 +819,7 @@ class KernKraft(object):
 							isRKGMember = True
 
 						if isLKGMember and isRKGMember:
-							self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> member of Input Glyph's LKG & RKG") )
+							self.debugPrint('{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> member of Input Glyph's LKG & RKG"))
 							continue
 					#####--------------------------------
 
@@ -840,7 +840,7 @@ class KernKraft(object):
 				#========================================================================================================================
 				if inputGlyphScript != None and itrG_Script != None:
 					if itrG_Script != inputGlyphScript:
-						self.debugPrint( "__excluded %s for not being input script (%s != %s)" % (itrG_Name, itrG_Script, inputGlyphScript) )
+						self.debugPrint("__excluded %s for not being input script (%s != %s)" % (itrG_Name, itrG_Script, inputGlyphScript))
 						continue
 
 
@@ -848,7 +848,7 @@ class KernKraft(object):
 				# S K I P   U I   C A T E G O R I E S
 				#====================================
 				if itrG_Cat in self.skippedCategories:
-					self.debugPrint( "__excluded %s for being Category excluded via UI" % itrG_Name )
+					self.debugPrint("__excluded %s for being Category excluded via UI" % itrG_Name)
 					continue
 
 
@@ -856,7 +856,7 @@ class KernKraft(object):
 				# S K I P   D I S A L L O W E D   C A T E G O R I E S
 				#====================================================
 				if itrG_Cat not in self.allowedCategories:
-					self.debugPrint( "__excluded %s for not being in allowedCategories (= %s)" % (itrG_Name, itrG_Cat) )
+					self.debugPrint("__excluded %s for not being in allowedCategories (= %s)" % (itrG_Name, itrG_Cat))
 					continue
 
 
@@ -889,12 +889,12 @@ class KernKraft(object):
 				if UI_SkipKGMembers:
 					### SKIP IF THIS ITERATED GLYPH'S LKG & RKG where already displayed once
 					if (itrG_LKG, itrG_RKG) in itrGKerningGroups:
-						self.debugPrint( '{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> sharing LKG & RKG of an already displayed Glyph [%s %s]" % (itrG_LKG, itrG_RKG) ) )
+						self.debugPrint('{:10}{:45}{}'.format("skipped:", itrG_Name, u"-> sharing LKG & RKG of an already displayed Glyph [%s %s]" % (itrG_LKG, itrG_RKG)))
 						continue
 				## IPORTANT: add these only AFTER this ^ condition (but outside the UI_SkipKGMembers condition):
 				if (itrG_LKG, itrG_RKG) not in itrGKerningGroups:
 					if itrG_LKG != None and itrG_RKG != None:
-						itrGKerningGroups.append( (itrG_LKG, itrG_RKG) )
+						itrGKerningGroups.append((itrG_LKG, itrG_RKG))
 
 
 				#================================================================================
@@ -909,7 +909,7 @@ class KernKraft(object):
 						# if nexGlyphCat == itrG_Cat:
 						if thisCategory != itrG_Cat:
 						# if nexGlyphCat != itrG_Cat:
-							tabOutput.append( categoryTag )
+							tabOutput.append(categoryTag)
 							thisCategory = itrG_Cat
 				except: pass
 
@@ -919,7 +919,7 @@ class KernKraft(object):
 				#============================================
 				thisOutput = self.stringMaker(UI_inputGlyph_Name, inputGlyphScript, itrG_Name, itrG_SubCat, removeUIGlyphAtSide=skipSide)
 				if thisOutput:
-					tabOutput.append( thisOutput )
+					tabOutput.append(thisOutput)
 
 			self.makeTab(tabOutput)
 
@@ -968,7 +968,7 @@ class PreferenceWindow(object):
 		self.specialGuests = u"Ąj  Ą_  Ą)  Ęj  Ę_  Ę)  Įj  Į_  Į)  fï  Tï  Fï  *ï*  ‘ï‘  Ł⁰  Ł‘  ß‘  ß⁰  ¿j  ¿y  ¿g  c//o  …"
 
 
-		self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", "Private Use", ]
+		self.catToSkipUI = ["Letter", "Number", "Punctuation", "Symbol", "Other", "Private Use"]
 		#### catToSkipUI--> UI will auto resize with items in this list; preferece save&load as well.
 		#### The latter does so just for developping (load/save prefs with variable number of items is not recommended.)
 
@@ -986,7 +986,7 @@ class PreferenceWindow(object):
 		self.previewSize = windowWidth
 
 		y = 0
-		self.w = Window((windowWidth, windowHeight), self.title) #, autosaveName="%s.mainwindow" % self.vID ) ## restore window position
+		self.w = Window((windowWidth, windowHeight), self.title) #, autosaveName="%s.mainwindow" % self.vID) ## restore window position
 		try: # Make it a FloatingWindow without the ugly look of vanilla's FW:
 			self.w._window.setLevel_(NSFloatingWindowLevel) # NSNormalWindowLevel / NSFloatingWindowLevel
 		except:
@@ -1000,10 +1000,10 @@ class PreferenceWindow(object):
 			# ----------------------------------------------------------------------------------------------------
 			# / KERN-GLYPH INPUT
 			#
-			self.w.glyphInput = EditText((m + bW + mrgn*2, y, -m - bW - mrgn*2, 23), placeholder="GlyphName", callback=self.SavePreferences)
-			self.w.buttonLeft = Button((m, y, bW, 23 ), u"←", callback=self.buttonLeftCallback)
+			self.w.glyphInput = EditText((m + bW + mrgn * 2, y, -m - bW - mrgn * 2, 23), placeholder="GlyphName", callback=self.SavePreferences)
+			self.w.buttonLeft = Button((m, y, bW, 23), u"←", callback=self.buttonLeftCallback)
 			self.w.buttonLeft.bind("leftarrow", [])
-			self.w.buttonRight = Button(( -m - bW, y, bW, 23 ), u"→", callback=self.buttonRightCallback)
+			self.w.buttonRight = Button((-m - bW, y, bW, 23), u"→", callback=self.buttonRightCallback)
 			self.w.buttonRight.bind("rightarrow", [])
 			y += 30
 			# ----------------------------------------------------------------------------------------------------
@@ -1011,7 +1011,7 @@ class PreferenceWindow(object):
 			#
 			mastersList = ["%s" % thisMaster.name for thisMaster in self.thisFont.masters]
 			self.w.ChoseMaster = PopUpButton((m, y, -m, 20), mastersList, callback=self.masterSelection) ## **UC** NOT IMPLEMENTED IN SAVE & LOAD
-			self.w.ChoseMaster.set( self.masterIndex(self.mID) )
+			self.w.ChoseMaster.set(self.masterIndex(self.mID))
 			y += 28
 			self.w.line_CM = HorizontalLine((m, y, -m, 1))
 			y+= 4
@@ -1046,7 +1046,7 @@ class PreferenceWindow(object):
 			self.w.skipCategoriesText = TextBox((m + 17, y, -m, 20), "Skip Categories:")
 			y += 18
 			for i, thisCat in enumerate(self.catToSkipUI):
-				setattr(self.w, "skipCategory"+str(i+1), CheckBox( (m, y, -m, 20), thisCat, sizeStyle='regular', callback=self.SavePreferences))
+				setattr(self.w, "skipCategory"+str(i + 1), CheckBox((m, y, -m, 20), thisCat, sizeStyle='regular', callback=self.SavePreferences))
 				y += 20
 			y += 4
 			self.w.line_SCT = HorizontalLine((m, y, -m, 1))
@@ -1073,21 +1073,21 @@ class PreferenceWindow(object):
 			self.w.helpButton = Button((windowWidth - 35, y, -m, 20), u"…", callback=self.helpButtonCallback)
 			# / DRAWER (TOGGLED BY HELP BUTTON)
 			self.drawer = Drawer((220, 150), self.w)
-			#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests )
+			#self.drawer.textBox = TextBox((10, 10, -10, -10), u"Don’t forget:\n%s" % self.specialGuests)
 			#self.drawer.openSpecialGuest = Button((10, 10, -10, -10), u"open in Tab")
-			self.drawer.specialGuestLabel = TextBox((m+10, 0, -0, 20), u"Don’t forget:\n%s")
+			self.drawer.specialGuestLabel = TextBox((m + 10, 0, -0, 20), u"Don’t forget:\n%s")
 			self.drawer.specialGuest =      TextEditor((5, 20, -0, 60), self.specialGuests)
 
-			self.drawer.notesLabel =        TextBox((m+10, 86, -0, 20), "Notes:")
+			self.drawer.notesLabel =        TextBox((m + 10, 86, -0, 20), "Notes:")
 			self.drawer.UINotes =           TextEditor((5, 106, -0, -476), callback=self.SavePreferences)
 
-			self.drawer.doneLabel =         TextBox((m+10, -470, -0, 20), "Done:")
+			self.drawer.doneLabel =         TextBox((m + 10, -470, -0, 20), "Done:")
 			self.drawer.UIDone =            TextEditor((5, -450, -0, -30), callback=self.SavePreferences)
 			# ----------------------------------------------------------------------------------------------------
 			# / POINT SIZE
 			#
-			self.drawer.pointSizeText =     TextBox((m+10, -24, -m, 23), "Font Size:")
-			self.drawer.pointSize =         EditText((m+75, -27, 50, 23), "250", callback=self.SavePreferences)
+			self.drawer.pointSizeText =     TextBox((m + 10, -24, -m, 23), "Font Size:")
+			self.drawer.pointSize =         EditText((m + 75, -27, 50, 23), "250", callback=self.SavePreferences)
 
 
 
@@ -1125,13 +1125,13 @@ class PreferenceWindow(object):
 		self.w.view = preview.GlyphView((0, 0, 250, 250), layer=layer)
 		self.w.view._nsObject.setNeedsDisplay_(True)
 		self.w.view._nsObject._upm = self.thisFont.upm # fontUPM
-		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0) ) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
+		self.w.view._nsObject._scaleFactor = layerScale / (self.thisFont.upm / (2 * 100.0)) # 0.25 ## UNDER CONSTRUCTION: The bigger the UPM, the smaller the scale result :(
 		self.w.view._nsObject._margin = self.previewSize / 4			
 		
 
 	def helpButtonCallback(self, sender):
 		self.Glyphs.defaults["%s.drawer" % self.vID] = not self.Glyphs.defaults["%s.drawer" % self.vID] # Toggle Value and= safePreference
-		self.drawer.getNSDrawer().toggle_( self.Glyphs.defaults["%s.drawer" % self.vID] ) # Toggle Drawer
+		self.drawer.getNSDrawer().toggle_(self.Glyphs.defaults["%s.drawer" % self.vID]) # Toggle Drawer
 
 	def masterIndex(self, master):
 		''' return the index [0, 1, 2, ...] of the selected master '''
@@ -1169,10 +1169,10 @@ class PreferenceWindow(object):
 
 			if glyphIsReused:
 				self.w.includeOtherScripts.enable(1)
-				self.w.includeOtherScripts.setTitle( "%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused][1:])) )
+				self.w.includeOtherScripts.setTitle("%s (%s)" % (self.IOSTitle, ", ".join([g for g in glyphIsReused][1:])))
 			else:
 				self.w.includeOtherScripts.enable(0)
-				self.w.includeOtherScripts.setTitle( self.IOSTitle )
+				self.w.includeOtherScripts.setTitle(self.IOSTitle)
 
 			# print("2:", self.parent.glyphsWithSameKG(glyphName, mid)) # *new in 1.9.5* *UC*
 			# print("3:", self.parent.sameComponentSetup(glyphName, mid)) # *new in 1.9.5* *UC*
@@ -1188,7 +1188,7 @@ class PreferenceWindow(object):
 
 
 
-	def SavePreferences( self, sender ):
+	def SavePreferences(self, sender):
 		try:
 			if sender == self.w.glyphInput:
 				self.updateGlyphPreview(sender.get())
@@ -1206,7 +1206,7 @@ class PreferenceWindow(object):
 			self.Glyphs.defaults["%s.skipAlreadyKernedLeftCheck" % self.vID] = self.w.skipAlreadyKernedLeftCheck.get()
 			self.Glyphs.defaults["%s.skipAlreadyKernedRightCheck" % self.vID] = self.w.skipAlreadyKernedRightCheck.get()
 			for i, thisCat in enumerate(self.catToSkipUI):
-				exec('self.Glyphs.defaults["%s.skipCategory%i"] = self.w.skipCategory%i.get()' % (self.vID, i+1, i+1) ) # self.Glyphs.defaults["com.markfromberg.kernkraft.skipCategory1"] = self.w.skipCategory1.get() # etc.
+				exec('self.Glyphs.defaults["%s.skipCategory%i"] = self.w.skipCategory%i.get()' % (self.vID, i + 1, i + 1)) # self.Glyphs.defaults["com.markfromberg.kernkraft.skipCategory1"] = self.w.skipCategory1.get() # etc.
 			self.Glyphs.defaults["%s.pointSize" % self.vID] = self.drawer.pointSize.get()
 			self.Glyphs.defaults["%s.deactivateReporterUI" % self.vID] = self.w.deactivateReporterUI.get()
 			self.Glyphs.defaults["%s.separateTabsUI" % self.vID] = self.w.separateTabsUI.get()
@@ -1220,7 +1220,7 @@ class PreferenceWindow(object):
 		return True
 
 
-	def LoadPreferences( self ):
+	def LoadPreferences(self):
 		try:
 			''' MAKE DEFAULTS DICT TO INJECT INTO NSUserDefaults '''
 			collectedDefaults = {}
@@ -1238,35 +1238,35 @@ class PreferenceWindow(object):
 			collectedDefaults["%s.UIDone" % self.vID] = "" #"None"
 			collectedDefaults["%s.drawer" % self.vID] = False
 			for i, thisCat in enumerate(self.catToSkipUI):
-				collectedDefaults["%s.skipCategory%s" % (self.vID, str(i+1) ) ] = False
+				collectedDefaults["%s.skipCategory%s" % (self.vID, str(i + 1))] = False
 			# print(collectedDefaults)
 
 			Glyphs.registerDefaults(collectedDefaults)
 
 			''' SET THE UI ELEMENTS WITH VALUES FROM THE PREFERENCES '''
 			if self.Glyphs.defaults["%s.glyphInput" % self.vID] in self.allGlyphsInFont:
-				self.w.glyphInput.set( self.Glyphs.defaults["%s.glyphInput" % self.vID] )
+				self.w.glyphInput.set(self.Glyphs.defaults["%s.glyphInput" % self.vID])
 			else:
-				self.w.glyphInput.set( self.firstGlyphInFont ) # allGlyphsInFont[0]
+				self.w.glyphInput.set(self.firstGlyphInFont) # allGlyphsInFont[0]
 				# Fallback Layer if user switched from one font to another and the stored glyph is not available
 			if Glyphs.buildNumber >= 911:
-				self.w.includeOtherScripts.set( self.Glyphs.boolDefaults["%s.includeOtherScripts" % self.vID] )
-			self.w.skipComponentCheck.set( self.Glyphs.boolDefaults["%s.skipComponentCheck" % self.vID] )
-			self.w.skipKGMembersCheck.set( self.Glyphs.boolDefaults["%s.skipKGMembersCheck" % self.vID] )
-			self.w.skipAlreadyKernedLeftCheck.set( self.Glyphs.boolDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID] )
-			self.w.skipAlreadyKernedRightCheck.set( self.Glyphs.boolDefaults["%s.skipAlreadyKernedRightCheck" % self.vID] )
+				self.w.includeOtherScripts.set(self.Glyphs.boolDefaults["%s.includeOtherScripts" % self.vID])
+			self.w.skipComponentCheck.set(self.Glyphs.boolDefaults["%s.skipComponentCheck" % self.vID])
+			self.w.skipKGMembersCheck.set(self.Glyphs.boolDefaults["%s.skipKGMembersCheck" % self.vID])
+			self.w.skipAlreadyKernedLeftCheck.set(self.Glyphs.boolDefaults["%s.skipAlreadyKernedLeftCheck" % self.vID])
+			self.w.skipAlreadyKernedRightCheck.set(self.Glyphs.boolDefaults["%s.skipAlreadyKernedRightCheck" % self.vID])
 			for i, thisCat in enumerate(self.catToSkipUI):
-				exec('self.w.skipCategory%i.set( self.Glyphs.boolDefaults["%s.skipCategory%s"] )' % (i+1, self.vID, i+1) )
-			self.drawer.pointSize.set( self.Glyphs.defaults["%s.pointSize" % self.vID] )
-			self.w.deactivateReporterUI.set( self.Glyphs.boolDefaults["%s.deactivateReporterUI" % self.vID] )
-			self.w.separateTabsUI.set( self.Glyphs.defaults["%s.separateTabsUI" % self.vID] )
+				exec('self.w.skipCategory%i.set(self.Glyphs.boolDefaults["%s.skipCategory%s"])' % (i + 1, self.vID, i + 1))
+			self.drawer.pointSize.set(self.Glyphs.defaults["%s.pointSize" % self.vID])
+			self.w.deactivateReporterUI.set(self.Glyphs.boolDefaults["%s.deactivateReporterUI" % self.vID])
+			self.w.separateTabsUI.set(self.Glyphs.defaults["%s.separateTabsUI" % self.vID])
 
 			if self.Glyphs.defaults["%s.drawer" % self.vID] == True:
 				self.drawer.getNSDrawer().open()
 			else:
 				self.drawer.getNSDrawer().close()
-			self.drawer.UINotes.set( self.Glyphs.defaults["%s.UINotes" % self.vID] )
-			self.drawer.UIDone.set( self.Glyphs.defaults["%s.UIDone" % self.vID] )
+			self.drawer.UINotes.set(self.Glyphs.defaults["%s.UINotes" % self.vID])
+			self.drawer.UIDone.set(self.Glyphs.defaults["%s.UIDone" % self.vID])
 		except:
 			print(traceback.format_exc())
 			return False
@@ -1278,7 +1278,7 @@ class PreferenceWindow(object):
 		''' MAKE A LIST OF SELECTED CATEGORIES '''
 		catsToSkipUI = []
 		for i, thisCat in enumerate(self.catToSkipUI):
-			exec('if self.w.skipCategory%s.get(): catsToSkipUI.append(self.w.skipCategory%s.getTitle())' % ( str(i+1), str(i+1) ) )
+			exec('if self.w.skipCategory%s.get(): catsToSkipUI.append(self.w.skipCategory%s.getTitle())' % (str(i + 1), str(i + 1)))
 		return catsToSkipUI
 
 
@@ -1334,7 +1334,7 @@ class PreferenceWindow(object):
 			if Glyphs.buildNumber >= 911:
 				if self.w.includeOtherScripts.get() == 1:
 					# if there are more glyphs like the input glyph in other scripts:
-					while len( self.parent.showAllScripts ) > 0:
+					while len(self.parent.showAllScripts) > 0:
 						self.parent.generateTabOutput(self.parent.showAllScripts[0], showLetterCategoryOnly=True)
 
 						# A
