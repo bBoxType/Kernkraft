@@ -551,8 +551,8 @@ class KernKraft(object):
 	def setupTab(self):
 		# ZOOM TO POINT SIZE & SET WRITING DIRECTION
 		#-------------------------------------------
-		zoomFactor = self.UIPointSize/1000.0
-		thisTab = self.Glyphs.font.tabs[-1]
+		zoomFactor = self.UIPointSize / 1000.0
+		thisTab = self.Glyphs.font.currentTab
 
 		thisTab.scale = zoomFactor
 		thisTab.direction = self.writingDirection
@@ -563,12 +563,9 @@ class KernKraft(object):
 		# SET CARET INTO POSITION
 		#------------------------
 		# **NOT 100 PERCENT READY**
-		ContentView = self.Doc.windowController().activeEditViewController().contentView()
-		# location = len( ContentView.textStorage().string() ) -6  # len of rightTail
-		location = len( ContentView.textStorage().text() ) -6  # len of rightTail // change in API, Glyphs 2.4 AND 2.5
-		myRange = NSMakeRange( location, 0 ) # 0 = length
-		GraphicView = self.Doc.windowController().activeEditViewController().graphicView()
-		GraphicView.setSelectedRange_( myRange )
+		GraphicView = thisTab.graphicView()
+		location = len(GraphicView.textStorage().text()) -6  # len of rightTail // change in API, Glyphs 2.4 AND 2.5
+		thisTab.textCursor = location
 
 		GraphicView.setToolTip_("Kernkraft Tab")
 
@@ -584,14 +581,14 @@ class KernKraft(object):
 
 		self.Doc = self.Glyphs.currentDocument
 		if self.prefwindow.w.separateTabsUI.get() == False:
-			self.Doc.windowController().addTabWithString_( thisTabOutput )
+			self.Glyphs.font.newTab( thisTabOutput )
 			self.setupTab()
 
 		else:
 			print()
 			splittedTabOutput =  thisTabOutput.split("\n__")
 			for x in splittedTabOutput[1:]:  # 0 index would be empty, so we exclude it here
-				self.Doc.windowController().addTabWithString_( "__%s" % x )
+				self.Glyphs.font.newTab( "__%s" % x )
 				self.setupTab()
 
 		if debugMode:
