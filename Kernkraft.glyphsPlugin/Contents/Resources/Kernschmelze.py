@@ -223,7 +223,9 @@ class KernschmelzeWindow(object):
 		CheckBox.getID = __getID
 		# CheckBox.enable = __enable # Monkey Patch, override given enable()
 
-
+		if len(self.font.masters) < 2:
+			Message("Kernschmelze needs a font with at least 2 masters")
+			return
 
 		#==========
 		# I N I T S
@@ -238,8 +240,8 @@ class KernschmelzeWindow(object):
 			## Keep index in there, so same titled masters won’t be swallowed by unique checkbox requirement
 			source_Options.append(u"%s)  \"%s\"  [%s Pairs]" % (i+1, m.name, str( len( self.getKerningFromMaster(m) ) ) ) )
 
-		self.UI_sourceMasterA = None
-		self.UI_sourceMasterB = None
+		self.UI_sourceMasterA = self.font.masters[0]
+		self.UI_sourceMasterB = self.font.masters[1]
 
 		# Init dictionary master options with index 0
 		self.masterOptions = {}
@@ -255,9 +257,11 @@ class KernschmelzeWindow(object):
 		y += 25
 		self.w.SourceMasterALabel = TextBox((10, y, -10, 20), u"🅐 =" )
 		self.w.SourceMasterA = PopUpButton((tab1, y, -10, 20), source_Options, callback=self.getSourceMasterA, sizeStyle="small")
+		self.w.SourceMasterA.set(0)
 		y += 25
 		self.w.SourceMasterBLabel = TextBox((10, y, -10, 20), u"🅑 =" )
 		self.w.SourceMasterB = PopUpButton((tab1, y, -10, 20), source_Options, callback=self.getSourceMasterB, sizeStyle="small" )
+		self.w.SourceMasterA.set(1)
 		y += 50
 		self.w.CopyMastersLabel = TextBox((10, y, -10, 20), "Apply Kerning to:", alignment="center" )
 		y += 25
@@ -291,7 +295,7 @@ class KernschmelzeWindow(object):
 		self.w.button = Button((10, y, -10, 20), "Select Source Masters first", callback=self.buttonCallback)
 		self.w.button.enable(0)
 		y += 30
-
+		self.toggleAvailability()
 		self.w.resize(390, y)
 		self.w.center()
 		self.w.open()
