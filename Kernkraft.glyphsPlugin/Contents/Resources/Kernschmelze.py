@@ -321,12 +321,12 @@ class KernschmelzeWindow(object):
 
 
 	def getSourceMasterA(self, sender):
-		self.UI_sourceMasterA = [self.font.masters[sender.get()], sender.get()]
+		self.UI_sourceMasterA = self.font.masters[sender.get()]
 		self.toggleAvailability()
 
 
 	def getSourceMasterB(self, sender):
-		self.UI_sourceMasterB = [self.font.masters[sender.get()], sender.get()]
+		self.UI_sourceMasterB = self.font.masters[sender.get()]
 		self.toggleAvailability()
 
 
@@ -442,30 +442,35 @@ class KernschmelzeWindow(object):
 			#==========================================
 			# D E F I N E   T H E   M A S T E R   I D S
 			#==========================================
-			UI_SelectedMasterA_IDX = self.UI_sourceMasterA[1]
-			UI_SelectedMasterA_Value = self.UI_sourceMasterA[0].weightValue
 
-			UI_SelectedMasterB_IDX = self.UI_sourceMasterB[1]
-			UI_SelectedMasterB_Value = self.UI_sourceMasterB[0].weightValue
+			try:
+				UI_SelectedMasterA_Value = self.UI_sourceMasterA.weightValue
+			except:
+				UI_SelectedMasterA_Value = self.UI_sourceMasterA.axes[0]
+
+			try:
+				UI_SelectedMasterB_Value = self.UI_sourceMasterB.weightValue
+			except:
+				UI_SelectedMasterB_Value = self.UI_sourceMasterB.axes[0]
 
 
 			#====================
 			# E Q   K E R N I N G
 			#====================
 			# Equalize both Source Masters, fill up non matching pairs with value `0`
-			kerningACollection = self.getKerningFromMaster(self.UI_sourceMasterA[0])
-			kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB[0])		
-			for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).iteritems():
+			kerningACollection = self.getKerningFromMaster(self.UI_sourceMasterA)
+			kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB)
+			for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).items():
 				pair = key.split(self.separator)
 				self.leftSide_K, self.rightSide_K = pair
 				self.KernValue_A, self.KernValue_B = values
 				# print(self.leftSide_K, self.rightSide_K, self.KernValue_A, self.KernValue_B)
 				if self.KernValue_A == None:
-					self.font.setKerningForPair(self.UI_sourceMasterA[0].id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
-					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterA[0].name, self.leftSide_K, self.rightSide_K))
+					self.font.setKerningForPair(self.UI_sourceMasterA.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
+					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterA.name, self.leftSide_K, self.rightSide_K))
 				if self.KernValue_B == None:
-					self.font.setKerningForPair(self.UI_sourceMasterB[0].id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
-					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterB[0].name, self.leftSide_K, self.rightSide_K))
+					self.font.setKerningForPair(self.UI_sourceMasterB.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
+					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterB.name, self.leftSide_K, self.rightSide_K))
 
 
 			#==============================================================
@@ -479,17 +484,17 @@ class KernschmelzeWindow(object):
 
 				# Exclude Source Masters:
 				#------------------------
-				if i != UI_SelectedMasterA_IDX and i != UI_SelectedMasterB_IDX:  # by index
+				if master != self.UI_sourceMasterA and master != self.UI_sourceMasterB:  # by index
 					# print("Master: %s - Option: %s" % (i, self.masterOptions[i]))
-					
+
 					if master in self.UI_SelectedTargetMasters:
 
 						### same iteration as above in the Master-EQing, but this time for EACH TARGET MASTER
 						### I(!): reset kerning_Collection, to get the equalized(!) Kerning (masters with added zero-values):
-						kerningACollection = self.getKerningFromMaster(self.UI_sourceMasterA[0])
-						kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB[0])
+						kerningACollection = self.getKerningFromMaster(self.UI_sourceMasterA)
+						kerningBCollection = self.getKerningFromMaster(self.UI_sourceMasterB)
 
-						for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).iteritems():
+						for key, values in self.EQKerningPairs(kerningACollection, kerningBCollection).items():
 							pair = key.split(self.separator)
 							self.leftSide_K, self.rightSide_K = pair
 							self.KernValue_A, self.KernValue_B = values
@@ -503,7 +508,11 @@ class KernschmelzeWindow(object):
 							#--------------------
 							if self.masterOptions[i] == 0:
 								scale = UI_SelectedMasterA_Value + UI_SelectedMasterB_Value # weight values of Master_A + Master_B
-								location = master.weightValue / scale # return factor 0…1 for interpolation, exceeding for extrapolation
+								try:
+									masterAxisValue = master.weightValue
+								except:
+									masterAxisValue = master.axes[0]
+								location = masterAxisValue / scale # return factor 0…1 for interpolation, exceeding for extrapolation
 								try:
 									self.font.setKerningForPair(master.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, self.interpolate(self.KernValue_A, self.KernValue_B, location))
 								except:
