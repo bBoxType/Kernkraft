@@ -180,13 +180,13 @@ class KernschmelzeWindow(object):
 		def __setID(self, customTitle):
 			'''
 				Set accessibility title or identifier to call object by it.
-			'''			
+			'''
 			self._nsObject.setIdentifier_(customTitle)  # help(self._nsObject)
 
 		def __getID(self):
 			'''
 				Get accessibility title or identifier to call object by it.
-			'''			
+			'''
 			return self._nsObject.identifier()
 
 		def __enable(self, onOff):
@@ -262,7 +262,7 @@ class KernschmelzeWindow(object):
 		self.w.CopyMastersLabel = TextBox((10, y, -10, 20), "Apply Kerning to:", alignment="center" )
 		y += 25
 		for i, master in enumerate(self.font.masters):
-			
+
 			# Target Master
 			#--------------
 			attrNameLine = "Line_%s" % str(i)
@@ -286,7 +286,7 @@ class KernschmelzeWindow(object):
 			setattr(self.w, attrNameSourceMaster, radioGroupSourceMaster)
 			exec("self.w.FromMaster_" + str(i) + ".set(0)")
 			y += 28
-		
+
 		y += 10
 		self.w.button = Button((10, y, -10, 20), "Select Source Masters first", callback=self.buttonCallback)
 		self.w.button.enable(0)
