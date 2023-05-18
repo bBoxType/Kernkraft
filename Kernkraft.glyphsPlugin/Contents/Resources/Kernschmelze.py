@@ -352,7 +352,8 @@ class KernschmelzeWindow(object):
 			thisKerning = self.font.kerning[fontMaster.id]
 		except:
 			thisKerning = {}  # If no kerning in fontMaster:
-
+		if thisKerning is None:
+			thisKerning = {}
 		thisKerningCollection = []
 		for leftSide, rightSide in thisKerning.items():
 			if leftSide[:5] != "@MMK_":  # If single glyph (exception to Kerning Group)
