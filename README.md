@@ -11,8 +11,6 @@
 <img src="https://github.com/carrois/Kernkraft/blob/master/Kernschmelze%2001.png" width="400">
 </p>
 
-## Glyphs 2 only. Not officially ported to Glyphs 3 yet.
-
 ### About:
 
 This set of plugins for the font editor »Glyphs« is based on the way of kerning by [bBox Type GmbH](https://www.bboxtype.com). The code is written by [Mark Frömberg](http://www.markfromberg.com) (@Mark2Mark). Please contact me for any issues or ideas.
