@@ -15,7 +15,9 @@
 
 This set of plugins for the font editor »Glyphs« is based on the way of kerning by [bBox Type GmbH](https://www.bboxtype.com). The code is written by [Mark Frömberg](http://www.markfromberg.com) (@Mark2Mark). Please contact me for any issues or ideas.
 
-Kenrkraft simplifies the process of accessing all the glyph pairs provided by your font, regardless of the size of the character set. Easily navigate through the glyphs with the keyboard arrows (←, →) and Enter key (⏎), while the tool automatically marks the completed glyphs in a convenient TODO list.\n\nKernschmelze interpolates the kerning of two masters.
+Kenrkraft simplifies the process of accessing all the glyph pairs provided by your font, regardless of the size of the character set. Easily navigate through the glyphs with the keyboard arrows (←, →) and Enter key (⏎), while the tool automatically marks the completed glyphs in a convenient TODO list.  
+
+Kernschmelze interpolates the kerning of two masters.
 
 Once installed, find them in *Glyph > Kernkraft* and *Glyph > Kernschmelze*
 
