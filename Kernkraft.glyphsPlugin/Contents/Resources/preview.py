@@ -1,8 +1,8 @@
 '''
 https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CocoaViewsGuide/SubclassingNSView/SubclassingNSView.html
 '''
-from Foundation import NSLog
-from AppKit import NSView, NSColor, NSAffineTransform, NSMutableParagraphStyle, NSAttributedString, NSFont, NSFontAttributeName, NSForegroundColorAttributeName, NSParagraphStyleAttributeName, NSRectFill #, NSBezierPath, NSRect
+
+from AppKit import NSView, NSColor, NSAffineTransform, NSAttributedString, NSFont, NSFontAttributeName, NSForegroundColorAttributeName, NSRectFill
 import traceback
 from vanilla.vanillaBase import VanillaBaseObject
 
@@ -23,19 +23,18 @@ class MFGlyphView(NSView):
 			ascender = self._layer.glyphMetrics()[1] * scaleFactor
 
 			## This order is important! Wont work the other way around.
-			bezierPathOnly = self._layer.bezierPath # Path Only
+			bezierPathOnly = self._layer.bezierPath  # Path Only
 			if bezierPathOnly is not None:
 				bezierPathOnly = bezierPathOnly.copy()
 			bezierPathWithComponents = self._layer.completeBezierPath  # Path & Components
 			bezierPathOpenWithComponents = self._layer.completeOpenBezierPath  # Path & Components
-			
+
 			# Set the scale
 			#--------------
 			scale = NSAffineTransform.transform()
 			scale.translateXBy_yBy_((bounds.size.width - layerWidth) / 2.0, (bounds.size.height - ascender + descender) / 2.0 - descender)
 			scale.scaleBy_(scaleFactor)
-			
-			
+
 			# Draw only path in black
 			#------------------------
 			if thisGlyph.export:
@@ -44,10 +43,10 @@ class MFGlyphView(NSView):
 			else:
 				pathColor = NSColor.orangeColor()
 				componentColor = NSColor.orangeColor()
-				
+
 			if bezierPathWithComponents:
 				bezierPathWithComponents.transformUsingAffineTransform_(scale)
-				componentColor.set() # Draw components in gray
+				componentColor.set()  # Draw components in gray
 				bezierPathWithComponents.fill()
 			if bezierPathOnly:
 				pathColor.set()
@@ -63,11 +62,11 @@ class MFGlyphView(NSView):
 				NSColor.orangeColor().set()
 				bezierPathWithComponents.transformUsingAffineTransform_(scale)
 				bezierPathWithComponents.fill()
-			
+
 			attributes = {}
 			attributes[NSFontAttributeName] = NSFont.systemFontOfSize_(14)
 			attributes[NSForegroundColorAttributeName] = NSColor.secondaryLabelColor()
-			
+
 			thisLKG = thisGlyph.leftKerningGroup
 			thisRKG = thisGlyph.rightKerningGroup
 			if thisLKG is not None:
@@ -86,7 +85,8 @@ class MFGlyphView(NSView):
 				String.drawAtPoint_alignment_((bounds.size.width / 2.0, 5), 1)
 		except:
 			print(traceback.format_exc())
-			
+
+
 class GlyphView(VanillaBaseObject):
 
 	nsGlyphPreviewClass = MFGlyphView
@@ -95,9 +95,11 @@ class GlyphView(VanillaBaseObject):
 		self._setupView(self.nsGlyphPreviewClass, posSize)
 		# self._scaleFactor = 1;
 		self.layer = layer
+
 	@property
 	def layer(self):
 		return self._nsObject._layer
+
 	@layer.setter
 	def layer(self, value):
 		self._nsObject._layer = value

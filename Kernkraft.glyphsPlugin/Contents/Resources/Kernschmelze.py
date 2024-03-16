@@ -8,15 +8,15 @@ __doc__ = """
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#	_NOTES:
-#		- 
+# _NOTES:
+# 	-
 #
-#	_TODO:
-#		- include Width & Custom Values, HUH??
-#		- `Scale` is currently based on masters weight value, do we need to incorporate other values?
+# _TODO:
+# 	- include Width & Custom Values, HUH??
+# 	- `Scale` is currently based on masters weight value, do we need to incorporate other values?
 #
-#	>> Mark Froemberg << aka `Mark2Mark` @ GitHub
-#	>> www.markfromberg.com <<
+# >> Mark Froemberg << aka `Mark2Mark` @ GitHub
+# >> www.markfromberg.com <<
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,17 +32,15 @@ __doc__ = """
 '''
 
 from AppKit import NSSwitchButton, NSShadowlessSquareBezelStyle, NSLeftTextAlignment, NSNoCellMask
-from vanilla import *
+from vanilla import Window, Button, CheckBox, HorizontalLine, PopUpButton, TextBox
 import traceback
-from GlyphsApp import *
+from GlyphsApp import Glyphs, Message
 Glyphs.clearLog()
+
 # Glyphs.showMacroWindow()
 
 # font = Glyphs.font
 # thisMasterID = font.selectedFontMaster.id
-
-
-
 
 
 ########################################
@@ -51,47 +49,47 @@ Glyphs.clearLog()
 # Classes almost exactly as in the vanilla LIB
 # @ https://github.com/typesupply/vanilla/blob/master/Lib/vanilla/vanillaCheckBox.py
 #
-# Basically I just aim for a change of pos values for style `mini` at `textBoxPosSize` 
+# Basically I just aim for a change of pos values for style `mini` at `textBoxPosSize`
 #
 # --> All this code can be removed* to use a classic vanilla style CheckBox, also change
-# checkBox = MFCheckBox( ...
+# checkBox = MFCheckBox(...
 # back to:
-# checkBox = CheckBox( ...
+# checkBox = CheckBox(...
 #
 # *) Also can be removed if Typesupply accepts my pull request to change these values
 # [https://github.com/typesupply/vanilla/pull/36]
 
 class _CheckBoxManualBuildButton(Button):
 
-    nsButtonType = NSSwitchButton
-    frameAdjustments = {
-        "regular": (-2, -3, 4, 4),
-        "small": (-3, -7, 5, 4),
-        "mini": (-3, -11, 6, 8),
-        }
+	nsButtonType = NSSwitchButton
+	frameAdjustments = {
+		"regular": (-2, -3, 4, 4),
+		"small": (-3, -7, 5, 4),
+		"mini": (-3, -11, 6, 8),
+	}
 
-    def set(self, value):
-        self._nsObject.setState_(value)
+	def set(self, value):
+		self._nsObject.setState_(value)
 
-    def get(self):
-        return self._nsObject.state()
+	def get(self):
+		return self._nsObject.state()
 
-    def toggle(self):
-        state = self.get()
-        self.set(not state)
+	def toggle(self):
+		state = self.get()
+		self.set(not state)
 
 
 class _CheckBoxManualBuildTextButton(Button):
 
-    nsBezelStyle = NSShadowlessSquareBezelStyle
-    frameAdjustments = None
+	nsBezelStyle = NSShadowlessSquareBezelStyle
+	frameAdjustments = None
 
-    def __init__(self, posSize, title, callback, sizeStyle):
-        super(_CheckBoxManualBuildTextButton, self).__init__(posSize, title=title, callback=callback)
-        self._nsObject.setBordered_(False)
-        self._setSizeStyle(sizeStyle)
-        self._nsObject.setAlignment_(NSLeftTextAlignment)
-        self._nsObject.cell().setHighlightsBy_(NSNoCellMask)
+	def __init__(self, posSize, title, callback, sizeStyle):
+		super(_CheckBoxManualBuildTextButton, self).__init__(posSize, title=title, callback=callback)
+		self._nsObject.setBordered_(False)
+		self._setSizeStyle(sizeStyle)
+		self._nsObject.setAlignment_(NSLeftTextAlignment)
+		self._nsObject.cell().setHighlightsBy_(NSNoCellMask)
 
 ########################################
 
@@ -102,7 +100,7 @@ class MFCheckBox(CheckBox):
 		"mini": (0, -4, 0, 8),
 		"small": (0, -2, 0, 4),
 		"regular": (0, -2, 0, 4),
-		}
+	}
 
 	def __init__(self, posSize, title, callback=None, value=False, sizeStyle="regular"):
 
@@ -111,28 +109,28 @@ class MFCheckBox(CheckBox):
 		self._callback = callback
 
 		buttonSizes = {
-				"mini": (10, 10),
-				"small": (18, 18),
-				"regular": (22, 22)
-				}
-		left, top, width, height = posSize
+			"mini": (10, 10),
+			"small": (18, 18),
+			"regular": (22, 22)
+		}
+		# left, top, width, height = posSize
 
 		self.frameAdjustments = self.allFrameAdjustments[sizeStyle]
 
 		buttonWidth, buttonHeight = buttonSizes[sizeStyle]
 		buttonLeft, buttonTop = self.frameAdjustments[:2]
-		buttonLeft= abs(buttonLeft)
+		buttonLeft = abs(buttonLeft)
 		buttonTop = abs(buttonTop)
 
 		# adjust the position of the text button in relation to the check box
 		textBoxPosSize = {
-				# left, top, height
-				## ************************
-				"mini": (12, 5, 12), # Changed by Mark, original: (10, 4, 12)
-				"small": (14, 6, 14), # Changed by Mark, original: (14, 4, 14)
-				## ************************
-				"regular": (16, 3, 17)
-				}
+			# left, top, height
+			## ************************
+			"mini": (12, 5, 12),  # Changed by Mark, original: (10, 4, 12)
+			"small": (14, 6, 14),  # Changed by Mark, original: (14, 4, 14)
+			## ************************
+			"regular": (16, 3, 17)
+		}
 		textBoxLeft, textBoxTop, textBoxHeight = textBoxPosSize[sizeStyle]
 		textBoxWidth = 0
 
@@ -142,31 +140,25 @@ class MFCheckBox(CheckBox):
 		self._textButton = _CheckBoxManualBuildTextButton((textBoxLeft, textBoxTop, textBoxWidth, textBoxHeight), title=title, callback=self._buttonHit, sizeStyle=sizeStyle)
 		######
 
-
-		### Added by Mark:
-		try:
-			nsbutton = self._textButton.getNSButton()
-			## Optional Button Styles
-			# nsbutton.setBordered_(1)
-			# nsbutton.setBezelStyle_(1)
-			# nsbutton.setButtonType_(0) # 1 is funky
-			# nsbutton.setAlignment_(0)
-		except:
-			print(traceback.format_exc())
+		# ## Added by Mark:
+		# try:
+		# 	# nsbutton = self._textButton.getNSButton()
+		# 	## Optional Button Styles
+		# 	# nsbutton.setBordered_(1)
+		# 	# nsbutton.setBezelStyle_(1)
+		# 	# nsbutton.setButtonType_(0) # 1 is funky
+		# 	# nsbutton.setAlignment_(0)
+		# except:
+		# 	print(traceback.format_exc())
 
 ########################################
 ########################################
 ########################################
-
-
-
-
-
-
-
 
 
 version = "0.9"
+
+
 class KernschmelzeWindow(object):
 
 	def __init__(self, font):
@@ -195,15 +187,23 @@ class KernschmelzeWindow(object):
 				*UC* Not disabling a PopUpButton
 			'''
 			alpha = onOff + 0.3
-			try: self._checkBox.enable(onOff)
-			except:	pass
-			try: self._nsObject.setAlphaValue_(alpha)
-			except:	pass
+			try:
+				self._checkBox.enable(onOff)
+			except:
+				pass
+			try:
+				self._nsObject.setAlphaValue_(alpha)
+			except:
+				pass
 
-			try: self._textButton.enable(onOff)
-			except: pass
-			try: self._nsObject.setAlphaValue_(alpha)
-			except: pass
+			try:
+				self._textButton.enable(onOff)
+			except:
+				pass
+			try:
+				self._nsObject.setAlphaValue_(alpha)
+			except:
+				pass
 
 			# try:
 			# 	self._nsObject.enable(onOff)
@@ -238,7 +238,7 @@ class KernschmelzeWindow(object):
 		source_Options = []
 		for i, m in enumerate(self.font.masters):
 			## Keep index in there, so same titled masters won’t be swallowed by unique checkbox requirement
-			source_Options.append(u"%s)  \"%s\"  [%s Pairs]" % (i+1, m.name, str( len( self.getKerningFromMaster(m) ) ) ) )
+			source_Options.append(u"%s)  \"%s\"  [%s Pairs]" % (i + 1, m.name, str(len(self.getKerningFromMaster(m)))))
 
 		self.UI_sourceMasterA = self.font.masters[0]
 		self.UI_sourceMasterB = self.font.masters[1]
@@ -248,22 +248,21 @@ class KernschmelzeWindow(object):
 		for mi, m in enumerate(self.font.masters):
 			self.masterOptions[mi] = 0
 
-
 		#======
 		# G U I
 		#======
 		self.w = Window((0, 0), "Kernschmelze (beta)")
-		self.w.SourceMastersLabel = TextBox((10, y, -10, 20), "Source Masters:", alignment="center" )
+		self.w.SourceMastersLabel = TextBox((10, y, -10, 20), "Source Masters:", alignment="center")
 		y += 25
-		self.w.SourceMasterALabel = TextBox((10, y, -10, 20), u"🅐 =" )
+		self.w.SourceMasterALabel = TextBox((10, y, -10, 20), u"🅐 =")
 		self.w.SourceMasterA = PopUpButton((tab1, y, -10, 20), source_Options, callback=self.getSourceMasterA, sizeStyle="small")
 		self.w.SourceMasterA.set(0)
 		y += 25
-		self.w.SourceMasterBLabel = TextBox((10, y, -10, 20), u"🅑 =" )
-		self.w.SourceMasterB = PopUpButton((tab1, y, -10, 20), source_Options, callback=self.getSourceMasterB, sizeStyle="small" )
+		self.w.SourceMasterBLabel = TextBox((10, y, -10, 20), u"🅑 =")
+		self.w.SourceMasterB = PopUpButton((tab1, y, -10, 20), source_Options, callback=self.getSourceMasterB, sizeStyle="small")
 		self.w.SourceMasterA.set(1)
 		y += 50
-		self.w.CopyMastersLabel = TextBox((10, y, -10, 20), "Apply Kerning to:", alignment="center" )
+		self.w.CopyMastersLabel = TextBox((10, y, -10, 20), "Apply Kerning to:", alignment="center")
 		y += 25
 		for i, master in enumerate(self.font.masters):
 
@@ -275,18 +274,18 @@ class KernschmelzeWindow(object):
 			y += 8
 			attrNameTargetMaster = "CopyMasters_%s" % str(i)
 			try:
-				checkBoxTargetMaster = MFCheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
+				checkBoxTargetMaster = MFCheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters)  # str(master.name)
 			except:
-				checkBoxTargetMaster = CheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters) # str(master.name)
-			checkBoxTargetMaster.setID(str(i)) # MONKEY PATCH
+				checkBoxTargetMaster = CheckBox((10, y, tab2, 20), "", sizeStyle="small", callback=self.makeTargetMasters)  # str(master.name)
+			checkBoxTargetMaster.setID(str(i))  # MONKEY PATCH
 			setattr(self.w, attrNameTargetMaster, checkBoxTargetMaster)
-			exec("self.w.CopyMasters_" + str(i) + ".setTitle('\"%s\"  [%s Pairs]" % (str(master.name), str(len(self.getKerningFromMaster( master )))) + "')")
+			exec("self.w.CopyMasters_" + str(i) + ".setTitle('\"%s\"  [%s Pairs]" % (str(master.name), str(len(self.getKerningFromMaster(master)))) + "')")
 
 			# Source Master
 			#--------------
 			attrNameSourceMaster = "FromMaster_%s" % str(i)
-			radioGroupSourceMaster = PopUpButton((tab2, y, -10, 20), ["Interpolate", u"Copy from 🅐", u"Copy from 🅑"], sizeStyle="small", callback=self.targetMastersOptions )
-			radioGroupSourceMaster.setID(str(i)) # MONKEY PATCH
+			radioGroupSourceMaster = PopUpButton((tab2, y, -10, 20), ["Interpolate", u"Copy from 🅐", u"Copy from 🅑"], sizeStyle="small", callback=self.targetMastersOptions)
+			radioGroupSourceMaster.setID(str(i))  # MONKEY PATCH
 			setattr(self.w, attrNameSourceMaster, radioGroupSourceMaster)
 			exec("self.w.FromMaster_" + str(i) + ".set(0)")
 			y += 28
@@ -300,7 +299,6 @@ class KernschmelzeWindow(object):
 		self.w.center()
 		self.w.open()
 
-
 	def makeTargetMasters(self, sender):
 		masterID = int(sender.getID())
 		master = self.font.masters[masterID]
@@ -313,22 +311,18 @@ class KernschmelzeWindow(object):
 				self.UI_SelectedTargetMasters.remove(master)
 		# print(self.UI_SelectedTargetMasters)
 
-
 	def targetMastersOptions(self, sender):
 		masterID = int(sender.getID())
 		status = sender.get()
 		self.masterOptions[masterID] = status
 
-
 	def getSourceMasterA(self, sender):
 		self.UI_sourceMasterA = self.font.masters[sender.get()]
 		self.toggleAvailability()
 
-
 	def getSourceMasterB(self, sender):
 		self.UI_sourceMasterB = self.font.masters[sender.get()]
 		self.toggleAvailability()
-
 
 	def toggleAvailability(self):
 		for i, master in enumerate(self.font.masters):
@@ -341,10 +335,9 @@ class KernschmelzeWindow(object):
 				exec("thisMaster = self.w.CopyMasters_" + str(i) + ".enable(1)")
 				exec("thisMaster = self.w.FromMaster_" + str(i) + ".enable(1)")
 
-		if self.UI_sourceMasterA != None and self.UI_sourceMasterB != None:
+		if self.UI_sourceMasterA is not None and self.UI_sourceMasterB is not None:
 			self.w.button.enable(1)
 			self.w.button.setTitle("Schmelz!")
-
 
 	def getKerningFromMaster(self, fontMaster):
 		# print("__sourceMaster:", fontMaster.name ## sourceMasterA or sourceMasterB)
@@ -357,18 +350,18 @@ class KernschmelzeWindow(object):
 		thisKerningCollection = []
 		for leftSide, rightSide in thisKerning.items():
 			if leftSide[:5] != "@MMK_":  # If single glyph (exception to Kerning Group)
-				leftSide = self.font.glyphForId_( leftSide ).name
+				leftSide = self.font.glyphForId_(leftSide).name
 
 			for item in rightSide.items():
 				value = item[1]
 				if item[0][:5] != "@MMK_":  # If single glyph (exception to Kerning Group)
-					#print("----> %s" % font.glyphForId_( item[0] ).name)
-					rightSide = self.font.glyphForId_( item[0] ).name
+					#print("----> %s" % font.glyphForId_(item[0]).name)
+					rightSide = self.font.glyphForId_(item[0]).name
 				else:
 					rightSide = item[0]
 
 				# print(item)
-				thisKerningCollection.append([leftSide, rightSide, value ])
+				thisKerningCollection.append([leftSide, rightSide, value])
 
 		### DEBUG
 		# print("__thisKerningCollection:")
@@ -378,8 +371,6 @@ class KernschmelzeWindow(object):
 		# print
 
 		return thisKerningCollection
-
-
 
 	def EQKerningPairs(self, KerningM1, KerningM2, fillValue=None):
 		kernDict = {}
@@ -400,27 +391,24 @@ class KernschmelzeWindow(object):
 			try:
 				kernDict[pair].append(valueB)
 			except:
-				kernDict[pair] = [fillValue, valueB] # case: 1st M has no entry for this pair, set it to 0
+				kernDict[pair] = [fillValue, valueB]  # case: 1st M has no entry for this pair, set it to 0
 
 		# Iterate over M1 afain to fill up newly added pairs from M2
 		#-----------------------------------------------------------
 		for A in KerningM1:
 			pair = "%s%s%s" % (A[0], self.separator, A[1])
 			valueA = A[2]
-			if len (kernDict[pair]) == 1:
-				kernDict[pair] = [valueA, fillValue] # case: 2nd M has no entry for this pair, set it to 0
+			if len(kernDict[pair]) == 1:
+				kernDict[pair] = [valueA, fillValue]  # case: 2nd M has no entry for this pair, set it to 0
 
 		# for key, val in kernDict.iteritems():
 		# 	print(key.split(self.separator), val)
 		return kernDict
 
-
-
 	def interpolate(self, a, b, location):
 		''' location = interpolation factor '''
 		interpolatedValue = a + location * (b - a)
 		return int(interpolatedValue)
-
 
 	def copyKerning(self, choice):
 		''' Copy Kerning '''
@@ -429,11 +417,9 @@ class KernschmelzeWindow(object):
 		if choice == 2:
 			copiedKernValue = self.KernValue_B
 		try:
-			self.font.setKerningForPair(self.master.id, '%s'  % self.leftSide_K, '%s'  % self.rightSide_K, copiedKernValue)
+			self.font.setKerningForPair(self.master.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, copiedKernValue)
 		except:
 			print(traceback.format_exc())
-
-
 
 	def buttonCallback(self, sender):
 
@@ -454,7 +440,6 @@ class KernschmelzeWindow(object):
 			except:
 				UI_SelectedMasterB_Value = self.UI_sourceMasterB.axes[0]
 
-
 			#====================
 			# E Q   K E R N I N G
 			#====================
@@ -466,13 +451,12 @@ class KernschmelzeWindow(object):
 				self.leftSide_K, self.rightSide_K = pair
 				self.KernValue_A, self.KernValue_B = values
 				# print(self.leftSide_K, self.rightSide_K, self.KernValue_A, self.KernValue_B)
-				if self.KernValue_A == None:
+				if self.KernValue_A is None:
 					self.font.setKerningForPair(self.UI_sourceMasterA.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
 					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterA.name, self.leftSide_K, self.rightSide_K))
-				if self.KernValue_B == None:
+				if self.KernValue_B is None:
 					self.font.setKerningForPair(self.UI_sourceMasterB.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, 0)
 					# print("set %s (%s %s) to ZERO" % (self.UI_sourceMasterB.name, self.leftSide_K, self.rightSide_K))
-
 
 			#==============================================================
 			# A P P L Y   K E R N I N G   T O   T A R G E T   M A S T E R S
@@ -508,18 +492,16 @@ class KernschmelzeWindow(object):
 							# Interpolate Kerning
 							#--------------------
 							if self.masterOptions[i] == 0:
-								scale = UI_SelectedMasterA_Value + UI_SelectedMasterB_Value # weight values of Master_A + Master_B
+								scale = UI_SelectedMasterA_Value + UI_SelectedMasterB_Value  # weight values of Master_A + Master_B
 								try:
 									masterAxisValue = master.weightValue
 								except:
 									masterAxisValue = master.axes[0]
-								location = masterAxisValue / scale # return factor 0…1 for interpolation, exceeding for extrapolation
+								location = masterAxisValue / scale  # return factor 0…1 for interpolation, exceeding for extrapolation
 								try:
 									self.font.setKerningForPair(master.id, '%s' % self.leftSide_K, '%s' % self.rightSide_K, self.interpolate(self.KernValue_A, self.KernValue_B, location))
 								except:
 									print(traceback.format_exc())
 
-
 		except:
 			print(traceback.format_exc())
-
