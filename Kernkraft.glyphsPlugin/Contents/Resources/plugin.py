@@ -3,31 +3,36 @@
 ###########################################################################################################
 #
 #
-#	General Plugin
+# General Plugin
 #
-#	Read the docs:
-#	https://github.com/schriftgestalt/GlyphsSDK/tree/master/Python%20Templates/General%20Plugin
+# Read the docs:
+# https://github.com/schriftgestalt/GlyphsSDK/tree/master/Python%20Templates/General%20Plugin
 #
 #
 ###########################################################################################################
 
 from __future__ import division, print_function, unicode_literals
+
+import objc
 import KernKraftModule as KKM
 
 from Kernschmelze import KernschmelzeWindow
 from GlyphsApp import Glyphs
-from GlyphsApp.plugins import *
-
+from GlyphsApp.plugins import GeneralPlugin
 import traceback
+from AppKit import NSMenuItem, NSLog
+
 
 class KernkraftPlugin(GeneralPlugin):
+
 	@objc.python_method
 	def settings(self):
 		self.name = "Kernkraft"
+
 	@objc.python_method
 	def start(self):
 		try:
-			mainMenu = NSApplication.sharedApplication().mainMenu()
+			mainMenu = Glyphs.mainMenu()
 			glyphMenu = mainMenu.itemWithTag_(7).submenu()
 			s = objc.selector(self.kernkraft_, signature=b'v@:@')
 			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("Kernkraft", s, "")
@@ -44,7 +49,7 @@ class KernkraftPlugin(GeneralPlugin):
 		try:
 			thisFont = Glyphs.font
 			mID = thisFont.selectedFontMaster.id
-			kkk = KKM.KernKraft(Glyphs, thisFont, mID)
+			KKM.KernKraft(Glyphs, thisFont, mID)
 		except:
 			NSLog(traceback.format_exc())
 
